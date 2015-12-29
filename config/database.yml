@@ -1,0 +1,25 @@
+development: &dev
+  adapter: postgresql
+  encoding: utf8
+  reconnect: false
+  pool: <%= ENV['DB_ENV_POSTGRESQL_POOL'] || 25 %>
+  database: <%= ENV['DB_ENV_POSTGRESQL_DB'] || 'cru' %>
+  username: <%= ENV['DB_ENV_POSTGRESQL_USER'] %>
+  password: <%= ENV['DB_ENV_POSTGRESQL_PASS'] %>
+  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
+
+staging:
+  <<: *dev
+
+production:
+  <<: *dev
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *dev
+  database: <%= ENV['DB_ENV_POSTGRESQL_DB_TEST'] || ENV['DB_ENV_POSTGRESQL_DB'] + '_test' %>
+  username: <%= ENV['DB_ENV_POSTGRESQL_USER_TEST'] || ENV['DB_ENV_POSTGRESQL_USER'] %>
+  password: <%= ENV['DB_ENV_POSTGRESQL_PASS_TEST'] || ENV['DB_ENV_POSTGRESQL_PASS'] %>
+  host: <%= ENV['DB_PORT_5432_TCP_ADDR_TEST'] || ENV['DB_PORT_5432_TCP_ADDR'] %>
