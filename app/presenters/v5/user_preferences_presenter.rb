@@ -1,15 +1,18 @@
 module V5
   class UserPreferencesPresenter < V5::BasePresenter
+    PROPERTY_MAP_VIEWS = 'default_map_views'.freeze
+    PROPERTY_MEASUREMENT_STATES = 'default_measurement_states'.freeze
+    PROPERTY_CONTENT_LOCALES = 'content_locales'.freeze
 
     def initialize(person)
       @person = person
     end
 
-    def as_json(options={})
+    def as_json(_options = {})
       data = user_preferences
-      data['default_map_views'] = user_map_views unless @person.user_map_views.empty?
-      data['default_measurement_states'] = user_measurement_states unless @person.user_measurement_states.empty?
-      data['content_locales'] = user_content_locales unless @person.user_content_locales.empty?
+      data[PROPERTY_MAP_VIEWS] = user_map_views unless @person.user_map_views.empty?
+      data[PROPERTY_MEASUREMENT_STATES] = user_measurement_states unless @person.user_measurement_states.empty?
+      data[PROPERTY_CONTENT_LOCALES] = user_content_locales unless @person.user_content_locales.empty?
       data
     end
 
