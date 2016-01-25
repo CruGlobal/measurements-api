@@ -1,8 +1,10 @@
 source 'https://rubygems.org'
+source 'https://gems.contribsys.com/' do
+  gem 'sidekiq-pro'
+end
 
-# gem 'rails'
 gem 'rails-api'
-gem 'active_model_serializers', git: 'git://github.com/rails-api/active_model_serializers.git'
+gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
 gem 'puma'
 gem 'newrelic_rpm'
 gem 'rails-api-newrelic'
@@ -12,7 +14,7 @@ gem 'rollbar'
 gem 'syslog-logger'
 gem 'oj'
 gem 'oj_mimic_json'
-gem 'cru_lib', '~> 0.0.5'
+gem 'cru_lib', git: 'https://github.com/CruGlobal/cru_lib.git'
 gem 'pg'
 gem 'rubycas-client-rails'
 gem 'xml-simple', require: 'xmlsimple'
@@ -33,5 +35,7 @@ group :test do
   gem 'simplecov', require: false
   gem 'factory_girl_rails'
   gem 'shoulda', require: false
-  gem 'rubocop', '~> 0.34.0'
+  gem 'rubocop'
+  gem 'fakeredis', :require => 'fakeredis/rspec'
+  gem 'coveralls', require: false
 end

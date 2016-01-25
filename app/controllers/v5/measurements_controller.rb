@@ -3,15 +3,12 @@ module V5
     include CruLib::AccessTokenProtectedConcern
 
     def index
-
     end
 
     def show
-
     end
 
     def create
-
     end
   end
 end

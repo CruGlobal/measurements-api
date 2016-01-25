@@ -15,6 +15,6 @@ module Constants
     AFSE: 'FEC',
     LAAM: 'LAC',
     AFWE: 'FWC',
-    PACT: 'CAC',
+    PACT: 'CAC'
   }
 end

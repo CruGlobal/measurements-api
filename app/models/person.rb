@@ -22,7 +22,6 @@ class Person < ActiveRecord::Base
   def add_or_update_preference(name, value)
     # Creates or updates a user_preference, deletes if value is nil
     pref = user_preferences.find_by(name: name) # where(name: name).first
-    ap pref
     if value.nil?
       user_preferences.destroy(pref) if pref
     else

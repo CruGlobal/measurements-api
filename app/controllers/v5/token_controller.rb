@@ -47,6 +47,5 @@ module V5
     def store_service_ticket(ticket, token)
       CruLib.redis_client.setex(redis_ticket_key(ticket), 2.hours.to_i, token.token)
     end
-
   end
 end

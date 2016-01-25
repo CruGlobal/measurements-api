@@ -1,12 +1,11 @@
 module V5
   class TokenPresenter < V5::BasePresenter
-
     def initialize(access_token, person)
       @access_token = access_token
       @person = person
     end
 
-    def as_json(options={})
+    def as_json(_options = {})
       {
         status: 'success',
         session_ticket: @access_token.attributes[:token],

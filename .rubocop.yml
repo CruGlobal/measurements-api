@@ -7,8 +7,10 @@ AllCops:
     - script/**/*
     - vendor/**/*
     - bin/**/*
+  TargetRubyVersion: 2.2
 
-  RunRailsCops: true
+Rails:
+  Enabled: true
 
 Documentation:
   Enabled: false

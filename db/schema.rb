@@ -11,11 +11,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151228183755) do
+ActiveRecord::Schema.define(version: 20160104185523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "assignments", force: :cascade do |t|
+    t.uuid     "assignment_id"
+    t.uuid     "person_id"
+    t.uuid     "ministry_id"
+    t.string   "team_role"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "ministries", force: :cascade do |t|
+    t.uuid     "ministry_id"
+    t.string   "name"
+    t.string   "min_code"
+    t.float    "lat"
+    t.float    "long"
+    t.integer  "zoom"
+    t.string   "lmi_show",                                          array: true
+    t.string   "lmi_hide",                                          array: true
+    t.boolean  "slm"
+    t.boolean  "llm"
+    t.boolean  "gcm"
+    t.boolean  "ds"
+    t.string   "default_mcc"
+    t.uuid     "parent_ministry_id"
+    t.datetime "created_at",         default: "now()", null: false
+    t.datetime "updated_at",         default: "now()", null: false
+  end
+
+  add_index "ministries", ["ministry_id"], name: "index_ministries_on_ministry_id", unique: true, using: :btree
 
   create_table "people", force: :cascade do |t|
     t.uuid     "person_id"
