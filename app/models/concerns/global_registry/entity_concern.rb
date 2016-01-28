@@ -2,8 +2,6 @@ module GlobalRegistry
   module EntityConcern
     extend ActiveSupport::Concern
 
-    protected
-
     module ClassMethods
       def find_by(id, params = {})
         response = GlobalRegistry::Entity.find(id, params)
@@ -20,6 +18,7 @@ module GlobalRegistry
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def find_in_batches(params = {})
         fail 'block required' unless block_given?
         params['page'] = 1 unless params.key? 'page'
@@ -27,10 +26,12 @@ module GlobalRegistry
         loop do
           response = GlobalRegistry::Entity.get(params)
           yield response['entities'] if response.key? 'entities'
-          break if response.key?('meta') && (response['meta']['next_page'] == false)
+          break if true # response.key?('meta') && (response['meta']['next_page'] == false)
           params['page'] += 1
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
+
     end
   end
 end

@@ -1,28 +1,19 @@
 module GlobalRegistry
-  class Ministry
-    include ActiveModel::Model
-    include GlobalRegistry::EntityConcern
-
+  class Ministry < GlobalRegistry::EntityModel
     ENTITY_TYPE = 'ministry'.freeze
 
-    attr_accessor :id,
-                  :name,
-                  :parent_id,
-                  :lmi_hide,
-                  :lmi_show,
-                  :location_zoom,
-                  :location,
-                  :has_slm,
-                  :has_llm,
-                  :has_gcm,
-                  :has_ds,
-                  :is_active,
-                  :default_mcc
-
-    def method_missing(*_args)
-      # swallow missing method calls
-      nil
-    end
+    entity_property :name
+    entity_property :parent_id
+    entity_property :lmi_hide
+    entity_property :lmi_show
+    entity_property :location_zoom
+    entity_property :location
+    entity_property :has_slm
+    entity_property :has_llm
+    entity_property :has_gcm
+    entity_property :has_ds
+    entity_property :is_active
+    entity_property :default_mcc
 
     class << self
       def all
@@ -36,13 +27,14 @@ module GlobalRegistry
       end
 
       def find_by_ministry_id(ministry_id)
-        gr_ministry = find_by(ministry_id, levels: 1)
+        gr_ministry = find_by(ministry_id, 'filters[owned_by]': 'all', levels: 1)
         return if gr_ministry.nil? || !gr_ministry.key?('ministry')
-        create_from_entity(gr_ministry['ministry'])
+        GlobalRegistry::Ministry.new(gr_ministry['ministry'])
       end
 
       private
 
+      # Find id, name for all active ministries
       def all_active
         fail 'block required' unless block_given?
         find_each(
@@ -52,10 +44,11 @@ module GlobalRegistry
           'filters[parent_id:exists]': true,
           'filters[is_active]': true
         ) do |ministry|
-          yield create_from_entity(ministry)
+          yield GlobalRegistry::Ministry.new(ministry)
         end
       end
 
+      # Find id, name for all ministries missing the active property
       def all_missing_active
         fail 'block required' unless block_given?
         find_each(
@@ -65,14 +58,8 @@ module GlobalRegistry
           'filters[parent_id:exists]': true,
           'filters[is_active:not_exists]': true
         ) do |ministry|
-          yield create_from_entity(ministry)
+          yield GlobalRegistry::Ministry.new(ministry)
         end
-      end
-
-      def create_from_entity(entity = {})
-        # Remove keys that do not map to Model attributes
-        # params = entity.reject { |k| !GlobalRegistry::Ministry.attribute_method? k.to_s }
-        GlobalRegistry::Ministry.new(entity)
       end
     end
   end

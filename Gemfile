@@ -18,6 +18,9 @@ gem 'cru_lib', git: 'https://github.com/CruGlobal/cru_lib.git'
 gem 'pg'
 gem 'rubycas-client-rails'
 gem 'xml-simple', require: 'xmlsimple'
+gem 'sidekiq-unique-jobs'
+gem 'redis-namespace'
+gem 'sinatra', :require => nil
 
 group :development, :test do
   gem 'dotenv-rails'

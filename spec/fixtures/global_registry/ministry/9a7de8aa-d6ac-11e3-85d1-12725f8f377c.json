@@ -1,0 +1,344 @@
+{
+  "entity": {
+    "ministry": {
+      "id": "9a7de8aa-d6ac-11e3-85d1-12725f8f377c",
+      "is_secure": {
+        "value": false,
+        "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+        "updated_at": "2015-06-29 21:55:14",
+        "user_entered": true
+      },
+      "ministry": {
+        "id": "a7bfc7b0-40fd-11e5-8459-129bd0521531",
+        "name": {
+          "value": "Albania KS",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-08-12 14:23:09",
+          "user_entered": true
+        },
+        "min_code": {
+          "value": "Albania_KS",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-08-12 14:23:09",
+          "user_entered": true
+        },
+        "location": {
+          "id": "a926f736-40fd-11e5-aa98-129bd0521531",
+          "latitude": {
+            "value": "47.3975712614054",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-12 14:23:11",
+            "user_entered": true
+          },
+          "longitude": {
+            "value": "18.9815098555478",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-12 14:23:11",
+            "user_entered": true
+          },
+          "parent_id": "a7bfc7b0-40fd-11e5-8459-129bd0521531",
+          "client_integration_id": {
+            "value": "Albania_KS",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-12 14:23:11",
+            "user_entered": false
+          },
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-08-12 14:23:11",
+          "user_entered": true
+        },
+        "person:relationship": [
+          {
+            "person": "61c7e2b8-edbd-11e3-a6de-12725f8f377c",
+            "relationship_entity_id": "d9656e3c-40fd-11e5-a18a-129bd0521531",
+            "client_integration_id": {
+              "value": "_61c7e2b8-edbd-11e3-a6de-12725f8f377c_a7bfc7b0-40fd-11e5-8459-129bd0521531",
+              "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+              "updated_at": "2015-08-12 14:24:32",
+              "user_entered": false
+            },
+            "team_role": "member",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-12 14:24:32",
+            "user_entered": true
+          },
+          {
+            "person": "1398513e-c98d-11e4-89a8-12c37bb2d521",
+            "relationship_entity_id": "a88c51a4-40fd-11e5-bad6-129bd0521531",
+            "client_integration_id": {
+              "value": "_1398513e-c98d-11e4-89a8-12c37bb2d521_a7bfc7b0-40fd-11e5-8459-129bd0521531",
+              "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+              "updated_at": "2015-08-12 14:23:10",
+              "user_entered": false
+            },
+            "team_role": "self_assigned",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-12 14:23:10",
+            "user_entered": true
+          },
+          {
+            "person": "32f03eba-ddfc-11e4-b34b-12c37bb2d521",
+            "relationship_entity_id": "962bc898-4835-11e5-9b87-129bd0521531",
+            "client_integration_id": {
+              "value": "_32f03eba-ddfc-11e4-b34b-12c37bb2d521_a7bfc7b0-40fd-11e5-8459-129bd0521531",
+              "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+              "updated_at": "2015-08-21 18:51:09",
+              "user_entered": false
+            },
+            "team_role": "self_assigned",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-08-21 18:51:09",
+            "user_entered": true
+          },
+          {
+            "person": "649a7b3e-82a6-11e5-8a26-129bd0521531",
+            "relationship_entity_id": "329c0dc8-82b0-11e5-9452-129bd0521531",
+            "client_integration_id": {
+              "value": "_649a7b3e-82a6-11e5-8a26-129bd0521531_a7bfc7b0-40fd-11e5-8459-129bd0521531",
+              "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+              "updated_at": "2015-11-04 04:54:57",
+              "user_entered": false
+            },
+            "team_role": "self_assigned",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-11-04 04:54:57",
+            "user_entered": true
+          },
+          {
+            "person": "316ae312-8d2c-11e5-9a9d-129bd0521531",
+            "relationship_entity_id": "44705a0e-8e8b-11e5-8c62-129bd0521531",
+            "client_integration_id": {
+              "value": "_316ae312-8d2c-11e5-9a9d-129bd0521531_a7bfc7b0-40fd-11e5-8459-129bd0521531",
+              "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+              "updated_at": "2015-11-19 07:00:50",
+              "user_entered": false
+            },
+            "team_role": "self_assigned",
+            "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+            "updated_at": "2015-11-19 07:00:50",
+            "user_entered": true
+          }
+        ],
+        "parent_id": "9a7de8aa-d6ac-11e3-85d1-12725f8f377c",
+        "client_integration_id": {
+          "value": "Albania_KS",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-08-12 14:23:09",
+          "user_entered": false
+        },
+        "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+        "updated_at": "2015-08-21 20:55:26",
+        "user_entered": true
+      },
+      "location_zoom": {
+        "value": 8,
+        "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+        "updated_at": "2015-03-30 14:53:40",
+        "user_entered": true
+      },
+      "ministry_scope": {
+        "value": "National",
+        "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+        "updated_at": "2014-05-12 14:49:17",
+        "user_entered": true
+      },
+      "name": {
+        "value": "Montenegro",
+        "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+        "updated_at": "2014-05-08 12:30:56",
+        "user_entered": true
+      },
+      "min_code": [
+        {
+          "value": "MNE",
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-05-08 12:30:56",
+          "user_entered": true
+        },
+        {
+          "value": "MNE",
+          "created_by": "1d0bd3b0-d9df-11e3-92bd-12725f8f377c",
+          "updated_at": "2014-05-13 20:11:07",
+          "user_entered": true
+        }
+      ],
+      "is_active": {
+        "value": true,
+        "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+        "updated_at": "2014-05-08 12:30:56",
+        "user_entered": true
+      },
+      "gma_status": {
+        "value": "Not Implemented",
+        "created_by": "1d0bd3b0-d9df-11e3-92bd-12725f8f377c",
+        "updated_at": "2014-05-14 14:55:15",
+        "user_entered": true
+      },
+      "measurement_status": {
+        "value": "Not Implemented",
+        "created_by": "1d0bd3b0-d9df-11e3-92bd-12725f8f377c",
+        "updated_at": "2014-05-13 20:11:07",
+        "user_entered": true
+      },
+      "stage": {
+        "value": 1,
+        "created_by": "f398cba0-e03c-11e3-91ae-12725f8f377c",
+        "updated_at": "2014-05-20 16:51:20",
+        "user_entered": true
+      },
+      "has_slm": {
+        "value": true,
+        "created_by": "f398cba0-e03c-11e3-91ae-12725f8f377c",
+        "updated_at": "2014-05-20 16:51:20",
+        "user_entered": true
+      },
+      "has_gcm": {
+        "value": false,
+        "created_by": "f398cba0-e03c-11e3-91ae-12725f8f377c",
+        "updated_at": "2014-05-20 16:51:20",
+        "user_entered": true
+      },
+      "has_llm": {
+        "value": false,
+        "created_by": "f398cba0-e03c-11e3-91ae-12725f8f377c",
+        "updated_at": "2014-05-20 16:51:20",
+        "user_entered": true
+      },
+      "has_ds": {
+        "value": false,
+        "created_by": "f398cba0-e03c-11e3-91ae-12725f8f377c",
+        "updated_at": "2014-05-20 16:51:20",
+        "user_entered": true
+      },
+      "location": {
+        "id": "4a91ae12-c7d3-11e4-b202-12c37bb2d521",
+        "latitude": {
+          "value": "42.7103014699733",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-03-30 14:53:40",
+          "user_entered": true
+        },
+        "longitude": {
+          "value": "19.3956395499999",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-03-30 14:53:40",
+          "user_entered": true
+        },
+        "parent_id": "9a7de8aa-d6ac-11e3-85d1-12725f8f377c",
+        "client_integration_id": {
+          "value": "MNE",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-03-11 09:45:03",
+          "user_entered": false
+        },
+        "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+        "updated_at": "2015-03-30 14:53:40",
+        "user_entered": true
+      },
+      "iso_country:relationship": [
+        {
+          "iso_country": "bc74ada0-d6ab-11e3-aa3d-12725f8f377c",
+          "relationship_entity_id": "b01b498a-db86-11e3-8321-12725f8f377c",
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-05-08 12:30:56",
+          "user_entered": true
+        },
+        {
+          "iso_country": "bc74ada0-d6ab-11e3-aa3d-12725f8f377c",
+          "relationship_entity_id": "902406dc-11b2-11e4-a101-12c37bb2d521",
+          "client_integration_id": {
+            "value": "MNE_MNE",
+            "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+            "updated_at": "2014-07-22 15:12:14",
+            "user_entered": false
+          },
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-07-22 15:12:14",
+          "user_entered": true
+        }
+      ],
+      "area:relationship": [
+        {
+          "area": "97684a26-d6ab-11e3-9d20-12725f8f377c",
+          "relationship_entity_id": "bcbe22ca-db86-11e3-aa5d-12725f8f377c",
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-05-13 15:09:03",
+          "user_entered": true
+        },
+        {
+          "area": "97684a26-d6ab-11e3-9d20-12725f8f377c",
+          "relationship_entity_id": "90cef510-11b2-11e4-81e2-12c37bb2d521",
+          "client_integration_id": {
+            "value": "MNE_EUER",
+            "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+            "updated_at": "2014-07-22 15:12:15",
+            "user_entered": false
+          },
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-07-22 15:12:15",
+          "user_entered": true
+        }
+      ],
+      "mcc:relationship": [
+        {
+          "global_mcc": "c2224c58-e0bf-11e3-8942-12725f8f377c",
+          "relationship_entity_id": "424349e4-e284-11e3-944b-12725f8f377c",
+          "created_by": "ef580c0a-e0b8-11e3-a083-12725f8f377c",
+          "updated_at": "2014-05-23 14:12:22",
+          "user_entered": true
+        },
+        {
+          "global_mcc": "9e4a614e-e0bf-11e3-9bf6-12725f8f377c",
+          "relationship_entity_id": "dc635298-e75d-11e3-a386-12725f8f377c",
+          "created_by": "ef580c0a-e0b8-11e3-a083-12725f8f377c",
+          "updated_at": "2014-05-29 18:20:06",
+          "user_entered": true
+        },
+        {
+          "global_mcc": "ba331e00-e0bf-11e3-a4e3-12725f8f377c",
+          "relationship_entity_id": "c608f824-d846-11e4-9bb3-12c37bb2d521",
+          "client_integration_id": {
+            "value": "MNE_Global Church Movements",
+            "created_by": "ef580c0a-e0b8-11e3-a083-12725f8f377c",
+            "updated_at": "2015-04-01 08:12:00",
+            "user_entered": false
+          },
+          "created_by": "ef580c0a-e0b8-11e3-a083-12725f8f377c",
+          "updated_at": "2015-04-01 08:12:00",
+          "user_entered": true
+        }
+      ],
+      "parent_id": "6777ba94-d6ac-11e3-b692-12725f8f377c",
+      "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+      "updated_at": "2015-08-21 20:55:26",
+      "user_entered": true,
+      "client_integration_id": [
+        {
+          "value": "MNE",
+          "created_by": "1d0bd3b0-d9df-11e3-92bd-12725f8f377c",
+          "updated_at": "2015-07-29 13:54:17",
+          "user_entered": false
+        },
+        {
+          "value": "MNE",
+          "created_by": "a6c9eb6c-d554-11e3-a415-12725f8f377c",
+          "updated_at": "2014-05-12 14:49:17",
+          "user_entered": false
+        },
+        {
+          "value": "MNE",
+          "created_by": "5b24c1c8-dcd9-11e3-9fb4-12725f8f377c",
+          "updated_at": "2015-03-11 09:45:03",
+          "user_entered": false
+        },
+        {
+          "value": "MNE",
+          "created_by": "ef580c0a-e0b8-11e3-a083-12725f8f377c",
+          "updated_at": "2015-04-01 08:12:01",
+          "user_entered": false
+        }
+      ]
+    }
+  },
+  "meta": {}
+}

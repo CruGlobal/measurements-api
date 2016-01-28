@@ -1,3 +1,4 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
   get 'monitors/lb'
   api_version(module: 'V5', path: { value: 'v5' }) do
@@ -12,4 +13,6 @@ Rails.application.routes.draw do
     resources :training, only: [:index, :create, :update, :destroy]
     resources :user_preferences, only: [:index, :create]
   end
+
+  mount Sidekiq::Web => '/sidekiq'
 end

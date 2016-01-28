@@ -5,8 +5,13 @@ module V5
     before_action :authenticate_request
 
     def index
-      ministries = Ministry.ministries(params.key?(:refresh) && params[:refresh] == 'true')
+      if params.key?(:refresh) && params[:refresh] == 'true'
+        GlobalRegistry::SyncMinistriesWorker.perform_async
+        render status: :accepted, plain: 'Accepted'
+        return
+      end
 
+      ministries = Ministry.all
       # Render only publicly accessible properties
       render json: ministries, each_serializer: MinistryPublicSerializer
     end
