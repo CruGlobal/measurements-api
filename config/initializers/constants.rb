@@ -1,5 +1,5 @@
 module Constants
-  MCCS = %w(slm gcm llm ds)
+  MCCS = %w(slm gcm llm ds).freeze
 
   # area_code to min_code map
   AREAS = {
@@ -16,5 +16,5 @@ module Constants
     LAAM: 'LAC',
     AFWE: 'FWC',
     PACT: 'CAC'
-  }
+  }.freeze
 end

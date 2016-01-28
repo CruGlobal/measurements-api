@@ -31,7 +31,6 @@ module GlobalRegistry
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity
-
     end
   end
 end

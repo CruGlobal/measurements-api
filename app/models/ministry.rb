@@ -1,5 +1,4 @@
 class Ministry < ActiveRecord::Base
-
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
   def update_from_gr(ministry)
     params = {
@@ -20,7 +19,6 @@ class Ministry < ActiveRecord::Base
     self.attributes = params
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
-
 
   # Find ministry by id
   def self.ministry(id, refresh = false)
