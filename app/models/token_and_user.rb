@@ -1,5 +1,5 @@
 class TokenAndUser < ActiveModelSerializers::Model
-  alias read_attribute_for_serialization send
+  alias_method :read_attribute_for_serialization, :send
 
   attr_accessor :access_token, :person
 

@@ -25,9 +25,11 @@ describe V5::TokenAndUserSerializer do
       expect(hash['status']).to eq 'success'
       expect(hash['session_ticket']).to_not be_nil
       expect(hash['assignments']).to_not be_nil
+      expect(hash['user_preferences']).to_not be_nil
+      expect(hash['user_preferences']['content_locales']).to_not be_nil
       expect(hash['user']).to_not be_nil
       expect(hash['user']['first_name']).to eq 'Tony'
-      expect(hash['user']['last_name']).to eq  'Stark'
+      expect(hash['user']['last_name']).to eq 'Stark'
       expect(hash['user']['cas_username']).to eq resource.access_token.email
       expect(hash['user']['person_id']).to eq resource.person.person_id
     end
