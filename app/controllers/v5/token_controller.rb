@@ -16,7 +16,7 @@ module V5
       person = Person.find_or_initialize(access_token.key_guid)
       api_error 'denied' and return unless person
 
-      render json: TokenPresenter.new(access_token, person)
+      render json: TokenAndUser.new(access_token, person), serializer: V5::TokenAndUserSerializer
     end
 
     def destroy
