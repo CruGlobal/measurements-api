@@ -1,6 +1,4 @@
 class TokenAndUser < ActiveModelSerializers::Model
-  alias_method :read_attribute_for_serialization, :send
-
   attr_accessor :access_token, :person
 
   def initialize(access_token, person)
@@ -8,15 +6,16 @@ class TokenAndUser < ActiveModelSerializers::Model
     @person = person
   end
 
-  def status
-    'success'
-  end
-
-  def session_ticket
-    @access_token.attributes[:token]
-  end
-
   def assignments
     []
+  end
+
+  def attributes
+    {
+      access_token: @access_token,
+      person: @person,
+      status: 'success',
+      session_ticket: @access_token.attributes[:token]
+    }
   end
 end
