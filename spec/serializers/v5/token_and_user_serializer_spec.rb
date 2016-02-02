@@ -9,12 +9,12 @@ describe V5::TokenAndUserSerializer do
         first_name: 'Tony',
         last_name: 'Stark'
       )
-      TokenAndUser.new(token, Person.create(
-                                person_id: 'asdf',
-                                first_name: token.first_name,
-                                last_name: token.last_name,
-                                cas_guid: token.key_guid,
-                                cas_username: token.email
+      TokenAndUser.new(access_token: token, person: Person.create(
+        person_id: 'asdf',
+        first_name: token.first_name,
+        last_name: token.last_name,
+        cas_guid: token.key_guid,
+        cas_username: token.email
       ))
     end
     let(:serializer) { V5::TokenAndUserSerializer.new(resource) }
