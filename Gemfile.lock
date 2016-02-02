@@ -9,9 +9,9 @@ GIT
 
 GIT
   remote: https://github.com/rails-api/active_model_serializers.git
-  revision: 8981683b9fa8d0bcff0e76b3702d699689b787b4
+  revision: 72c2c9f0d7c665ce1b32dbbd4ca5687b1afd320e
   specs:
-    active_model_serializers (0.10.0.rc3)
+    active_model_serializers (0.10.0.rc4)
       actionpack (>= 4.0)
       activemodel (>= 4.0)
       railties (>= 4.0)
@@ -179,7 +179,7 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.2)
+    rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     railties (4.2.5)
       actionpack (= 4.2.5)
@@ -259,6 +259,8 @@ GEM
       tilt (>= 1.3, < 3)
     slop (3.6.0)
     spring (1.6.2)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (3.5.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -320,6 +322,7 @@ DEPENDENCIES
   simplecov
   sinatra
   spring
+  spring-commands-rspec
   syslog-logger
   versionist
   webmock
