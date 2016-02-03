@@ -8,7 +8,6 @@ module V5
     has_many :default_measurement_states
     attribute :content_locales
 
-
     def attributes(args)
       # convert preferences to a hash
       raw_prefs = object.user_preferences.to_a.each_with_object({}){ |p,h| h[p.name] = p.value }
@@ -24,9 +23,8 @@ module V5
     end
 
     def default_map_views
-      map_views = []
-      object.user_map_views.each do |view|
-        data = {
+      object.user_map_views.map do |view|
+        {
           ministry_id: view.ministry_id,
           location: {
             latitude: view.lat,
@@ -34,9 +32,7 @@ module V5
           },
           location_zoom: view.zoom
         }
-        map_views << data
       end
-      map_views
     end
 
     def default_measurement_states
