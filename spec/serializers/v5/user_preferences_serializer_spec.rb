@@ -5,7 +5,7 @@ describe V5::UserPreferencesSerializer do
     let(:resource) do
       p = Person.create(
         person_id: 'asdf',
-        first_name: 'first',
+        first_name: 'first'
       )
       p.user_preferences.create(name: 'fake-pref', value: 'mock')
       p.user_map_views.create(ministry_id: 'fake-id', lat: -10, long: 9001, zoom: '7000')

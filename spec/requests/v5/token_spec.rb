@@ -29,11 +29,11 @@ RSpec.describe 'V5::Tokens', type: :request do
 
     it 'respons with session_ticket' do
       WebMock.stub_request(:get, 'https://thekey.me/cas/proxyValidate?service=http://www.example.com/v5/token&ticket=asdf')
-        .to_return(status: 200, body: cas_validate_response)
+             .to_return(status: 200, body: cas_validate_response)
       WebMock.stub_request(:get, 'https://api.global-registry.org/entities?entity_type=person&' \
                                    'fields=first_name,last_name,key_username,authentication.key_guid&' \
                                    "filters%5Bauthentication%5D%5Bkey_guid%5D=#{user.cas_guid}")
-        .to_return(status: 200, body: { entities: [] }.to_json, headers: {})
+             .to_return(status: 200, body: { entities: [] }.to_json, headers: {})
 
       get '/v5/token', st: 'asdf'
       json = JSON.parse(response.body)
