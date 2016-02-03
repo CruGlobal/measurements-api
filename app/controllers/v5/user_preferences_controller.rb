@@ -7,18 +7,14 @@ module V5
     def index
       person = Person.find_or_initialize(@access_token.key_guid)
       api_error('Invalid User') unless person
-      presenter = UserPreferencesPresenter.new(person)
-      api_error('Error') unless presenter
-      render json: presenter
+      render json: @person, serializer: UserPreferencesSerializer
     end
 
     def create
       @person = Person.find_or_initialize(@access_token.key_guid)
       api_error('Invalid User') unless @person
       update_preferences(request.request_parameters)
-      presenter = UserPreferencesPresenter.new(@person)
-      api_error('Error') unless presenter
-      render json: presenter
+      render json: @person, serializer: UserPreferencesSerializer
     end
 
     private
@@ -26,11 +22,11 @@ module V5
     def update_preferences(preferences = {})
       preferences.each do |key, value|
         case key
-        when UserPreferencesPresenter::PROPERTY_MAP_VIEWS
+        when UserPreferencesSerializer::PROPERTY_MAP_VIEWS
           @person.add_or_update_map_views(value)
-        when UserPreferencesPresenter::PROPERTY_MEASUREMENT_STATES
+        when UserPreferencesSerializer::PROPERTY_MEASUREMENT_STATES
           @person.add_or_update_measurement_states(value)
-        when UserPreferencesPresenter::PROPERTY_CONTENT_LOCALES
+        when UserPreferencesSerializer::PROPERTY_CONTENT_LOCALES
           @person.add_or_update_content_locales(value)
         else
           @person.add_or_update_preference(key, value)

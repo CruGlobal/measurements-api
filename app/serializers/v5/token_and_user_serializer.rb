@@ -3,31 +3,26 @@ module V5
     attributes :status, :session_ticket
 
     has_one :user
+    has_one :user_preferences, serializer: UserPreferencesSerializer
 
     has_many :assignments
-
-    def _as_json(_options = {})
-      {
-        status: 'success',
-        session_ticket: @access_token.attributes[:token],
-        assignments: [],
-        user: {
-          first_name: @access_token.first_name,
-          last_name: @access_token.last_name,
-          cas_username: @access_token.email,
-          person_id: @person.person_id
-        },
-        user_preferences: UserPreferencesPresenter.new(@person).as_json
-      }
-    end
 
     def user
       {
         first_name: object.access_token.first_name,
         last_name: object.access_token.last_name,
         cas_username: object.access_token.email,
-        person_id: object.access_token.guid
+        person_id: object.person.person_id,
+        key_guid: object.person.cas_guid
       }
+    end
+
+    def user_preferences
+      object.person
+    end
+
+    def assignments
+      object.assignments
     end
   end
 end

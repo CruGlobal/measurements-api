@@ -28,6 +28,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'rspec-rails'
   gem 'spring'
+  gem 'spring-commands-rspec'
   gem 'pry-rails'
   gem 'http_logger'
   gem 'awesome_print'
