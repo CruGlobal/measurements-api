@@ -4,30 +4,15 @@ module V5
     PROPERTY_MEASUREMENT_STATES = 'default_measurement_states'.freeze
     PROPERTY_CONTENT_LOCALES = 'content_locales'.freeze
 
-    attributes :supported_staff, :hide_reports_tab, :static_locale, :preferred_mcc, :preferred_ministry
-
     has_many :default_map_views
     has_many :default_measurement_states
     attribute :content_locales
 
-    def supported_staff
-      user_preferences['supported_staff']
-    end
 
-    def hide_reports_tab
-      user_preferences['hide_reports_tab']
-    end
-
-    def static_locale
-      user_preferences['static_locale']
-    end
-
-    def preferred_mcc
-      user_preferences['preferred_mcc']
-    end
-
-    def preferred_ministry
-      user_preferences['preferred_ministry']
+    def attributes(args)
+      # convert preferences to a hash
+      raw_prefs = object.user_preferences.to_a.each_with_object({}){ |p,h| h[p.name] = p.value }
+      super(args).merge(raw_prefs)
     end
 
     def content_locales
@@ -36,15 +21,6 @@ module V5
         locales[locale.ministry_id] = locale.locale
       end
       locales
-    end
-
-    def user_preferences
-      return @preferences if @preferences
-      preferences = {}
-      object.user_preferences.each do |pref|
-        preferences[pref.name] = pref.value
-      end
-      @preferences = preferences
     end
 
     def default_map_views
