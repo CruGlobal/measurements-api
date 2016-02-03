@@ -10,7 +10,7 @@ module V5
 
     def attributes(args)
       # convert preferences to a hash
-      raw_prefs = object.user_preferences.to_a.each_with_object({}){ |p,h| h[p.name] = p.value }
+      raw_prefs = object.user_preferences.to_a.each_with_object({}) { |p, h| h[p.name] = p.value }
       super(args).merge(raw_prefs)
     end
 

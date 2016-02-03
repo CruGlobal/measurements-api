@@ -21,8 +21,6 @@ module V5
       object.person
     end
 
-    def assignments
-      object.assignments
-    end
+    delegate :assignments, to: :object
   end
 end
