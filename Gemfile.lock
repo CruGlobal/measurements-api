@@ -58,6 +58,8 @@ GEM
     addressable (2.4.0)
     arel (6.0.3)
     ast (2.2.0)
+    auto_strip_attributes (2.0.6)
+      activerecord (>= 3.0)
     awesome_print (1.6.1)
     builder (3.2.2)
     coderay (1.1.0)
@@ -293,6 +295,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers!
+  auto_strip_attributes (~> 2.0)
   awesome_print
   coveralls
   cru_lib!
@@ -329,4 +332,4 @@ DEPENDENCIES
   xml-simple
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

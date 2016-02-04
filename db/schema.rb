@@ -11,40 +11,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160104185523) do
+ActiveRecord::Schema.define(version: 20151230191016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "assignments", force: :cascade do |t|
-    t.uuid     "assignment_id"
-    t.uuid     "person_id"
-    t.uuid     "ministry_id"
-    t.string   "team_role"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
   create_table "ministries", force: :cascade do |t|
     t.uuid     "ministry_id"
+    t.uuid     "parent_id"
     t.string   "name"
     t.string   "min_code"
-    t.float    "lat"
-    t.float    "long"
-    t.integer  "zoom"
-    t.string   "lmi_show",                                          array: true
-    t.string   "lmi_hide",                                          array: true
-    t.boolean  "slm"
-    t.boolean  "llm"
-    t.boolean  "gcm"
-    t.boolean  "ds"
+    t.string   "area_code"
+    t.string   "mccs",             default: [],              array: true
     t.string   "default_mcc"
-    t.uuid     "parent_ministry_id"
-    t.datetime "created_at",         default: "now()", null: false
-    t.datetime "updated_at",         default: "now()", null: false
+    t.float    "latitude"
+    t.float    "longitude"
+    t.integer  "location_zoom"
+    t.string   "lmi_show",         default: [],              array: true
+    t.string   "lmi_hide",         default: [],              array: true
+    t.boolean  "hide_reports_tab"
+    t.string   "currency_code"
+    t.string   "currency_symbol"
+    t.string   "ministry_scope"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
+  add_index "ministries", ["min_code"], name: "index_ministries_on_min_code", unique: true, using: :btree
   add_index "ministries", ["ministry_id"], name: "index_ministries_on_ministry_id", unique: true, using: :btree
 
   create_table "people", force: :cascade do |t|

@@ -21,6 +21,7 @@ gem 'xml-simple', require: 'xmlsimple'
 gem 'sidekiq-unique-jobs'
 gem 'redis-namespace'
 gem 'sinatra', :require => nil
+gem 'auto_strip_attributes', '~> 2.0'
 
 group :development, :test do
   gem 'dotenv-rails'

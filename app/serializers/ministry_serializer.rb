@@ -9,20 +9,4 @@ class MinistrySerializer < ActiveModel::Serializer
              :parent_id
   # :hide_reports_tab,
   # :team_members
-
-  def mccs
-    []
-  end
-
-  def location
-    { latitude: object.lat, longitude: object.long }
-  end
-
-  def location_zoom
-    object.zoom
-  end
-
-  def parent_id
-    object.parent_ministry_id
-  end
 end

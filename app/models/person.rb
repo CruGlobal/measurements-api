@@ -1,23 +1,13 @@
 class Person < ActiveRecord::Base
+  include GlobalRegistry::EntityMethods
+
   has_many :user_content_locales, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_map_views, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_measurement_states, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_preferences, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
 
-  class << self
-    def find_or_initialize(guid)
-      person = Person.find_by(cas_guid: guid)
-      return person if person
-      gr_person = GlobalRegistry::Person.find_by_key_guid(guid)
-      Person.create(
-        person_id: gr_person.id,
-        first_name: gr_person.first_name,
-        last_name: gr_person.last_name,
-        cas_guid: guid,
-        cas_username: gr_person.key_username
-      ) if gr_person
-    end
-  end
+  # Map GR key_username to cas_username
+  alias_attribute :key_username, :cas_username
 
   def add_or_update_preference(name, value)
     # Creates or updates a user_preference, deletes if value is nil
@@ -31,6 +21,7 @@ class Person < ActiveRecord::Base
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def add_or_update_map_views(value)
     user_map_views.clear and return if value.nil?
     value.each do |view|
@@ -44,6 +35,7 @@ class Person < ActiveRecord::Base
       map_view.save
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def add_or_update_measurement_states(value)
     user_measurement_states.clear and return if value.nil?
@@ -66,6 +58,42 @@ class Person < ActiveRecord::Base
       content_locale.attributes = { locale: locale }
       content_locales << content_locale
     end
-    user_content_locales = content_locales
+    self.user_content_locales = content_locales
+  end
+
+  def attribute_from_entity_property(property, value = nil)
+    self.person_id = value and return if property.eql? :id
+    super
+  end
+
+  def self.entity_type
+    'person'
+  end
+
+  # Global Registry Entity Properties to sync
+  def self.entity_properties
+    [:first_name, :last_name, :key_username, :authentication].concat(super)
+  end
+
+  def self.find_or_initialize(guid, refresh = false)
+    person = Person.find_by(cas_guid: guid)
+    if person.nil? || refresh
+      person = new(cas_guid: guid) if person.nil?
+      entity = find_entity_by_key_guid guid
+      return if entity.nil?
+      person.from_entity entity
+      person.save
+    end
+    person
+  end
+
+  def self.find_entity_by_key_guid(guid)
+    results = GlobalRegistry::Entity.get(
+      entity_type: 'person',
+      fields: 'first_name,last_name,key_username,authentication.key_guid',
+      'filters[authentication][key_guid]': guid
+    )['entities']
+    return nil unless results[0] && results[0]['person']
+    results[0].with_indifferent_access
   end
 end

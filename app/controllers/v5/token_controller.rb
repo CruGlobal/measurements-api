@@ -4,6 +4,7 @@ module V5
 
     before_action :authenticate_request, except: [:index]
 
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     def index
       api_error "You must pass in a service ticket ('st' parameter)" and return if params[:st].blank?
 
@@ -13,11 +14,12 @@ module V5
       access_token = generate_access_token(st)
       store_service_ticket(st, access_token)
 
-      person = Person.find_or_initialize(access_token.key_guid)
+      person = Person.find_or_initialize(access_token.key_guid, true)
       api_error 'denied' and return unless person
 
       render json: TokenAndUser.new(access_token: access_token, person: person), serializer: V5::TokenAndUserSerializer
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
     def destroy
       CruLib::AccessToken.del(@access_token.token)
