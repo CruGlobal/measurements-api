@@ -32,4 +32,9 @@ class Ministry < ActiveRecord::Base
     end
     ministry
   end
+
+  # SO: I think we should put the logic of what roll you need to be able to interact with a ministry
+  def has_permission(_person)
+    true
+  end
 end
