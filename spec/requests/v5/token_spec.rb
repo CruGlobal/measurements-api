@@ -45,7 +45,7 @@ RSpec.describe 'V5::Tokens', type: :request do
               id: SecureRandom.uuid,
               key_guid: user[:cas_guid]
             },
-            client_integration_id: "16"
+            client_integration_id: '16'
           }
         }
       end
@@ -58,7 +58,6 @@ RSpec.describe 'V5::Tokens', type: :request do
                          'filters[authentication][key_guid]': user[:cas_guid] })
           .to_return(status: 200, body: { entities: [entities_response] }.to_json, headers: {})
       end
-
 
       it 'responds with session_ticket' do
         get '/v5/token', st: 'asdf'
