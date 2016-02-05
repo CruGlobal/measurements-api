@@ -1,9 +1,10 @@
-class ChurchFilters
+class ChurchFilter
   attr_accessor :churches, :filters, :current_user
 
   def initialize(filters, current_user)
     # strip extra spaces from filters
-    @filters = filters.map { |k, v| @filters[k] = v.strip if v.is_a?(String) }
+    filters.each { |k, v| filters[k] = v.strip if v.is_a?(String) }
+    @filters = filters
     @current_user = current_user
   end
 
@@ -41,7 +42,7 @@ class ChurchFilters
   end
 
   def clean_filter(value)
-    value = filters[:value] if value.is_a? Symbol
+    value = @filters[value] if value.is_a? Symbol
     ActiveRecord::Type::Boolean.new.type_cast_from_user(value)
   end
 end
