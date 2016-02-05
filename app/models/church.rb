@@ -4,7 +4,7 @@ class Church < ActiveRecord::Base
 
   before_save :default_values
   def default_values
-    self.development ||= 0
+    self.development ||= 1
     self.security ||= 2
   end
 end

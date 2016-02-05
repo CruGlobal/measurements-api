@@ -24,7 +24,6 @@ class ChurchFilter
   end
 
   def filter_tree_and_show_all(churches)
-    return churches.where('security >= 2') if no_access
     show_all = clean_filter(:show_all)
     show_tree = clean_filter(:show_tree)
     ministry_list = show_tree ? [filters[:ministry_id]] : Ministry.find(filters[:ministry_id]).tree_ids
@@ -36,10 +35,6 @@ class ChurchFilter
   end
 
   private
-
-  def no_access
-    !Ministy.find(filters[:ministry_id]).has_permission(current_user)
-  end
 
   def clean_filter(value)
     value = @filters[value] if value.is_a? Symbol
