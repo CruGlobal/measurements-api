@@ -6,6 +6,9 @@ class Person < ActiveRecord::Base
   has_many :user_measurement_states, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_preferences, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
 
+  has_many :assignments, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
+  has_many :ministries, through: :assignments
+
   # Map GR key_username to cas_username
   alias_attribute :key_username, :cas_username
 

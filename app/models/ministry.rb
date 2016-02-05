@@ -12,6 +12,9 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   has_one :parent, primary_key: :parent_id, foreign_key: :ministry_id, class_name: 'Ministry'
   belongs_to :children, primary_key: :ministry_id, foreign_key: :parent_id, class_name: 'Ministry'
 
+  has_many :assignments, foreign_key: :ministry_id, primary_key: :ministry_id, dependent: :destroy
+  has_many :people, through: :assignments
+
   auto_strip_attributes :name
 
   validates :name, presence: true
