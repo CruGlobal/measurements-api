@@ -14,7 +14,7 @@ module V5
       access_token = generate_access_token(st)
       store_service_ticket(st, access_token)
 
-      person = Person.find_or_initialize(access_token.key_guid)
+      person = Person.person(access_token.key_guid)
       api_error 'denied' and return unless person
 
       render json: TokenAndUser.new(access_token: access_token, person: person), serializer: V5::TokenAndUserSerializer

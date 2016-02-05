@@ -75,7 +75,7 @@ class Person < ActiveRecord::Base
     [:first_name, :last_name, :key_username, :authentication].concat(super)
   end
 
-  def self.find_or_initialize(guid, refresh = false)
+  def self.person(guid, refresh = false)
     person = find_by(cas_guid: guid)
     if person.nil? || refresh
       person = new(cas_guid: guid) if person.nil?
