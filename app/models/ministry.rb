@@ -17,7 +17,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   validates :name, presence: true
   validates :min_code, uniqueness: true, on: :create
   validates :default_mcc, inclusion: { in: Constants::MCCS, message: '\'%{value}\' is not a valid MCC' },
-                          unless: 'default_mcc.blank?'
+            unless: 'default_mcc.blank?'
 
   before_validation :generate_min_code, on: :create, if: 'ministry_id.blank?'
 
@@ -64,6 +64,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
     ministry
   end
+
   # rubocop:enable Metrics/CyclomaticComplexity
 
   # Global Registry Entity type
@@ -103,6 +104,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
       super
     end
   end
+
   # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
 
   # Set self attribute value from Global Registry Entity property and value
@@ -181,5 +183,10 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     return nil if ministry.nil?
     return ministry if Constants::SCOPES.include?(ministry.ministry_scope)
     parent_whq_ministry(ministry.parent)
+  end
+
+  # SO: I think we should put the logic of what roll you need to be able to interact with a ministry
+  def has_permission(_person)
+    true
   end
 end

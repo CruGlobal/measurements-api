@@ -14,6 +14,11 @@ module V5
       )
     end
 
+    def current_user
+      return nil unless @access_token
+      @current_user ||= Person.find_or_initialize(@access_token.key_guid)
+    end
+
     # cru_lib calls render_error, alias it to api_error
     alias render_error api_error
   end
