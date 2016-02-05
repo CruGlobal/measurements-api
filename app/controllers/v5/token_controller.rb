@@ -14,7 +14,7 @@ module V5
       access_token = generate_access_token(st)
       store_service_ticket(st, access_token)
 
-      person = Person.find_or_initialize(access_token.key_guid, true)
+      person = Person.find_or_initialize(access_token.key_guid)
       api_error 'denied' and return unless person
 
       render json: TokenAndUser.new(access_token: access_token, person: person), serializer: V5::TokenAndUserSerializer
@@ -36,12 +36,13 @@ module V5
 
     # Generate Access Token
     def generate_access_token(st)
-      CruLib::AccessToken.new(
-        key_guid: st.extra_attributes['ssoGuid'],
-        email: st.user,
-        first_name: st.extra_attributes['firstName'],
-        last_name: st.extra_attributes['lastName']
-      )
+      map = { guid: 'ssoGuid', email: 'email', key_guid: 'theKeyGuid',
+              relay_guid: '', first_name: 'firstName', last_name: 'lastName' }
+      attributes = {}
+      map.each do |k, v|
+        attributes[k] = st.extra_attributes[v] if st.extra_attributes.key?(v)
+      end
+      CruLib::AccessToken.new(attributes)
     end
 
     # Stores a Service Ticket to Access Token relationship
