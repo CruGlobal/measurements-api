@@ -23,6 +23,7 @@ module MeasurementsApi
       g.template_engine false
       g.stylesheets false
       g.javascripts false
+      g.fixture_replacement :factory_girl
     end
 
     config.middleware.insert_before 0, 'Rack::Cors' do

@@ -1,7 +1,7 @@
 class CreateChurches < ActiveRecord::Migration
   def change
     create_table :churches do |t|
-      t.string :chruch_id
+      t.string :church_id
       t.string :name
       t.float :long
       t.float :lat

@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20160203192517) do
   enable_extension "uuid-ossp"
 
   create_table "churches", force: :cascade do |t|
-    t.string   "chruch_id"
+    t.string   "church_id"
     t.string   "name"
     t.float    "long"
     t.float    "lat"
