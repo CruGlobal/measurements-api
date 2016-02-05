@@ -76,7 +76,7 @@ class Person < ActiveRecord::Base
   end
 
   def self.find_or_initialize(guid, refresh = false)
-    person = Person.find_by(cas_guid: guid)
+    person = find_by(cas_guid: guid)
     if person.nil? || refresh
       person = new(cas_guid: guid) if person.nil?
       entity = find_entity_by_key_guid guid
