@@ -76,7 +76,6 @@ module GlobalRegistry
       end
 
       # Find Entities in paged batches
-      # rubocop:disable Metrics/CyclomaticComplexity
       def find_entities_in_batches(params = {})
         fail 'block required' unless block_given?
         params['page'] = 1 unless params.key? 'page'
@@ -88,7 +87,6 @@ module GlobalRegistry
           params['page'] += 1
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
     end
   end
 end
