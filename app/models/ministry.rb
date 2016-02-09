@@ -159,6 +159,11 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def descendants_ids
+    # TODO: this is a stub for a list of ids of decedents
+    []
+  end
+
   protected
 
   # Filter to create Global Registry Entity before creating ActiveRecord entry

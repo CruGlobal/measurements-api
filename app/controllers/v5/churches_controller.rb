@@ -28,7 +28,7 @@ module V5
     end
 
     def save_note
-      render nothing: true, status: 201 if @church.save
+      render @church, status: 201 if @church.save
     end
 
     def church_params
