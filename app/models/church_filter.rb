@@ -1,6 +1,4 @@
 class ChurchFilter
-  attr_accessor :churches, :filters, :current_user
-
   def initialize(filters, current_user)
     # strip extra spaces from filters
     filters.each { |k, v| filters[k] = v.strip if v.is_a?(String) }
@@ -9,9 +7,9 @@ class ChurchFilter
   end
 
   def filter(churches)
-    @churches = filtered_churches = churches
-    filtered_churches = filter_tree_and_show_all(filtered_churches)
-    filter_by_development(filtered_churches)
+    filtered_churches = filter_tree_and_show_all(churches)
+    filtered_churches = filter_by_development(filtered_churches)
+    filter_by_lat_long(filtered_churches)
   end
 
   def filter_by_development(churches)
@@ -36,6 +34,17 @@ class ChurchFilter
     churches.where(query)
   end
 
+  def filter_by_lat_long(churches)
+    return churches if @filters[:lat_max].blank?
+    churches = churches.where(latitude: @filters[:lat_min]..@filters[:lat_max])
+
+    if @filters[:long_max] > @filters[:long_min]
+      churches.where(longitude: @filters[:long_min]..@filters[:long_max])
+    else
+      churches.where.not(longitude: @filters[:long_max]..@filters[:long_min])
+    end
+  end
+
   private
 
   # methods that tell us about the user and the ministry they are requesting
@@ -44,7 +53,7 @@ class ChurchFilter
   end
 
   def root_ministry
-    Ministry.find_by(ministry_id: filters[:ministry_id])
+    Ministry.find_by(ministry_id: @filters[:ministry_id])
   end
 
   def root_ministry_roll
@@ -78,7 +87,7 @@ class ChurchFilter
                    else
                      Church.securities['local_private_church']
                    end
-    table[:target_area_id].eq(filters[:ministry_id]).and(table[:security].gteq(secure_level))
+    table[:target_area_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
   end
 
   def table

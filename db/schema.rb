@@ -11,23 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203192517) do
+ActiveRecord::Schema.define(version: 20160210025854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
   create_table "churches", force: :cascade do |t|
-    t.string   "church_id"
     t.string   "name"
-    t.float    "long"
-    t.float    "lat"
+    t.float    "longitude"
+    t.float    "latitude"
     t.datetime "start_date"
     t.datetime "end_date"
     t.boolean  "jf_contrib"
     t.integer  "parent_id"
     t.integer  "target_area"
-    t.string   "target_area_id", limit: 36
     t.string   "contact_name"
     t.string   "contact_email"
     t.string   "contact_mobile"
@@ -35,9 +33,11 @@ ActiveRecord::Schema.define(version: 20160203192517) do
     t.integer  "development"
     t.integer  "size"
     t.integer  "security"
-    t.string   "created_by",     limit: 36
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.uuid     "church_id"
+    t.uuid     "target_area_id"
+    t.uuid     "created_by"
   end
 
   add_index "churches", ["parent_id"], name: "index_churches_on_parent_id", using: :btree
