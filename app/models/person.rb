@@ -6,7 +6,7 @@ class Person < ActiveRecord::Base
   has_many :user_measurement_states, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_preferences, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
 
-  has_many :assignments, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
+  has_many :assignments, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy, inverse_of: :ministry
   has_many :ministries, through: :assignments
 
   # Map GR key_username to cas_username
@@ -65,8 +65,15 @@ class Person < ActiveRecord::Base
   end
 
   def attribute_from_entity_property(property, value = nil)
-    self.person_id = value and return if property.eql? :id
-    super
+    case property.to_sym
+    when :id
+      self.person_id = value
+    when :authentication
+      auth = value.with_indifferent_access
+      self.cas_guid = auth[:key_guid] if auth.key? :key_guid
+    else
+      super
+    end
   end
 
   def self.entity_type
