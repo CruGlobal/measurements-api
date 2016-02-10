@@ -10,7 +10,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   }.freeze
 
   has_one :parent, primary_key: :parent_id, foreign_key: :ministry_id, class_name: 'Ministry'
-  belongs_to :children, primary_key: :ministry_id, foreign_key: :parent_id, class_name: 'Ministry'
+  has_many :children, primary_key: :ministry_id, foreign_key: :parent_id, class_name: 'Ministry'
 
   auto_strip_attributes :name
 
@@ -160,8 +160,9 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   end
 
   def descendants_ids
-    # TODO: this is a stub for a list of ids of decedents
-    []
+    children.map do |child|
+      child.descendants_ids.append child.ministry_id
+    end.flatten
   end
 
   protected

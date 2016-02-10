@@ -40,7 +40,7 @@ class ChurchFilter
 
   # methods that tell us about the user and the ministry they are requesting
   def ministry_list
-    clean_filter(:show_tree) ? [filters[:ministry_id]] : root_ministry.descendants_ids
+    root_ministry.descendants_ids
   end
 
   def root_ministry
