@@ -1,4 +1,4 @@
-class Person < ActiveRecord::Base
+class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   include GlobalRegistry::EntityMethods
 
   has_many :user_content_locales, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
@@ -97,13 +97,27 @@ class Person < ActiveRecord::Base
     person
   end
 
+  def self.person_for_username(username, refresh = true)
+    person = find_by(cas_username: username)
+    if person.nil? || refresh
+      person = new if person.nil?
+      entity = find_entity_by(
+        entity_type: entity_type,
+        fields: 'first_name,last_name,key_username,authentication.key_guid',
+        'filters[key_username]': username
+      )
+      return if entity.nil?
+      person.from_entity entity
+      person.save
+    end
+    person
+  end
+
   def self.find_entity_by_key_guid(guid)
-    results = GlobalRegistry::Entity.get(
-      entity_type: 'person',
+    find_entity_by(
+      entity_type: entity_type,
       fields: 'first_name,last_name,key_username,authentication.key_guid',
       'filters[authentication][key_guid]': guid
-    )['entities']
-    return nil unless results[0] && results[0]['person']
-    results[0].with_indifferent_access
+    )
   end
 end

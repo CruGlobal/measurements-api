@@ -13,7 +13,7 @@ module GlobalRegistry
     def update_from_entity(params = {})
       return if attribute_to_entity_property(:id).nil?
       # TODO: Handle exceptions
-      from_entity self.class.find_entity_by(attribute_to_entity_property(:id), params)
+      from_entity self.class.find_entity(attribute_to_entity_property(:id), params)
     end
 
     def update_entity(_params = {})
@@ -59,9 +59,15 @@ module GlobalRegistry
         # TODO: implement
       end
 
-      def find_entity_by(id, params = {})
+      def find_entity(id, params = {})
         response = GlobalRegistry::Entity.find(id, params)
         response['entity'].with_indifferent_access if response.key?('entity')
+      end
+
+      def find_entity_by(params = {})
+        results = GlobalRegistry::Entity.get(params)['entities']
+        return nil unless results[0] && results[0]
+        results[0].with_indifferent_access
       end
 
       # Find Entities (internally uses find_entities_in_batches)
