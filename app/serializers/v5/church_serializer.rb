@@ -1,0 +1,31 @@
+module V5
+  class ChurchSerializer < ActiveModel::Serializer
+    attributes :name, :latitude, :longitude, :jf_contrib, :cluster_count, :id, :gr_id, :development,
+               :ministry_id, :contact_email, :contact_name, :contact_mobile, :start_date, :size,
+               :parents, :security, :created_by, :created_by_email, :child_count
+
+    def jf_contrib
+      object.jf_contrib ? 1 : 0
+    end
+
+    def cluster_count
+      0
+    end
+
+    def child_count
+      object.children.count
+    end
+
+    def development
+      object[:development]
+    end
+
+    def security
+      object[:security]
+    end
+
+    def parents
+      [object.parent.try(:id)]
+    end
+  end
+end

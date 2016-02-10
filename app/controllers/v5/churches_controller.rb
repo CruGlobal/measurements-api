@@ -41,7 +41,7 @@ module V5
     end
 
     def filtered_churches
-      ChurchFilters.new(params, current_user).filter(church_scope)
+      ::ChurchFilter.new(params, current_user).filter(church_scope)
     end
   end
 end
