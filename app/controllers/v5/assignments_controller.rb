@@ -9,7 +9,7 @@ module V5
 
     def show
       load_assignment
-      render_assignment
+      render_assignment or api_error('Invalid assignment ID')
     end
 
     def create
@@ -54,7 +54,7 @@ module V5
 
     def render_assignment(status = nil)
       status ||= :ok
-      render json: @assignment, status: status
+      render json: @assignment, status: status, serializer: V5::AssignmentSerializer if @assignment
     end
 
     def render_assignments
