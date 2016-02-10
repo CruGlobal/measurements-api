@@ -16,10 +16,18 @@ module V5
 
     def current_user
       return nil unless @access_token
-      @current_user ||= Person.find_or_initialize(@access_token.key_guid)
+      @current_user ||= Person.person(@access_token.key_guid)
     end
 
     # cru_lib calls render_error, alias it to api_error
     alias render_error api_error
+
+    def post_params
+      ::ActionController::Parameters.new(request.request_parameters)
+    end
+
+    def get_params # rubocop:disable Style/AccessorMethodName
+      ::ActionController::Parameters.new(request.query_parameters)
+    end
   end
 end
