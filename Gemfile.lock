@@ -295,6 +295,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers!
+  arel
   auto_strip_attributes (~> 2.0)
   awesome_print
   coveralls

@@ -10,7 +10,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   }.freeze
 
   has_one :parent, primary_key: :parent_id, foreign_key: :ministry_id, class_name: 'Ministry'
-  belongs_to :children, primary_key: :ministry_id, foreign_key: :parent_id, class_name: 'Ministry'
+  has_many :children, primary_key: :ministry_id, foreign_key: :parent_id, class_name: 'Ministry'
 
   has_many :assignments, foreign_key: :ministry_id, primary_key: :ministry_id, dependent: :destroy, inverse_of: :person
   has_many :people, through: :assignments
@@ -56,7 +56,6 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   end
 
   # Find Ministry by ministry_id, update from Global Registry if nil or refresh is true
-  # rubocop:disable Metrics/CyclomaticComplexity
   def self.ministry(ministry_id, refresh = false)
     ministry = find_by_ministry_id ministry_id
     if ministry.nil? || refresh
@@ -67,8 +66,6 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
     ministry
   end
-
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Global Registry Entity type
   def self.entity_type
@@ -163,6 +160,12 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     ) do |entity|
       yield entity
     end
+  end
+
+  def descendants_ids
+    children.map do |child|
+      child.descendants_ids.append child.ministry_id
+    end.flatten
   end
 
   protected

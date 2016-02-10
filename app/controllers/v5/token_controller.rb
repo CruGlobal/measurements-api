@@ -4,7 +4,6 @@ module V5
 
     before_action :authenticate_request, except: [:index]
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     def index
       api_error "You must pass in a service ticket ('st' parameter)" and return if params[:st].blank?
 
@@ -19,7 +18,6 @@ module V5
 
       render json: TokenAndUser.new(access_token: access_token, person: person), serializer: V5::TokenAndUserSerializer
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
     def destroy
       CruLib::AccessToken.del(@access_token.token)

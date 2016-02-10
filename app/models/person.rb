@@ -24,7 +24,6 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def add_or_update_map_views(value)
     user_map_views.clear and return if value.nil?
     value.each do |view|
@@ -38,7 +37,6 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
       map_view.save
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def add_or_update_measurement_states(value)
     user_measurement_states.clear and return if value.nil?
