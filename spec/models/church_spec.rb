@@ -1,5 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Church, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Church, type: :model do
+  describe 'created_by relationship' do
+    let(:person) { Person.new(person_id: SecureRandom.uuid) }
+  end
 end
