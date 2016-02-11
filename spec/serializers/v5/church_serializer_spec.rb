@@ -32,5 +32,11 @@ describe V5::ChurchSerializer do
       expect(hash[:size]).to eq resource.size
       expect(hash[:security]).to be 2
     end
+
+    it 'points to parent inside cluster' do
+      resource.parent_cluster_id = resource.id + 2
+
+      expect(hash[:parents]).to eq [resource.id + 2]
+    end
   end
 end

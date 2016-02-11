@@ -1,9 +1,9 @@
 module V5
-  class ChurchArraySerializer < ActiveModel::Serializer::CollectionSerializer
+  class ChurchArraySerializer
     def self.serializer_for(resource)
       if resource.is_a? Church
         ChurchSerializer
-      else
+      else # its an Array
         ChurchClusterSerializer
       end
     end

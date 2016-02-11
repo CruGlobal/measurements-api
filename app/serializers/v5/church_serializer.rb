@@ -25,7 +25,7 @@ module V5
     end
 
     def parents
-      [object.parent.try(:id)]
+      [object.parent_cluster_id || object.parent.try(:id)]
     end
   end
 end

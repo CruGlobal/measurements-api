@@ -4,6 +4,8 @@ class Church < ActiveRecord::Base
 
   belongs_to :created_by, class_name: 'Person'
 
+  attr_accessor :parent_cluster_id
+
   before_save :default_values
   def default_values
     self.development ||= 1

@@ -43,7 +43,9 @@ module V5
     end
 
     def filtered_churches
-      ::ChurchFilter.new(params, current_user).filter(church_scope)
+      churches = ::ChurchFilter.new(params, current_user).filter(church_scope)
+      return churches unless params[:long_min]
+      ::ChurchClusterer.new(params).cluster(churches)
     end
   end
 end
