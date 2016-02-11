@@ -3,7 +3,7 @@ module V5
     include CruLib::AccessTokenProtectedConcern
 
     def index
-      render json: filtered_churches
+      render json: filtered_churches, serializer_context_class: V5::ChurchArraySerializer
     end
 
     def create
