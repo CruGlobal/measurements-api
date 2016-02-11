@@ -1,6 +1,8 @@
 module V5
   class ChurchesController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
+    include V5::AccessTokenProtectedConcern
+
+    before_action :authenticate_request
 
     def index
       render json: filtered_churches, serializer_context_class: V5::ChurchArraySerializer

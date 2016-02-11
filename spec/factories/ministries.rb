@@ -12,6 +12,6 @@ FactoryGirl.define do
     lmi_show []
     lmi_hide []
     hide_reports_tab { [true, false].sample }
-    ministry_scope { Constants::SCOPES.sample }
+    ministry_scope { [Constants::SCOPES.sample, nil].sample }
   end
 end
