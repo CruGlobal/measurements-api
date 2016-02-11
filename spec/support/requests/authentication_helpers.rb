@@ -1,9 +1,9 @@
 module Requests
   module AuthenticationHelpers
-    def authenticated_user
-      person = FactoryGirl.create(:person)
+    def authenticate_person(person = nil)
+      person = FactoryGirl.create(:person) if person.nil?
       access_token = CruLib::AccessToken.new(key_guid: person.cas_guid)
-      return access_token.token, person
+      access_token.token
     end
   end
 end

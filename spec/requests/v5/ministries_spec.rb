@@ -12,12 +12,23 @@ RSpec.describe 'V5::Ministries', type: :request do
     end
 
     it 'responds with all ministries' do
-      token, _person = authenticated_user
-      get '/v5/ministries', nil, {'HTTP_AUTHORIZATION': "Bearer #{token}"}
+      get '/v5/ministries', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
       json = JSON.parse(response.body)
 
       expect(response).to be_success
       expect(json.length).to be ministries.length
+      ministry = json.sample
+      expect(ministry.keys).to contain_exactly('ministry_id', 'name')
+    end
+
+    context 'with refresh=true' do
+      it 'responds with HTTP 202 Accepted' do
+        # expect {
+        get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        expect(response).to be_success
+        expect(response).to have_http_status(202)
+        # }.to change(GlobalRegistry::SyncMinistriesWorker.jobs, :size).by(1)
+      end
     end
   end
 end

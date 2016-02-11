@@ -131,6 +131,7 @@ GEM
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
+    mock_redis (0.16.0)
     multi_json (1.11.2)
     nenv (0.2.0)
     newrelic_rpm (3.14.1.311)
@@ -221,6 +222,9 @@ GEM
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
+    rspec-sidekiq (2.2.0)
+      rspec (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.4.1)
     rubocop (0.36.0)
       parser (>= 2.3.0.0, < 3.0)
@@ -306,6 +310,7 @@ DEPENDENCIES
   guard-rspec
   guard-rubocop
   http_logger
+  mock_redis
   newrelic_rpm
   oj
   oj_mimic_json
@@ -318,6 +323,7 @@ DEPENDENCIES
   redis-namespace
   rollbar
   rspec-rails
+  rspec-sidekiq
   rubocop
   rubycas-client-rails
   shoulda

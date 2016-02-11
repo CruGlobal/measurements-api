@@ -38,10 +38,12 @@ end
 
 group :test do
   gem 'webmock'
+  gem 'rspec-sidekiq'
   gem 'simplecov', require: false
   gem 'factory_girl_rails'
   gem 'shoulda', require: false
   gem 'rubocop'
+  gem 'mock_redis'
   gem 'fakeredis', :require => 'fakeredis/rspec'
   gem 'coveralls', require: false
 end

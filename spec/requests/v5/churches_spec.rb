@@ -7,8 +7,8 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     it 'responds with session_ticket' do
-      token, _person = authenticated_user
-      get '/v5/churches', { show_all: true, ministy_id: SecureRandom.uuid }, { 'HTTP_AUTHORIZATION': "Bearer #{token}" }
+      get '/v5/churches', { show_all: true, ministy_id: SecureRandom.uuid },
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
       json = JSON.parse(response.body)
 
       expect(response).to be_success
