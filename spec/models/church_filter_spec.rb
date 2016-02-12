@@ -111,4 +111,22 @@ RSpec.describe ChurchFilter, type: :model do
       expect(filtered).to_not include church2
     end
   end
+
+  context 'filter by period' do
+    before do
+      # hasn't started yet
+      parent_church.update(start_date: 1.year.from_now)
+      # already ended
+      child_church.update(end_date: 1.month.ago)
+    end
+    let!(:church2) { FactoryGirl.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now) }
+    let(:filters) { { show_all: '1', period: Time.zone.today.strftime('%Y-%m') } }
+    let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
+
+    it 'filters out churches' do
+      expect(filtered).to_not include child_church
+      expect(filtered).to_not include parent_church
+      expect(filtered).to include church2
+    end
+  end
 end

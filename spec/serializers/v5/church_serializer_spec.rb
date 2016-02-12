@@ -38,5 +38,28 @@ describe V5::ChurchSerializer do
 
       expect(hash[:parents]).to eq [resource.id + 2]
     end
+
+    describe 'when using period' do
+      let(:serializer) { V5::ChurchSerializer.new(resource, scope: { period: '2012-08' }) }
+      let!(:church_value) do
+        resource.church_values.create(period: '2013-01', size: 10,
+                                      development: resource[:development] + 1)
+      end
+      context 'has no past values' do
+        it 'returns normal value' do
+          expect(hash[:development]).to be resource[:development]
+        end
+      end
+      context 'has past values' do
+        before do
+          church_value.update(period: '2012-07')
+          resource.church_values.create(period: '2012-01', size: 1, development: resource[:development])
+          resource.church_values.create(period: '2013-01', size: 1, development: resource[:development])
+        end
+        it 'returns past value' do
+          expect(hash[:development]).to be church_value.development
+        end
+      end
+    end
   end
 end

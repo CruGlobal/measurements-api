@@ -6,7 +6,7 @@ RSpec.describe 'V5::Churches', type: :request do
       FactoryGirl.create(:church)
     end
 
-    it 'responds with session_ticket' do
+    it 'responds with churches' do
       get '/v5/churches', { show_all: true, ministy_id: SecureRandom.uuid },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
       json = JSON.parse(response.body)

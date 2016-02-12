@@ -5,7 +5,9 @@ module V5
     before_action :authenticate_request
 
     def index
-      render json: filtered_churches, serializer_context_class: V5::ChurchArraySerializer
+      render json: filtered_churches,
+             serializer_context_class: V5::ChurchArraySerializer,
+             scope: { period: params[:period] }
     end
 
     def create
@@ -43,6 +45,7 @@ module V5
     end
 
     def filtered_churches
+      params[:period] ||= Time.zone.today.strftime('%Y-%m')
       churches = ::ChurchFilter.new(params, current_user).filter(church_scope)
       return churches unless params[:long_min]
       ::ChurchClusterer.new(params).cluster(churches)

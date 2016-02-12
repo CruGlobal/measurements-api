@@ -17,7 +17,11 @@ module V5
     end
 
     def development
-      object[:development]
+      if scope && scope[:period]
+        object.value_at(scope[:period])[:development]
+      else
+        object[:development]
+      end
     end
 
     def security

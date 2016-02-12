@@ -9,7 +9,8 @@ class ChurchFilter
   def filter(churches)
     filtered_churches = filter_tree_and_show_all(churches)
     filtered_churches = filter_by_development(filtered_churches)
-    filter_by_lat_long(filtered_churches)
+    filtered_churches = filter_by_lat_long(filtered_churches)
+    filter_by_period(filtered_churches)
   end
 
   def filter_by_development(churches)
@@ -43,6 +44,16 @@ class ChurchFilter
     else
       churches.where.not(longitude: @filters[:long_max]..@filters[:long_min])
     end
+  end
+
+  def filter_by_period(churches)
+    return churches if @filters[:period].blank?
+    begin
+      period_date = Date.parse @filters[:period]
+    rescue ArgumentError
+      period_date = Date.parse("#{@filters[:period]}-01")
+    end
+    churches.where('start_date <= ?', period_date.end_of_month).where('end_date > ?', period_date)
   end
 
   private
