@@ -53,8 +53,4 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
-
-  config.before(:each) do
-    Sidekiq::Worker.clear_all
-  end
 end

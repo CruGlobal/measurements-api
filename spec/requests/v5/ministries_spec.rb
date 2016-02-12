@@ -23,11 +23,12 @@ RSpec.describe 'V5::Ministries', type: :request do
 
     context 'with refresh=true' do
       it 'responds with HTTP 202 Accepted' do
-        # expect {
-        get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
-        expect(response).to be_success
-        expect(response).to have_http_status(202)
-        # }.to change(GlobalRegistry::SyncMinistriesWorker.jobs, :size).by(1)
+        clear_uniqueness_locks
+        expect do
+          get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          expect(response).to be_success
+          expect(response).to have_http_status(202)
+        end.to change(GlobalRegistry::SyncMinistriesWorker.jobs, :size).by(1)
       end
     end
   end
