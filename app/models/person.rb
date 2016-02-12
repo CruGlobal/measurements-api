@@ -95,7 +95,7 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     person
   end
 
-  def self.person_for_username(username, refresh = true)
+  def self.person_for_username(username, refresh = false)
     person = find_by(cas_username: username)
     if person.nil? || refresh
       person = new if person.nil?
