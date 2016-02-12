@@ -42,6 +42,7 @@ group :test do
   gem 'simplecov', require: false
   gem 'factory_girl_rails'
   gem 'shoulda', require: false
+  gem 'rspec-json_expectations', require: 'rspec/json_expectations'
   gem 'rubocop'
   gem 'mock_redis'
   gem 'fakeredis', :require => 'fakeredis/rspec'

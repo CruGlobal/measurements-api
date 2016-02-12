@@ -28,4 +28,5 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include AuthenticationHelpers
+  config.include GlobalRegistryHelpers
 end
