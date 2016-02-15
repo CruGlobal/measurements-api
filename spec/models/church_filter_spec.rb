@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ChurchFilter, type: :model do
-  let(:user) { Person.new(first_name: 'Test', last_name: 'User') }
-  let(:ministry) { Ministry.create(name: 'asdf', ministry_id: SecureRandom.uuid, min_code: 'test') }
+  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryGirl.create(:ministry) }
+  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let!(:parent_church) do
     FactoryGirl.create(:church, target_area_id: ministry.ministry_id,
                                 development: 2, latitude: -10, longitude: 10)
@@ -54,12 +55,10 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by show tree' do
-    let!(:child_ministry) do
-      Ministry.create(name: 'asdf2', ministry_id: SecureRandom.uuid, min_code: 'test2',
-                      parent_id: ministry.ministry_id)
-    end
+    let!(:child_ministry) { FactoryGirl.create(:ministry, parent_id: ministry.ministry_id) }
     let!(:church2) do
-      FactoryGirl.create(:church, target_area_id: child_ministry.ministry_id)
+      FactoryGirl.create(:church, target_area_id: child_ministry.ministry_id,
+                                  security: Church.securities['private_church'])
     end
     let!(:local_private_church) do
       FactoryGirl.create(:church, target_area_id: child_ministry.ministry_id,
@@ -68,22 +67,32 @@ RSpec.describe ChurchFilter, type: :model do
     let(:filters) { { ministry_id: ministry.ministry_id, show_tree: '1' } }
     let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
 
-    it 'includes child churches' do
-      expect(filtered).to include church2
+    context 'as admin user' do
+      it 'includes child churches' do
+        expect(filtered).to include church2
+      end
+
+      it "doesn't include local_private churches" do
+        expect(filtered).to_not include local_private_church
+      end
+
+      it "doesn't include child churches" do
+        filters[:show_tree] = '0'
+
+        expect(filtered).to_not include church2
+      end
     end
 
-    it "doesn't include private churches" do
-      expect(filtered).to_not include local_private_church
-    end
+    context 'as unknown user' do
+      it "doesn't include private child churches" do
+        user.assignments.first.update(role: 0)
 
-    it "doesn't include child churches" do
-      filters[:show_tree] = '0'
-
-      expect(filtered).to_not include church2
+        expect(filtered).to_not include church2
+      end
     end
   end
 
-  context 'filter by show tree' do
+  context 'filter by lat/long' do
     let!(:church2) do
       FactoryGirl.create(:church, target_area_id: ministry.ministry_id, latitude: 10, longitude: 40)
     end

@@ -24,11 +24,12 @@ class ChurchFilter
 
   def filter_tree_and_show_all(churches)
     unless user_approved
-      churches = churches.where(public) if clean_filter(:show_al)
-      return churches
+      return churches.where(public) if clean_filter(:show_all)
+      return Church.none
     end
 
-    # this code was built off this example: https://robots.thoughtbot.com/using-arel-to-compose-sql-queries
+    # this code was built off this example:
+    # https://robots.thoughtbot.com/using-arel-to-compose-sql-queries
     query = local_security
     query = query.or(in_tree(ministry_list)) if clean_filter(:show_tree)
     query = query.or(public) if clean_filter(:show_all)
@@ -67,14 +68,14 @@ class ChurchFilter
     Ministry.find_by(ministry_id: @filters[:ministry_id])
   end
 
-  def root_ministry_roll
-    # stub method for what a user's roll is on the current ministry
-    'admin'
+  def root_ministry_assignment
+    return unless root_ministry
+    @root_ministry_assignment ||= root_ministry.assignments.find_by(person: @current_user)
   end
 
   def user_approved
-    # root_ministry.assignment_of(current_user).approved?
-    true
+    return false unless root_ministry
+    root_ministry_assignment.present? && root_ministry_assignment.approved?
   end
 
   # convert stings like '1' to booleans
@@ -93,7 +94,7 @@ class ChurchFilter
   end
 
   def local_security
-    secure_level = if root_ministry_roll.start_with?('inherited_')
+    secure_level = if root_ministry_assignment.role.start_with?('inherited_')
                      Church.securities['private_church']
                    else
                      Church.securities['local_private_church']

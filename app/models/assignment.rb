@@ -12,4 +12,8 @@ class Assignment < ActiveRecord::Base
   alias_attribute :team_role, :role
   validates :role, presence: true
   validates :role, inclusion: { in: roles, message: '\'%{value}\' is not a valid Team Role' }
+
+  def approved?
+    %w(leader inherited_leader admin inherited_admin member).include? role
+  end
 end
