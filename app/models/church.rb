@@ -16,6 +16,9 @@ class Church < ActiveRecord::Base
   alias_attribute :ministry_id, :target_area_id
   alias_attribute :gr_id, :church_id
 
+  validates :latitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
+  validates :longitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
+
   def created_by_email
     created_by.try(:cas_username)
   end

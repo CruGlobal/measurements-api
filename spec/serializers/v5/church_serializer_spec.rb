@@ -6,7 +6,8 @@ describe V5::ChurchSerializer do
       @p = FactoryGirl.create(:church, name: 'parent church')
       c = FactoryGirl.create(:church, name: 'churchy kind of name', jf_contrib: true,
                                       target_area_id: SecureRandom.uuid, start_date: '2012-06-08',
-                                      parent_id: @p.id)
+                                      parent_id: @p.id, contact_name: 'doesnt matter',
+                                      contact_email: 'what', contact_mobile: 'unvalidated string')
       FactoryGirl.create(:church, name: 'child church', parent_id: c.id)
       c
     end
@@ -25,9 +26,9 @@ describe V5::ChurchSerializer do
       expect(hash[:cluster_count]).to be_a Integer
       expect(hash[:child_count]).to be 1
       expect(hash[:parents]).to eq [@p.id]
-      # expect(hash[:contact_email]).to_not be_nil
-      # expect(hash[:contact_name]).to_not be_nil
-      # expect(hash[:contact_mobile]).to_not be_nil
+      expect(hash[:contact_email]).to_not be_nil
+      expect(hash[:contact_name]).to_not be_nil
+      expect(hash[:contact_mobile]).to_not be_nil
       expect(hash[:start_date]).to eq '2012-06-08'
       expect(hash[:size]).to eq resource.size
       expect(hash[:security]).to be 2
