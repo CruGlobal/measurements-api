@@ -1,5 +1,5 @@
 module GlobalRegistryHelpers
-  def gr_stub_person_request_by_username(person = nil)
+  def gr_person_request_by_username(person = nil)
     person ||= FactoryGirl.create(:person)
     response = { person: { id: person.person_id, last_name: person.last_name, first_name: person.first_name,
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
@@ -12,7 +12,7 @@ module GlobalRegistryHelpers
       .to_return(status: 200, body: { entities: [response] }.to_json, headers: {})
   end
 
-  def gr_stub_person_request_by_guid(person = nil)
+  def gr_person_request_by_guid(person = nil)
     person ||= FactoryGirl.create(:person)
     response = { person: { id: person.person_id, last_name: person.last_name, first_name: person.first_name,
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
