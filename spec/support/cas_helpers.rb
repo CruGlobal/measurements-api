@@ -2,8 +2,14 @@ module CASHelpers
   def validate_ticket_request(person, ticket = nil)
     person ||= FactoryGirl.build(:person)
     ticket ||= 'asdf'
-    response =
-      %(
+    WebMock
+      .stub_request(:get, "#{ENV['CAS_BASE_URL']}/proxyValidate")
+      .with(query: { service: 'http://www.example.com/v5/token', ticket: ticket })
+      .to_return(status: 200, body: validate_ticket_response(person))
+  end
+
+  def validate_ticket_response(person)
+    %(
         <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
           <cas:authenticationSuccess>
             <cas:user>#{person.cas_username}</cas:user>
@@ -18,9 +24,5 @@ module CASHelpers
           </cas:authenticationSuccess>
         </cas:serviceResponse>
       )
-    WebMock
-      .stub_request(:get, "#{ENV['CAS_BASE_URL']}/proxyValidate")
-      .with(query: { service: 'http://www.example.com/v5/token', ticket: ticket })
-      .to_return(status: 200, body: response)
   end
 end
