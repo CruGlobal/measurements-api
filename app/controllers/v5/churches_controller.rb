@@ -1,5 +1,5 @@
 module V5
-  class ChurchesController < V5::BaseController
+  class ChurchesController < V5::BaseUserController
     def index
       render json: filtered_churches,
              serializer_context_class: V5::ChurchArraySerializer,

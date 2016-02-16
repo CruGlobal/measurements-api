@@ -1,7 +1,5 @@
 module V5
-  class TrainingController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
-
+  class TrainingController < V5::BaseUserController
     def index
     end
 

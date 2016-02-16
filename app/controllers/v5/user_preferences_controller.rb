@@ -1,9 +1,5 @@
 module V5
-  class UserPreferencesController < V5::BaseController
-    include V5::AccessTokenProtectedConcern
-
-    before_action :authenticate_request
-
+  class UserPreferencesController < V5::BaseUserController
     def index
       person = Person.find_or_initialize(@access_token.key_guid)
       api_error('Invalid User') unless person

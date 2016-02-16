@@ -1,7 +1,5 @@
 module V5
-  class AssignmentsController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
-
+  class AssignmentsController < V5::BaseUserController
     def index
       load_assignments
       render_assignments

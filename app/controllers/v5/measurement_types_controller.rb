@@ -1,7 +1,5 @@
 module V5
-  class MeasurementTypesController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
-
+  class MeasurementTypesController < V5::BaseUserController
     def index
     end
 

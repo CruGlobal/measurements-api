@@ -1,9 +1,5 @@
 module V5
-  class MinistriesController < V5::BaseController
-    include V5::AccessTokenProtectedConcern
-
-    before_action :authenticate_request
-
+  class MinistriesController < V5::BaseUserController
     def index
       if params.key?(:refresh) && params[:refresh] == 'true'
         GlobalRegistry::SyncMinistriesWorker.perform_async

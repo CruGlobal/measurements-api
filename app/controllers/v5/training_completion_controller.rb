@@ -1,6 +1,5 @@
 module V5
-  class TrainingCompletionController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
+  class TrainingCompletionController < V5::BaseUserController
     def create
     end
 

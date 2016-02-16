@@ -1,7 +1,5 @@
 module V5
-  class TargetCitiesController < V5::BaseController
-    include CruLib::AccessTokenProtectedConcern
-
+  class TargetCitiesController < V5::BaseUserController
     def index
     end
 

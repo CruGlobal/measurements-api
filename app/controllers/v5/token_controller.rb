@@ -1,7 +1,5 @@
 module V5
-  class TokenController < V5::BaseController
-    include V5::AccessTokenProtectedConcern
-
+  class TokenController < V5::BaseUserController
     before_action :authenticate_request, except: [:index]
 
     def index
