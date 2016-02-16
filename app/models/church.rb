@@ -43,6 +43,6 @@ class Church < ActiveRecord::Base
 
   def default_values
     self.development ||= 1
-    self.security ||= 2
+    self.security ||= :public_church
   end
 end

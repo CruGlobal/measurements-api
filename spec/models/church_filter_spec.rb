@@ -3,7 +3,11 @@ require 'rails_helper'
 RSpec.describe ChurchFilter, type: :model do
   let(:user) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry) }
-  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+  let!(:assignment) do
+    a = FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7)
+    Power.current = Power.new(user, ministry)
+    a
+  end
   let!(:parent_church) do
     FactoryGirl.create(:church, target_area: ministry,
                                 development: 2, latitude: -10, longitude: 10)
@@ -16,7 +20,7 @@ RSpec.describe ChurchFilter, type: :model do
   context 'filter by development' do
     it 'shows all' do
       filters = { hide_church: 'false', show_all: '1', ministry_id: ministry.ministry_id }
-      filtered = ChurchFilter.new(filters, user).filter(Church.all)
+      filtered = ChurchFilter.new(filters).filter(Church.all)
 
       expect(filtered).to include parent_church
       expect(filtered).to include child_church
@@ -24,7 +28,7 @@ RSpec.describe ChurchFilter, type: :model do
 
     it 'filters correctly' do
       filters = { hide_group: '1', hide_church: '1', show_all: '1', ministry_id: ministry.ministry_id }
-      filtered = ChurchFilter.new(filters, user).filter(Church.all)
+      filtered = ChurchFilter.new(filters).filter(Church.all)
 
       expect(filtered).to_not include parent_church
       expect(filtered).to_not include child_church
@@ -39,14 +43,14 @@ RSpec.describe ChurchFilter, type: :model do
 
     it 'includes public churches' do
       filters = { show_all: '1', ministry_id: ministry.ministry_id }
-      filtered = ChurchFilter.new(filters, user).filter(Church.all)
+      filtered = ChurchFilter.new(filters).filter(Church.all)
 
       expect(filtered).to include unrelated_pub_church
       expect(filtered).to_not include unrelated_private_church
     end
     it "doesn't include public churches" do
       filters = { show_all: '0', ministry_id: ministry.ministry_id }
-      filtered = ChurchFilter.new(filters, user).filter(Church.all)
+      filtered = ChurchFilter.new(filters).filter(Church.all)
 
       expect(filtered).to_not include unrelated_pub_church
       expect(filtered).to_not include unrelated_private_church
@@ -64,7 +68,7 @@ RSpec.describe ChurchFilter, type: :model do
                                   security: Church.securities['local_private_church'])
     end
     let(:filters) { { ministry_id: ministry.ministry_id, show_tree: '1' } }
-    let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
+    let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
 
     context 'as admin user' do
       it 'includes child churches' do
@@ -85,6 +89,7 @@ RSpec.describe ChurchFilter, type: :model do
     context 'as unknown user' do
       it "doesn't include private child churches" do
         user.assignments.first.update(role: 0)
+        Power.current = Power.new(user, ministry)
 
         expect(filtered).to_not include church2
       end
@@ -100,7 +105,7 @@ RSpec.describe ChurchFilter, type: :model do
       { ministry_id: ministry.ministry_id, show_all: '1',
         lat_min: 0, lat_max: 10, long_min: 0, long_max: 30 }
     end
-    let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
+    let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
 
     it 'filters out churches' do
       expect(filtered).to include child_church
@@ -132,7 +137,7 @@ RSpec.describe ChurchFilter, type: :model do
                                   target_area: ministry)
     end
     let(:filters) { { show_all: '1', period: Time.zone.today.strftime('%Y-%m') } }
-    let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
+    let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
 
     it 'filters out churches' do
       expect(filtered).to_not include child_church

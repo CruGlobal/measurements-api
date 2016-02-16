@@ -1,9 +1,8 @@
 class ChurchFilter
-  def initialize(filters, current_user)
+  def initialize(filters)
     # strip extra spaces from filters
     filters.each { |k, v| filters[k] = v.strip if v.is_a?(String) }
     @filters = filters
-    @current_user = current_user
   end
 
   def filter(churches)
@@ -23,7 +22,7 @@ class ChurchFilter
   end
 
   def filter_tree_and_show_all(churches)
-    unless user_approved
+    unless Power.current.role_approved
       return churches.where(public) if clean_filter(:show_all)
       return Church.none
     end
@@ -68,14 +67,8 @@ class ChurchFilter
     Ministry.find_by(ministry_id: @filters[:ministry_id])
   end
 
-  def root_ministry_assignment
-    return unless root_ministry
-    @root_ministry_assignment ||= root_ministry.assignments.find_by(person: @current_user)
-  end
-
   def user_approved
     return false unless root_ministry
-    root_ministry_assignment.present? && root_ministry_assignment.approved?
   end
 
   # convert stings like '1' to booleans
@@ -94,11 +87,7 @@ class ChurchFilter
   end
 
   def local_security
-    secure_level = if root_ministry_assignment.role.start_with?('inherited_')
-                     Church.securities['private_church']
-                   else
-                     Church.securities['local_private_church']
-                   end
+    secure_level = Power.current.visiable_local_churches_security
     table[:target_area_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
   end
 

@@ -12,4 +12,8 @@ class Power
   power :assignments do
     nil
   end
+
+  power :role_approved do
+    @assignment.present? && @assignment.approved?
+  end
 end
