@@ -2,13 +2,14 @@ require 'rails_helper'
 
 describe V5::ChurchSerializer do
   describe 'single church' do
+    let(:ministry) { FactoryGirl.build(:ministry) }
     let(:resource) do
-      @p = FactoryGirl.create(:church, name: 'parent church')
+      @p = FactoryGirl.create(:church, name: 'parent church', target_area: ministry)
       c = FactoryGirl.create(:church, name: 'churchy kind of name', jf_contrib: true,
-                                      target_area_id: SecureRandom.uuid, start_date: '2012-06-08',
-                                      parent_id: @p.id, contact_name: 'doesnt matter',
-                                      contact_email: 'what', contact_mobile: 'unvalidated string')
-      FactoryGirl.create(:church, name: 'child church', parent_id: c.id)
+                                      target_area: ministry, start_date: '2012-06-08', parent: @p,
+                                      contact_name: 'doesnt matter', contact_email: 'what',
+                                      contact_mobile: 'unvalidated string')
+      FactoryGirl.create(:church, name: 'child church', parent: c, target_area: ministry)
       c
     end
     let(:serializer) { V5::ChurchSerializer.new(resource) }

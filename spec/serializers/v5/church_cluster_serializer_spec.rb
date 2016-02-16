@@ -2,12 +2,11 @@ require 'rails_helper'
 
 describe V5::ChurchSerializer do
   describe 'cluster of churchs' do
+    let(:ministry) { FactoryGirl.build(:ministry) }
     let(:resource) do
-      @p = FactoryGirl.create(:church, name: 'parent church')
-      c = FactoryGirl.create(:church, name: 'churchy kind of name', jf_contrib: true,
-                                      target_area_id: SecureRandom.uuid, start_date: '2012-06-08',
-                                      parent_id: @p.id)
-      [@p, c, FactoryGirl.create(:church, name: 'child church', parent_id: c.id)]
+      @p = FactoryGirl.create(:church, target_area: ministry)
+      c = FactoryGirl.create(:church, jf_contrib: true, target_area: ministry, parent: @p)
+      [@p, c, FactoryGirl.create(:church, parent: c, target_area: ministry)]
     end
     let(:serializer) { V5::ChurchClusterSerializer.new(resource) }
     let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }

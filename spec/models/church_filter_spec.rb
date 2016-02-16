@@ -5,12 +5,12 @@ RSpec.describe ChurchFilter, type: :model do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let!(:parent_church) do
-    FactoryGirl.create(:church, target_area_id: ministry.ministry_id,
+    FactoryGirl.create(:church, target_area: ministry,
                                 development: 2, latitude: -10, longitude: 10)
   end
   let!(:child_church) do
-    FactoryGirl.create(:church, target_area_id: 'asdf', development: 3, latitude: 10, longitude: 10,
-                                parent_id: parent_church.church_id)
+    FactoryGirl.create(:church, development: 3, latitude: 10, longitude: 10,
+                                parent_id: parent_church.church_id, target_area: ministry)
   end
 
   context 'filter by development' do
@@ -32,10 +32,9 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by show all' do
-    let(:unrelated_pub_church) { FactoryGirl.create(:church, target_area_id: SecureRandom.uuid) }
+    let(:unrelated_pub_church) { FactoryGirl.create(:church_with_ministry) }
     let(:unrelated_private_church) do
-      FactoryGirl.create(:church, target_area_id: SecureRandom.uuid,
-                                  security: Church.securities['private_church'])
+      FactoryGirl.create(:church_with_ministry, security: Church.securities['private_church'])
     end
 
     it 'includes public churches' do
@@ -128,7 +127,10 @@ RSpec.describe ChurchFilter, type: :model do
       # already ended
       child_church.update(end_date: 1.month.ago)
     end
-    let!(:church2) { FactoryGirl.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now) }
+    let!(:church2) do
+      FactoryGirl.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now,
+                                  target_area: ministry)
+    end
     let(:filters) { { show_all: '1', period: Time.zone.today.strftime('%Y-%m') } }
     let(:filtered) { ChurchFilter.new(filters, user).filter(Church.all) }
 

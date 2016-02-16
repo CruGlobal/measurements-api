@@ -6,5 +6,9 @@ FactoryGirl.define do
     latitude { rand(-900..900) / 10.0 }
     longitude { rand(-1800..1800) / 10.0 }
     size { rand(1..100) }
+
+    factory :church_with_ministry do
+      association :target_area, factory: :ministry
+    end
   end
 end

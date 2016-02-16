@@ -6,6 +6,8 @@ class Church < ActiveRecord::Base
 
   has_many :church_values
 
+  belongs_to :target_area, class_name: 'Ministry', primary_key: 'ministry_id'
+
   attr_accessor :parent_cluster_id
 
   before_save :default_values
@@ -16,6 +18,8 @@ class Church < ActiveRecord::Base
   alias_attribute :ministry_id, :target_area_id
   alias_attribute :gr_id, :church_id
 
+  validates :name, presence: true
+  validates :target_area, presence: true
   validates :latitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
   validates :longitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
 
