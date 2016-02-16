@@ -74,6 +74,14 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def assignment_for_ministry(ministry_id)
+    assignments.find_by(ministry_id: ministry_id)
+  end
+
+  def role_for_ministry(ministry_id)
+    assignment_for_ministry(ministry_id).try(:role)
+  end
+
   def self.entity_type
     'person'
   end

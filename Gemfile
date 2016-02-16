@@ -23,6 +23,8 @@ gem 'redis-namespace'
 gem 'sinatra', :require => nil
 gem 'auto_strip_attributes', '~> 2.0'
 gem 'arel'
+gem 'consul'
+gem 'assignable_values'
 
 group :development, :test do
   gem 'dotenv-rails'
