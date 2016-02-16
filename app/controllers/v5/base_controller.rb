@@ -1,5 +1,13 @@
 module V5
   class BaseController < ApplicationController
+    include V5::AccessTokenProtectedConcern
+    include Consul::Controller
+
+    before_action :authenticate_request
+    current_power do
+      Power.new(current_user, params[:ministry_id])
+    end
+
     protected
 
     def redis_ticket_key(ticket)

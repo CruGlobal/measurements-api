@@ -13,6 +13,7 @@ class Church < ActiveRecord::Base
   before_save :default_values
 
   enum security: { local_private_church: 0, private_church: 1, public_church: 2 }
+  authorize_values_for :security
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
 
   alias_attribute :ministry_id, :target_area_id
