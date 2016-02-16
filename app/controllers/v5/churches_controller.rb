@@ -12,7 +12,7 @@ module V5
 
     def create
       build_church
-      save_note or render_errors
+      save_church or render_errors
     end
 
     def update
@@ -31,13 +31,19 @@ module V5
       @church.attributes = church_params
     end
 
-    def save_note
-      render @church, status: 201 if @church.save
+    def save_church
+      render json: @church, status: 201 if @church.save
+    end
+
+    def render_errors
+      render json: @church.errors.messages, status: :bad_request
     end
 
     def church_params
-      church_params = params[:note]
-      church_params ? church_params.permit(:title, :text, :published) : {}
+      permitted_params = [:name, :ministry_id, :contact_name, :contact_email, :contact_mobile,
+                          :latitude, :longitude, :start_date, :jf_contrib, :parent_id, :development,
+                          :size, :security]
+      params.permit(permitted_params)
     end
 
     def church_scope
