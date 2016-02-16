@@ -43,7 +43,8 @@ module V5
       permitted_params = [:name, :ministry_id, :contact_name, :contact_email, :contact_mobile,
                           :latitude, :longitude, :start_date, :jf_contrib, :parent_id, :development,
                           :size, :security]
-      params.permit(permitted_params)
+      permitted_params = params.permit(permitted_params)
+      fix_enum_params(permitted_params, :security, :development)
     end
 
     def church_scope
