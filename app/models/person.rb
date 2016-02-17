@@ -6,7 +6,7 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   has_many :user_measurement_states, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
   has_many :user_preferences, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy
 
-  has_many :assignments, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy, inverse_of: :ministry
+  has_many :assignments, foreign_key: :person_id, primary_key: :person_id, dependent: :destroy, inverse_of: :person
   has_many :ministries, through: :assignments
 
   # Map GR key_username to cas_username
