@@ -23,7 +23,7 @@ module V5
     end
 
     def build_church
-      @church ||= church_scope.build
+      @church ||= ::Church::UserCreatedChurch.new
       @church.attributes = church_params
     end
 

@@ -126,4 +126,8 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
       'filters[authentication][key_guid]': guid
     )
   end
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end
