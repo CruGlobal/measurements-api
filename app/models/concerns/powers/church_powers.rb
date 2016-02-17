@@ -4,6 +4,17 @@ module Powers
 
     included do
       # Power definitions
+
+      power :changeable_churches do
+        break nil if @assignment.blank? || @assignment.blocked_role?
+        churches = Church.where(target_area_id: @assignment.ministry_id)
+        churches = churches.where('security >= ?', Church.securities[:public_church]) if @assignment.self_assigned?
+        churches
+      end
+
+      power :churches do
+        Church.all
+      end
     end
 
     def assignable_church_securities

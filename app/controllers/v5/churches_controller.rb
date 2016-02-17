@@ -1,5 +1,7 @@
 module V5
   class ChurchesController < V5::BaseUserController
+    power :churches, map: { [:create, :update] => :changeable_churches }, as: :church_scope
+
     def index
       render json: filtered_churches,
              serializer_context_class: V5::ChurchArraySerializer,
@@ -17,6 +19,11 @@ module V5
     end
 
     private
+
+    def request_power
+      ministry_id = params[:action] == :update ? load_church.target_area_id : params[:ministry_id]
+      Power.new(current_user, ministry_id)
+    end
 
     def load_church
       @church ||= church_scope.find(params[:id])
@@ -42,10 +49,6 @@ module V5
       permitted_params = params.permit(permitted_params)
       permitted_params[:created_by_id] = current_user.person_id
       fix_enum_params(permitted_params, :security, :development)
-    end
-
-    def church_scope
-      Church.all
     end
 
     def filtered_churches
