@@ -38,7 +38,7 @@ module GlobalRegistry
     end
 
     def from_entity(entity = {})
-      return unless entity.key? self.class.entity_type
+      return unless entity.present? && entity.key?(self.class.entity_type)
       entity = entity[self.class.entity_type].with_indifferent_access
       self.class.entity_properties.each do |property|
         attribute_from_entity_property(property, entity[property]) if entity.key? property
@@ -62,12 +62,16 @@ module GlobalRegistry
       def find_entity(id, params = {})
         response = GlobalRegistry::Entity.find(id, params)
         response['entity'].with_indifferent_access if response.key?('entity')
+      rescue RestClient::ResourceNotFound
+        nil
       end
 
       def find_entity_by(params = {})
         results = GlobalRegistry::Entity.get(params)['entities']
         return nil unless results[0] && results[0]
         results[0].with_indifferent_access
+      rescue RestClient::ResourceNotFound
+        nil
       end
 
       # Find Entities (internally uses find_entities_in_batches)
