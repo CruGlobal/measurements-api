@@ -3,6 +3,8 @@ module V5
     include V5::AccessTokenProtectedConcern
     include Consul::Controller
 
+    rescue_from Consul::Powerless, with: :render_consul_powerless
+
     before_action :authenticate_request
     current_power do
       request_power
@@ -21,6 +23,10 @@ module V5
 
     def request_power
       Power.new(current_user, params[:ministry_id])
+    end
+
+    def render_consul_powerless(exception)
+      api_error(exception.message, status: :unauthorized)
     end
   end
 end

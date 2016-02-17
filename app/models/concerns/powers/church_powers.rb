@@ -7,7 +7,7 @@ module Powers
     end
 
     def assignable_church_securities
-      if @assignment.blank? || @assignment.blocked? || @assignment.former_member?
+      if @assignment.blank? || @assignment.blocked_role?
         []
       elsif @assignment.self_assigned?
         ['public_church']
@@ -17,9 +17,9 @@ module Powers
     end
 
     def visiable_local_churches_security
-      if @assignment.blank? || @assignment.blocked? || @assignment.former_member?
+      if @assignment.blank? || @assignment.blocked_role?
         Church.securities['public_church']
-      elsif @assignment.role.start_with?('inherited_')
+      elsif @assignment.inherited_role?
         Church.securities['private_church']
       else
         Church.securities['local_private_church']
