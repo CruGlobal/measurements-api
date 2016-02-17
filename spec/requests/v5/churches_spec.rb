@@ -21,15 +21,21 @@ RSpec.describe 'V5::Churches', type: :request do
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
-    it 'creates a church' do
-      expect do
-        attributes = church.attributes.with_indifferent_access
-        attributes[:ministry_id] = attributes.delete(:target_area_id)
-        post '/v5/churches', attributes,
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+    let(:attributes) do
+      attributes = church.attributes.with_indifferent_access
+      attributes[:ministry_id] = attributes.delete(:target_area_id)
+      attributes
+    end
 
-        expect(response).to be_success
-      end.to change { Church.count }.by 1
+    context 'as admin' do
+      it 'creates a church' do
+        expect do
+          post '/v5/churches', attributes,
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+          expect(response).to be_success
+        end.to change { Church.count }.by(1)
+        expect(Church.last.created_by_id).to eq user.person_id
+      end
     end
 
     context 'as self-assigned' do
@@ -38,9 +44,6 @@ RSpec.describe 'V5::Churches', type: :request do
       end
       it 'fails to create private church' do
         expect do
-          attributes = church.attributes.with_indifferent_access
-          attributes[:ministry_id] = attributes.delete(:target_area_id)
-
           post '/v5/churches', attributes,
                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
         end.to_not change { Church.count }

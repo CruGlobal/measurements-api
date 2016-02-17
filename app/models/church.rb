@@ -2,7 +2,7 @@ class Church < ActiveRecord::Base
   belongs_to :parent, class_name: 'Church'
   has_many :children, class_name: 'Church', foreign_key: 'parent_id'
 
-  belongs_to :created_by, class_name: 'Person'
+  belongs_to :created_by, class_name: 'Person', primary_key: 'person_id'
 
   has_many :church_values
 
@@ -19,8 +19,8 @@ class Church < ActiveRecord::Base
   alias_attribute :ministry_id, :target_area_id
   alias_attribute :gr_id, :church_id
 
-  validates :name, presence: true
-  validates :target_area, presence: true
+  validates :name, presence: { message: "Could not find required field: 'name'" }
+  validates :target_area, presence: { message: "Could not find required field: 'ministry_id'" }
   validates :latitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
   validates :longitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
 

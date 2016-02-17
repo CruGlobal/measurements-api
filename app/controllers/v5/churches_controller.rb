@@ -40,6 +40,7 @@ module V5
                           :latitude, :longitude, :start_date, :jf_contrib, :parent_id, :development,
                           :size, :security]
       permitted_params = params.permit(permitted_params)
+      permitted_params[:created_by_id] = current_user.person_id
       fix_enum_params(permitted_params, :security, :development)
     end
 
