@@ -5,7 +5,7 @@ module V5
 
     before_action :authenticate_request
     current_power do
-      Power.new(current_user, params[:ministry_id])
+      request_power
     end
 
     protected
@@ -17,6 +17,10 @@ module V5
     def current_user
       return nil unless @access_token
       @current_user ||= Person.person(@access_token.key_guid)
+    end
+
+    def request_power
+      Power.new(current_user, params[:ministry_id])
     end
   end
 end

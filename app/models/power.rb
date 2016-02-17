@@ -1,19 +1,13 @@
 class Power
   include Consul::Power
-  include Powers::AssignmentPowers
-  include Powers::ChurchPowers
 
-  def initialize(user, ministry_id)
+  def initialize(user, ministry_id = nil)
     @user = user
     ministry_id = ministry_id.ministry_id if ministry_id.is_a?(Ministry)
     @assignment = user.assignment_for_ministry(ministry_id) if user
   end
 
-  power :assignments do
-    nil
-  end
-
-  power :role_approved do
-    @assignment.present? && @assignment.approved?
-  end
+  include Powers::AssignmentPowers
+  include Powers::ChurchPowers
+  include Powers::MinistryPowers
 end

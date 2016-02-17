@@ -2,6 +2,10 @@ module Powers
   module ChurchPowers
     extend ActiveSupport::Concern
 
+    included do
+      # Power definitions
+    end
+
     def assignable_church_securities
       if @assignment.blank? || @assignment.blocked? || @assignment.former_member?
         []
