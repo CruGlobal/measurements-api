@@ -44,6 +44,14 @@ RSpec.describe 'V5::Churches', type: :request do
       before do
         assignment.update(role: 'self_assigned')
       end
+      it 'can create public church' do
+        expect do
+          post '/v5/churches', attributes.merge(security: 2),
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to be_success
+        end.to change { Church.count }
+      end
       it 'fails to create private church' do
         expect do
           post '/v5/churches', attributes,
