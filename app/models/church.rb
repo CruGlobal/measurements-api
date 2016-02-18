@@ -7,6 +7,7 @@ class Church < ActiveRecord::Base
   has_many :church_values
 
   belongs_to :target_area, class_name: 'Ministry', primary_key: 'ministry_id'
+  authorize_values_for :target_area_id
 
   attr_accessor :parent_cluster_id
 

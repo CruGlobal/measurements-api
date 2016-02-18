@@ -19,6 +19,8 @@ class Assignment < ActiveRecord::Base
   validates :role, presence: true
   validates :role, inclusion: { in: roles, message: '\'%{value}\' is not a valid Team Role' }
 
+  scope :leaders, -> { where(role: roles.slice(*LEADER_ROLES).values) }
+
   def approved_role?
     APPROVED_ROLES.include? role
   end

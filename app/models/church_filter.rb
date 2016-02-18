@@ -22,7 +22,7 @@ class ChurchFilter
   end
 
   def filter_tree_and_show_all(churches)
-    unless Power.current.role_approved
+    if Power.current && !Power.current.role_approved
       return churches.where(public) if clean_filter(:show_all)
       return Church.none
     end
@@ -87,7 +87,11 @@ class ChurchFilter
   end
 
   def local_security
-    secure_level = Power.current.visiable_local_churches_security
+    secure_level = if Power.current
+                     Power.current.visiable_local_churches_security
+                   else
+                     Church.securities['local_private_church']
+                   end
     table[:target_area_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
   end
 

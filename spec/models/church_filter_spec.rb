@@ -3,11 +3,7 @@ require 'rails_helper'
 RSpec.describe ChurchFilter, type: :model do
   let(:user) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry) }
-  let!(:assignment) do
-    a = FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7)
-    Power.current = Power.new(user, ministry)
-    a
-  end
+  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let!(:parent_church) do
     FactoryGirl.create(:church, target_area: ministry,
                                 development: 2, latitude: -10, longitude: 10)
@@ -69,29 +65,37 @@ RSpec.describe ChurchFilter, type: :model do
     end
     let(:filters) { { ministry_id: ministry.ministry_id, show_tree: '1' } }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
+    let(:admin_power) { Power.new(user, ministry) }
 
     context 'as admin user' do
       it 'includes child churches' do
-        expect(filtered).to include church2
+        Power.with_power(admin_power) do
+          expect(filtered).to include church2
+        end
       end
 
       it "doesn't include local_private churches" do
-        expect(filtered).to_not include local_private_church
+        Power.with_power(admin_power) do
+          expect(filtered).to_not include local_private_church
+        end
       end
 
       it "doesn't include child churches" do
         filters[:show_tree] = '0'
 
-        expect(filtered).to_not include church2
+        Power.with_power(admin_power) do
+          expect(filtered).to_not include church2
+        end
       end
     end
 
     context 'as unknown user' do
       it "doesn't include private child churches" do
         user.assignments.first.update(role: 0)
-        Power.current = Power.new(user, ministry)
 
-        expect(filtered).to_not include church2
+        Power.with_power(admin_power) do
+          expect(filtered).to_not include church2
+        end
       end
     end
   end

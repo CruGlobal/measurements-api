@@ -27,6 +27,11 @@ module Powers
       end
     end
 
+    def assignable_church_target_area_ids
+      return Ministry.all.pluck(:ministry_id) if @user.blank?
+      Assignment.where(person: @user).leaders.pluck(:ministry_id)
+    end
+
     def visiable_local_churches_security
       if @assignment.blank? || @assignment.blocked_role?
         Church.securities['public_church']

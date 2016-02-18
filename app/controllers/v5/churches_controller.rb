@@ -21,7 +21,11 @@ module V5
     private
 
     def request_power
-      ministry_id = params[:action] == :update ? load_church.target_area_id : params[:ministry_id]
+      ministry_id = if params[:action] == 'update'
+                      Church.find_by(id: params[:id]).try(:target_area_id)
+                    else
+                      params[:ministry_id]
+                    end
       Power.new(current_user, ministry_id)
     end
 
