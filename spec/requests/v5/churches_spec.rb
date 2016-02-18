@@ -35,7 +35,7 @@ RSpec.describe 'V5::Churches', type: :request do
                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
           expect(response).to be_success
-        end.to change { Church.count }.by(1)
+        end.to change { Church.count }.by(1).and(change { Audit.count }.by(1))
         expect(Church.last.created_by_id).to eq user.person_id
       end
     end
@@ -84,6 +84,9 @@ RSpec.describe 'V5::Churches', type: :request do
 
         expect(response).to be_success
         expect(church.reload.size).to eq attributes[:size]
+        church_value = church.church_values.last
+        expect(church_value).to be_present
+        expect(church_value.period).to eq Time.zone.today.strftime('%Y-%m')
       end
     end
 

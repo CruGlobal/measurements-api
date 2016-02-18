@@ -12,6 +12,8 @@ class Church < ActiveRecord::Base
 
   before_save :default_values
 
+  after_update :log_church_value
+
   enum security: { local_private_church: 0, private_church: 1, public_church: 2 }
   authorize_values_for :security
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
@@ -44,5 +46,12 @@ class Church < ActiveRecord::Base
   def default_values
     self.development ||= 1
     self.security ||= :public_church
+  end
+
+  def log_church_value
+    return unless size_changed? || development_changed?
+    period = Time.zone.today.strftime('%Y-%m')
+    value = church_values.where(period: period).first_or_initialize
+    value.update(size: size, development: self[:development])
   end
 end
