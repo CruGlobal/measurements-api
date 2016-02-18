@@ -12,8 +12,7 @@ module V5
 
     def create
       permit_params %i(username key_guid person_id ministry_id team_role)
-      build_assignment
-      if save_assignment
+      if build_assignment
         render_assignment :created
       else
         render_errors
@@ -23,8 +22,7 @@ module V5
     def update
       permit_params %i(team_role)
       load_assignment
-      build_assignment
-      if save_assignment
+      if build_assignment
         render_assignment :ok
       else
         render_errors
@@ -38,15 +36,12 @@ module V5
     end
 
     def load_assignment
-      @assignment ||= Assignment.find_by(assignment_id: params[:id])
+      @assignment ||= ::Assignment.find_by(assignment_id: params[:id])
     end
 
     def build_assignment
-      @assignment ||= Assignment::NewUserAssignment.new
+      @assignment ||= ::Assignment::UserCreatedAssignment.new
       @assignment.attributes = assignment_params
-    end
-
-    def save_assignment
       @assignment.save
     end
 

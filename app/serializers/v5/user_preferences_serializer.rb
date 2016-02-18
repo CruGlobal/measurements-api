@@ -37,7 +37,7 @@ module V5
 
     def default_measurement_states
       states = {}
-      Constants::MCCS.each do |mcc|
+      Ministry::MCCS.each do |mcc|
         mcc_data = {}
         object.user_measurement_states.where(mcc: mcc).each do |state|
           mcc_data[state.perm_link_stub] = state.visible ? 1 : 0

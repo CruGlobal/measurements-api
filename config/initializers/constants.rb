@@ -1,11 +1,4 @@
 module Constants
-  # Valid MCCs (Mission Critical Components)
-  MCC_SLM = 'slm'.freeze
-  MCC_LLM = 'llm'.freeze
-  MCC_GCM = 'gcm'.freeze
-  MCC_DS = 'ds'.freeze
-  MCCS = [MCC_SLM, MCC_LLM, MCC_GCM, MCC_DS].freeze
-
   # area_code to min_code map
   AREAS = {
     EUER: 'EEC',
@@ -22,9 +15,6 @@ module Constants
     AFWE: 'FWC',
     PACT: 'CAC'
   }.freeze
-
-  # WHQ Scopes
-  SCOPES = %w(National Area Global National\ Region).freeze
 
   # Team Roles
   LEADER_ROLE = 'leader'.freeze

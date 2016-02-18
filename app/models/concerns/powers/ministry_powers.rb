@@ -8,22 +8,29 @@ module Powers
         Ministry.all
       end
 
-      power :showable_ministries do
+      power :show_ministry do
         # Only leader may show a ministry
-        if @assignment.blank? || !@assignment.leader_role?
-          nil
-        else
-          @assignment.ministry
-        end
+        (@assignment.blank? || !@assignment.leader_role?) ? nil : @assignment.ministry
       end
 
       # :create
-      power :createable_ministries do
+      power :create_ministry do
+        # Anyone can create Ministries, only leaders of a ministry can create sub-ministries
+        (@assignment.present? && !@assignment.leader_role?) ? nil : ::Ministry::UserCreatedMinistry
       end
 
       # :update
-      power :updatable_ministries do
+      power :update_ministry do
+        # Only leaders may update a ministry
+        if @assignment.present? && @assignment.leader_role?
+          # TODO: Only leaders of both ministries may move a ministry
+          @assignment.ministry
+        end
+        nil
       end
+    end
+
+    def assignable_ministry_parents(ministry)
     end
   end
 end

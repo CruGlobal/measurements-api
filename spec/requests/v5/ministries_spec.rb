@@ -8,6 +8,10 @@ RSpec.describe 'V5::Ministries', type: :request do
       ministries << FactoryGirl.create(:ministry)
       ministries << FactoryGirl.create(:ministry)
       ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.ministry_id)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.ministry_id)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.ministry_id)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.ministry_id)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.ministry_id)
       ministries
     end
 
