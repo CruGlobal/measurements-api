@@ -30,7 +30,7 @@ module Powers
       end
     end
 
-    def assignable_ministry_parents(ministry)
+    def assignable_ministry_parents(_ministry)
     end
   end
 end

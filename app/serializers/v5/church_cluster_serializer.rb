@@ -27,7 +27,7 @@ module V5
     end
 
     def ministry_id
-      object.first.try(:target_area_id)
+      object.first.ministry.gr_id
     end
 
     def parents

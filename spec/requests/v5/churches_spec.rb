@@ -21,7 +21,9 @@ RSpec.describe 'V5::Churches', type: :request do
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
-    let(:attributes) { FactoryGirl.build(:church, ministry: ministry, security: 0).attributes }
+    let(:attributes) do
+      FactoryGirl.attributes_for(:church, ministry: ministry, security: 0).merge(ministry_id: ministry.gr_id)
+    end
 
     context 'as admin' do
       it 'creates a church' do
