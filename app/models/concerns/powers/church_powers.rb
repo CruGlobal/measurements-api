@@ -27,7 +27,7 @@ module Powers
       end
     end
 
-    def assignable_church_target_area_ids
+    def assignable_church_ministry_ids
       # this should only be called in the context of a user update
       return Ministry.all.pluck(:ministry_id) if @user.blank?
       Assignment.where(person: @user).leaders.pluck(:ministry_id)

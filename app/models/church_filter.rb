@@ -64,7 +64,7 @@ class ChurchFilter
   end
 
   def root_ministry
-    Ministry.find_by(ministry_id: @filters[:ministry_id])
+    Ministry.find_by(id: @filters[:ministry_id])
   end
 
   def user_approved

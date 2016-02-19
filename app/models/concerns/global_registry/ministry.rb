@@ -11,7 +11,7 @@ module GlobalRegistry
     }.freeze
 
     included do
-      before_create :create_entity, if: 'ministry_id.blank?'
+      before_create :create_entity, if: 'gr_id.blank?'
     end
 
     # Getter/Setters for GR
@@ -39,7 +39,7 @@ module GlobalRegistry
     def create_entity
       entity = super
       # update ministry_id from GR entity id
-      self.ministry_id = entity[:id]
+      self.gr_id = entity[:id]
     end
 
     # Model attribute value to Global Registry Entity property value
@@ -48,7 +48,7 @@ module GlobalRegistry
     def attribute_to_entity_property(property)
       case property.to_sym
       when :id
-        ministry_id
+        gr_id
       when :client_integration_id
         min_code
       when :has_ds, :has_llm, :has_gcm, :has_slm
@@ -75,7 +75,7 @@ module GlobalRegistry
     def attribute_from_entity_property(property, value = nil)
       case property.to_sym
       when :id
-        super(:ministry_id, value)
+        super(:gr_id, value)
       when :has_ds, :has_llm, :has_gcm, :has_slm
         mcc = ENTITY_MCCS[property]
         if value

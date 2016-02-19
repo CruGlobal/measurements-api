@@ -5,7 +5,7 @@ RSpec.describe ChurchClusterer, type: :model do
   let!(:nearby_church2) { FactoryGirl.build_stubbed(:church, latitude: 0, longitude: 2) }
   let!(:distant_church) do
     FactoryGirl.build_stubbed(:church, latitude: 10, longitude: 1,
-                                       parent_id: nearby_church2.church_id)
+                                       parent: nearby_church2)
   end
   let(:church_array) do
     [distant_church, nearby_church1, nearby_church2]

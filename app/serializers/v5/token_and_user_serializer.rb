@@ -12,7 +12,7 @@ module V5
         first_name: object.access_token.first_name,
         last_name: object.access_token.last_name,
         cas_username: object.access_token.email,
-        person_id: object.person.person_id,
+        person_id: object.person.gr_id,
         key_guid: object.person.cas_guid
       }
     end

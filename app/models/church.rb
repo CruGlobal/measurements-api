@@ -2,11 +2,11 @@ class Church < ActiveRecord::Base
   has_many :children, class_name: 'Church', foreign_key: :parent_id
   belongs_to :parent, class_name: 'Church'
 
-  belongs_to :created_by, class_name: 'Person', foreign_key: :person_id
+  belongs_to :created_by, class_name: 'Person'
 
   has_many :church_values
 
-  belongs_to :target_area, class_name: 'Ministry', foreign_key: :ministry_id
+  belongs_to :target_area, class_name: 'Ministry'
   authorize_values_for :ministry_id
 
   attr_accessor :parent_cluster_id
@@ -20,7 +20,6 @@ class Church < ActiveRecord::Base
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
 
   alias_attribute :ministry_id, :target_area_id
-  alias_attribute :gr_id, :church_id
 
   validates :name, presence: { message: "Could not find required field: 'name'" }
   validates :target_area, presence: { message: "Could not find required field: 'ministry_id'" }

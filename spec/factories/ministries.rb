@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :ministry do
-    ministry_id { SecureRandom.uuid }
+    gr_id { SecureRandom.uuid }
     sequence(:name) { |n| "Test Ministry (#{n})" }
     min_code { ('A'..'Z').to_a.sample(3).join }
     area_code { Constants::AREAS.keys.sample }

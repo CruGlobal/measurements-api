@@ -46,7 +46,7 @@ class Ministry < ActiveRecord::Base
 
   def descendants_ids
     children.map do |child|
-      child.descendants_ids.append child.ministry_id
+      child.descendants_ids.append child.id
     end.flatten
   end
 
