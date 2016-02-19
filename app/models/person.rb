@@ -65,7 +65,7 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   def attribute_from_entity_property(property, value = nil)
     case property.to_sym
     when :id
-      self.person_id = value
+      self.gr_id = value
     when :authentication
       auth = value.with_indifferent_access
       self.cas_guid = auth[:key_guid] if auth.key? :key_guid
@@ -74,12 +74,18 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def assignment_for_ministry(ministry_id)
-    assignments.find_by(ministry_id: ministry_id)
+  def assignment_for_ministry(ministry)
+    if ministry.is_a? Ministry
+      assignments.find_by(ministry_id: ministry.id)
+    elsif ministry.is_a? Integer
+      assignments.find_by(ministry_id: ministry)
+    else
+      assignments.includes(:ministry).find_by(ministries:{gr_id: ministry})
+    end
   end
 
-  def role_for_ministry(ministry_id)
-    assignment_for_ministry(ministry_id).try(:role)
+  def role_for_ministry(ministry)
+    assignment_for_ministry(ministry).try(:role)
   end
 
   def self.entity_type

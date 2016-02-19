@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :assignment do
-    assignment_id { SecureRandom.uuid }
+    gr_id nil
     person_id nil
     ministry_id nil
-    role 2
+    role :self_assigned
   end
 end
