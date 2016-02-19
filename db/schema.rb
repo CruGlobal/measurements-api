@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160219193441) do
+ActiveRecord::Schema.define(version: 20160219221910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,22 @@ ActiveRecord::Schema.define(version: 20160219193441) do
     t.datetime "updated_at",   null: false
   end
 
+  create_table "trainings", force: :cascade do |t|
+    t.integer  "ministry_id"
+    t.string   "name"
+    t.datetime "date"
+    t.string   "type",          limit: 50
+    t.string   "mcc",           limit: 3
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.integer  "created_by_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "trainings", ["created_by_id"], name: "index_trainings_on_created_by_id", using: :btree
+  add_index "trainings", ["ministry_id"], name: "index_trainings_on_ministry_id", using: :btree
+
   create_table "user_content_locales", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "ministry_id"
@@ -159,6 +175,8 @@ ActiveRecord::Schema.define(version: 20160219193441) do
   add_foreign_key "churches", "ministries", on_update: :cascade, on_delete: :restrict
   add_foreign_key "churches", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "ministries", "ministries", column: "parent_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "trainings", "ministries", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "trainings", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "user_content_locales", "ministries", on_update: :cascade, on_delete: :cascade
   add_foreign_key "user_content_locales", "people", on_update: :cascade, on_delete: :cascade
   add_foreign_key "user_map_views", "ministries", on_update: :cascade, on_delete: :cascade
