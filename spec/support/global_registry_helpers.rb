@@ -14,7 +14,7 @@ module GlobalRegistryHelpers
 
   def gr_person_request_by_guid(person = nil)
     person ||= FactoryGirl.create(:person)
-    response = { person: { id: person.person_id, last_name: person.last_name, first_name: person.first_name,
+    response = { person: { id: person.gr_id, last_name: person.last_name, first_name: person.first_name,
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock

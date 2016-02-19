@@ -33,7 +33,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
           expect(response).to be_success
         end.to change { Church.count }.by(1).and(change { Audit.count }.by(1))
-        expect(Church.last.created_by_id).to eq user.person_id
+        expect(Church.last.created_by_id).to eq user.id
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
     let(:attributes) do
       church.size += 1
-      church.attributes.with_indifferent_access
+      church.attributes.with_indifferent_access.merge(ministry_id: ministry.gr_id)
     end
 
     context 'as admin' do
