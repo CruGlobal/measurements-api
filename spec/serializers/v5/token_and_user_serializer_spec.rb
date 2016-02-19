@@ -31,7 +31,7 @@ describe V5::TokenAndUserSerializer do
       expect(hash[:user][:first_name]).to eq 'Tony'
       expect(hash[:user][:last_name]).to eq 'Stark'
       expect(hash[:user][:cas_username]).to eq resource.access_token.email
-      expect(hash[:user][:person_id]).to eq resource.person.person_id
+      expect(hash[:user][:person_id]).to eq resource.person.gr_id
     end
 
     it 'has assignments' do

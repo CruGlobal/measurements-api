@@ -4,12 +4,12 @@ describe V5::ChurchSerializer do
   describe 'single church' do
     let(:ministry) { FactoryGirl.build(:ministry) }
     let(:resource) do
-      @p = FactoryGirl.create(:church, name: 'parent church', target_area: ministry)
+      @p = FactoryGirl.create(:church, name: 'parent church', ministry: ministry)
       c = FactoryGirl.create(:church, name: 'churchy kind of name', jf_contrib: true,
-                                      target_area: ministry, start_date: '2012-06-08', parent: @p,
+                                      ministry: ministry, start_date: '2012-06-08', parent: @p,
                                       contact_name: 'doesnt matter', contact_email: 'what',
                                       contact_mobile: 'unvalidated string')
-      FactoryGirl.create(:church, name: 'child church', parent: c, target_area: ministry)
+      FactoryGirl.create(:church, name: 'child church', parent: c, ministry: ministry)
       c
     end
     let(:serializer) { V5::ChurchSerializer.new(resource) }
@@ -23,7 +23,7 @@ describe V5::ChurchSerializer do
       expect(hash[:longitude]).to_not be_nil
       expect(hash[:jf_contrib]).to be_a Integer
       expect(hash[:development]).to be_a Integer
-      expect(hash[:ministry_id]).to eq resource.target_area_id
+      expect(hash[:ministry_id]).to eq ministry.gr_id
       expect(hash[:cluster_count]).to be_a Integer
       expect(hash[:child_count]).to be 1
       expect(hash[:parents]).to eq [@p.id]

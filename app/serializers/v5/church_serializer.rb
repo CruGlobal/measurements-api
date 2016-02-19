@@ -31,5 +31,9 @@ module V5
     def parents
       [object.parent_cluster_id || object.parent.try(:id)]
     end
+
+    def ministry_id
+      object.ministry.gr_id
+    end
   end
 end

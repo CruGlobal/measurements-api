@@ -3,12 +3,10 @@ require 'rails_helper'
 describe V5::UserPreferencesSerializer do
   describe 'custom fields' do
     let(:resource) do
-      p = Person.create(
-        person_id: 'asdf',
-        first_name: 'first'
-      )
+      p = FactoryGirl.create(:person)
+      ministry = FactoryGirl.create(:ministry)
       p.user_preferences.create(name: 'fake-pref', value: 'mock')
-      p.user_map_views.create(ministry_id: 'fake-id', lat: -10, long: 9001, zoom: '7000')
+      p.user_map_views.create(ministry_id: ministry.id, lat: -10, long: 9001, zoom: '7000')
       p
     end
     let(:serializer) { V5::UserPreferencesSerializer.new(resource) }
