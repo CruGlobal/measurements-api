@@ -49,6 +49,8 @@ module GlobalRegistry
       case property.to_sym
       when :id
         gr_id
+      when :parent_id
+        parent.try(:gr_id)
       when :client_integration_id
         min_code
       when :has_ds, :has_llm, :has_gcm, :has_slm
@@ -68,7 +70,6 @@ module GlobalRegistry
         super
       end
     end
-
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
 
     # Set self attribute value from Global Registry Entity property and value
@@ -76,6 +77,9 @@ module GlobalRegistry
       case property.to_sym
       when :id
         super(:gr_id, value)
+      when :parent_id
+        self.parent_gr_id = value
+        super(:parent_id, self.class.find_by(gr_id: value).try(:id))
       when :has_ds, :has_llm, :has_gcm, :has_slm
         mcc = ENTITY_MCCS[property]
         if value

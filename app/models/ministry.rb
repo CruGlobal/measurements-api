@@ -24,19 +24,11 @@ class Ministry < ActiveRecord::Base
   validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
                           unless: 'default_mcc.blank?'
 
-  # Override relationship to load parent ministry from GR if not cached
-  def parent(force_reload = false)
-    return nil if parent_id.nil?
-    parent_ministry = super
-    Ministry.ministry(parent_id, true) if parent_ministry.nil?
-    super true
-  end
-
-  # Find Ministry by ministry_id, update from Global Registry if nil or refresh is true
-  def self.ministry(ministry_id, refresh = false)
-    ministry = find_by_ministry_id ministry_id
+  # Find Ministry by gr_id, update from Global Registry if nil or refresh is true
+  def self.ministry(gr_id, refresh = false)
+    ministry = find_by_gr_id gr_id
     if ministry.nil? || refresh
-      ministry = new(ministry_id: ministry_id) if ministry.nil?
+      ministry = new(gr_id: gr_id) if ministry.nil?
       entity = ministry.update_from_entity
       return nil if entity.nil? || (entity.key?(:is_active) && entity[:is_active] == false)
       ministry.save
