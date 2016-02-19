@@ -7,7 +7,7 @@ class Church < ActiveRecord::Base
   has_many :church_values
 
   belongs_to :ministry
-  authorize_values_for :ministry_id
+  authorize_values_for :ministry
 
   attr_accessor :parent_cluster_id
 

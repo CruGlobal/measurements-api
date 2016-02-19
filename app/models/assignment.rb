@@ -19,7 +19,7 @@ class Assignment < ActiveRecord::Base
   validates :role, presence: true
   validates :role, inclusion: { in: roles, message: '\'%{value}\' is not a valid Team Role' }
 
-  scope :leaders, -> { where(role: roles.slice(*LEADER_ROLES).values) }
+  scope :leaders, -> { where(leader_condition) }
 
   def approved_role?
     APPROVED_ROLES.include? role
@@ -27,6 +27,10 @@ class Assignment < ActiveRecord::Base
 
   def leader_role?(include_inherited = true)
     (include_inherited ? LEADER_ROLES : LOCAL_LEADER_ROLES).include? role
+  end
+
+  def self.leader_condition
+    { role: roles.slice(*LEADER_ROLES).values }
   end
 
   def inherited_role?

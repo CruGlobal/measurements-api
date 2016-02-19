@@ -27,15 +27,16 @@ module Powers
       end
     end
 
-    def assignable_church_ministry_ids
+    def assignable_church_ministries
       # this should only be called in the context of a user update
       return Ministry.all.pluck(:id) if @user.blank?
-      Assignment.where(person: @user).leaders.pluck(:ministry_id)
+      Ministry.includes(:assignments).where(assignments: { person: @user })
+              .where(assignments: Assignment.leader_condition)
     end
 
-    def assignable_church_target_area_ids_on_create
+    def assignable_church_ministries_on_create
       # assigment.ministry_id is going to be the id the user is trying to create a church on
-      [@assignment.ministry.id] if @assignment.present? && !@assignment.blocked?
+      [@assignment.ministry] if @assignment.present? && !@assignment.blocked?
     end
 
     def visiable_local_churches_security
