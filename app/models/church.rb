@@ -1,13 +1,13 @@
 class Church < ActiveRecord::Base
+  has_many :children, class_name: 'Church', foreign_key: :parent_id
   belongs_to :parent, class_name: 'Church'
-  has_many :children, class_name: 'Church', foreign_key: 'parent_id'
 
-  belongs_to :created_by, class_name: 'Person', primary_key: 'person_id'
+  belongs_to :created_by, class_name: 'Person', foreign_key: :person_id
 
   has_many :church_values
 
-  belongs_to :target_area, class_name: 'Ministry', primary_key: 'ministry_id'
-  authorize_values_for :target_area_id
+  belongs_to :target_area, class_name: 'Ministry', foreign_key: :ministry_id
+  authorize_values_for :ministry_id
 
   attr_accessor :parent_cluster_id
 

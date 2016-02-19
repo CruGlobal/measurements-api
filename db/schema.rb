@@ -11,24 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160217035948) do
+ActiveRecord::Schema.define(version: 20160218222001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
   create_table "assignments", force: :cascade do |t|
-    t.uuid     "assignment_id"
-    t.uuid     "person_id",                 null: false
-    t.uuid     "ministry_id",               null: false
-    t.integer  "role",          default: 2
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.uuid     "gr_id"
+    t.integer  "person_id",               null: false
+    t.integer  "ministry_id",             null: false
+    t.integer  "role",        default: 2
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
+  add_index "assignments", ["person_id", "ministry_id"], name: "index_assignments_on_person_id_and_ministry_id", unique: true, using: :btree
+
   create_table "audits", force: :cascade do |t|
-    t.uuid     "person_id",     null: false
-    t.uuid     "ministry_id",   null: false
+    t.integer  "person_id",     null: false
+    t.integer  "ministry_id",   null: false
     t.string   "message",       null: false
     t.integer  "audit_type",    null: false
     t.string   "ministry_name"
@@ -41,6 +43,8 @@ ActiveRecord::Schema.define(version: 20160217035948) do
     t.integer "development"
     t.string  "period"
   end
+
+  add_index "church_values", ["church_id", "period"], name: "index_church_values_on_church_id_and_period", unique: true, using: :btree
 
   create_table "churches", force: :cascade do |t|
     t.string   "name"
@@ -59,17 +63,18 @@ ActiveRecord::Schema.define(version: 20160217035948) do
     t.integer  "security"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.uuid     "church_id"
-    t.uuid     "target_area_id"
-    t.uuid     "created_by_id"
+    t.uuid     "gr_id"
+    t.integer  "ministry_id"
+    t.integer  "person_id"
     t.integer  "vc_id"
   end
 
+  add_index "churches", ["gr_id"], name: "index_churches_on_gr_id", unique: true, using: :btree
   add_index "churches", ["parent_id"], name: "index_churches_on_parent_id", using: :btree
 
   create_table "ministries", force: :cascade do |t|
-    t.uuid     "ministry_id"
-    t.uuid     "parent_id"
+    t.uuid     "gr_id"
+    t.integer  "parent_id"
     t.string   "name"
     t.string   "min_code"
     t.string   "area_code"
@@ -88,11 +93,11 @@ ActiveRecord::Schema.define(version: 20160217035948) do
     t.datetime "updated_at",                    null: false
   end
 
+  add_index "ministries", ["gr_id"], name: "index_ministries_on_gr_id", unique: true, using: :btree
   add_index "ministries", ["min_code"], name: "index_ministries_on_min_code", unique: true, using: :btree
-  add_index "ministries", ["ministry_id"], name: "index_ministries_on_ministry_id", unique: true, using: :btree
 
   create_table "people", force: :cascade do |t|
-    t.uuid     "person_id"
+    t.uuid     "gr_id"
     t.string   "first_name"
     t.string   "last_name"
     t.uuid     "cas_guid"
@@ -102,8 +107,8 @@ ActiveRecord::Schema.define(version: 20160217035948) do
   end
 
   create_table "user_content_locales", force: :cascade do |t|
-    t.uuid     "person_id"
-    t.uuid     "ministry_id"
+    t.integer  "person_id"
+    t.integer  "ministry_id"
     t.string   "locale"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
@@ -112,8 +117,8 @@ ActiveRecord::Schema.define(version: 20160217035948) do
   add_index "user_content_locales", ["person_id", "ministry_id"], name: "index_user_content_locales_on_person_id_and_ministry_id", unique: true, using: :btree
 
   create_table "user_map_views", force: :cascade do |t|
-    t.uuid     "person_id"
-    t.uuid     "ministry_id"
+    t.integer  "person_id"
+    t.integer  "ministry_id"
     t.float    "lat"
     t.float    "long"
     t.integer  "zoom"
@@ -124,7 +129,7 @@ ActiveRecord::Schema.define(version: 20160217035948) do
   add_index "user_map_views", ["person_id", "ministry_id"], name: "index_user_map_views_on_person_id_and_ministry_id", unique: true, using: :btree
 
   create_table "user_measurement_states", force: :cascade do |t|
-    t.uuid     "person_id"
+    t.integer  "person_id"
     t.string   "mcc"
     t.string   "perm_link_stub"
     t.boolean  "visible"
@@ -135,7 +140,7 @@ ActiveRecord::Schema.define(version: 20160217035948) do
   add_index "user_measurement_states", ["person_id", "mcc", "perm_link_stub"], name: "unique_index_user_measurement_states", unique: true, using: :btree
 
   create_table "user_preferences", force: :cascade do |t|
-    t.uuid     "person_id"
+    t.integer  "person_id"
     t.string   "name"
     t.string   "value"
     t.datetime "created_at", null: false
@@ -144,4 +149,19 @@ ActiveRecord::Schema.define(version: 20160217035948) do
 
   add_index "user_preferences", ["person_id", "name"], name: "index_user_preferences_on_person_id_and_name", unique: true, using: :btree
 
+  add_foreign_key "assignments", "ministries", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "assignments", "people", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "audits", "ministries", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "audits", "people", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "church_values", "churches", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "churches", "churches", column: "parent_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "churches", "ministries", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "churches", "people", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "ministries", "ministries", column: "parent_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "user_content_locales", "ministries", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "user_content_locales", "people", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "user_map_views", "ministries", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "user_map_views", "people", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "user_measurement_states", "people", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "user_preferences", "people", on_update: :cascade, on_delete: :cascade
 end
