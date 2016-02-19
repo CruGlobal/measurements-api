@@ -9,4 +9,12 @@ class MinistrySerializer < ActiveModel::Serializer
              :parent_id
   # :hide_reports_tab,
   # :team_members
+
+  def ministry_id
+    object.gr_id
+  end
+
+  def parent_id
+    object.parent.try(:id)
+  end
 end
