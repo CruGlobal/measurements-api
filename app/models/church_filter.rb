@@ -83,7 +83,7 @@ class ChurchFilter
   end
 
   def in_tree(min_tree_ids)
-    table[:target_area_id].in(min_tree_ids).and(table[:security].gteq(1))
+    table[:ministry_id].in(min_tree_ids).and(table[:security].gteq(1))
   end
 
   def local_security
@@ -92,7 +92,7 @@ class ChurchFilter
                    else
                      Church.securities['local_private_church']
                    end
-    table[:target_area_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
+    table[:ministry_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
   end
 
   def table

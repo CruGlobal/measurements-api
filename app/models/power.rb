@@ -3,9 +3,8 @@ class Power
 
   def initialize(user, ministry_id = nil)
     @user = user
-    return if ministry_id.blank?
-    ministry = ministry_id.is_a?(Ministry) ? ministry_id : Ministry.ministry(ministry_id)
-    @assignment = user.assignment_for_ministry(ministry.ministry_id) if user && ministry
+    return if ministry_id.blank? || user.blank?
+    @assignment = user.assignment_for_ministry(ministry_id)
   end
 
   include Powers::AssignmentPowers

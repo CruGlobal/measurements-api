@@ -5,12 +5,12 @@ RSpec.describe ChurchFilter, type: :model do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let!(:parent_church) do
-    FactoryGirl.create(:church, target_area: ministry,
+    FactoryGirl.create(:church, ministry: ministry,
                                 development: 2, latitude: -10, longitude: 10)
   end
   let!(:child_church) do
     FactoryGirl.create(:church, development: 3, latitude: 10, longitude: 10,
-                                parent: parent_church, target_area: ministry)
+                                parent: parent_church, ministry: ministry)
   end
 
   context 'filter by development' do
@@ -56,11 +56,11 @@ RSpec.describe ChurchFilter, type: :model do
   context 'filter by show tree' do
     let!(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
     let!(:church2) do
-      FactoryGirl.create(:church, target_area: child_ministry,
+      FactoryGirl.create(:church, ministry: child_ministry,
                                   security: Church.securities['private_church'])
     end
     let!(:local_private_church) do
-      FactoryGirl.create(:church, target_area: child_ministry,
+      FactoryGirl.create(:church, ministry: child_ministry,
                                   security: Church.securities['local_private_church'])
     end
     let(:filters) { { ministry_id: ministry.id, show_tree: '1' } }
@@ -102,7 +102,7 @@ RSpec.describe ChurchFilter, type: :model do
 
   context 'filter by lat/long' do
     let!(:church2) do
-      FactoryGirl.create(:church, target_area: ministry, latitude: 10, longitude: 40)
+      FactoryGirl.create(:church, ministry: ministry, latitude: 10, longitude: 40)
     end
 
     let(:filters) do
@@ -138,7 +138,7 @@ RSpec.describe ChurchFilter, type: :model do
     end
     let!(:church2) do
       FactoryGirl.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now,
-                                  target_area: ministry)
+                                  ministry: ministry)
     end
     let(:filters) { { show_all: '1', period: Time.zone.today.strftime('%Y-%m') } }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }

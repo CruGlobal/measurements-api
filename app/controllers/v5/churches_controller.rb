@@ -22,7 +22,7 @@ module V5
 
     def request_power
       ministry_id = if params[:action] == 'update'
-                      Church.find_by(id: params[:id]).try(:target_area_id)
+                      Church.find_by(id: params[:id]).try(:ministry).try(:gr_id)
                     else
                       params[:ministry_id]
                     end

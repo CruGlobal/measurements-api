@@ -7,7 +7,7 @@ class Church
                    message: "A new church created by #{created_by.full_name}: #{name}")
     end
 
-    assignable_values_for :target_area_id do
+    assignable_values_for :ministry_id do
       Power.current.assignable_church_target_area_ids_on_create
     end
   end

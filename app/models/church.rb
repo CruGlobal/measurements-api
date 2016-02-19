@@ -6,7 +6,7 @@ class Church < ActiveRecord::Base
 
   has_many :church_values
 
-  belongs_to :target_area, class_name: 'Ministry'
+  belongs_to :ministry
   authorize_values_for :ministry_id
 
   attr_accessor :parent_cluster_id
@@ -19,10 +19,8 @@ class Church < ActiveRecord::Base
   authorize_values_for :security
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
 
-  alias_attribute :ministry_id, :target_area_id
-
   validates :name, presence: { message: "Could not find required field: 'name'" }
-  validates :target_area, presence: { message: "Could not find required field: 'ministry_id'" }
+  validates :ministry, presence: { message: "Could not find required field: 'ministry_id'" }
   validates :latitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
   validates :longitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
 
