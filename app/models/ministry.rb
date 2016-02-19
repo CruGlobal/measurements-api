@@ -13,7 +13,7 @@ class Ministry < ActiveRecord::Base
   include GlobalRegistry::Ministry
 
   has_many :children, class_name: 'Ministry', foreign_key: :parent_id
-  has_one :parent, class_name: 'Ministry'
+  belongs_to :parent, class_name: 'Ministry'
 
   has_many :assignments, dependent: :destroy, inverse_of: :ministry
   has_many :people, through: :assignments
@@ -26,7 +26,7 @@ class Ministry < ActiveRecord::Base
 
   # Find Ministry by gr_id, update from Global Registry if nil or refresh is true
   def self.ministry(gr_id, refresh = false)
-    ministry = find_by_gr_id gr_id
+    ministry = find_by(gr_id: gr_id)
     if ministry.nil? || refresh
       ministry = new(gr_id: gr_id) if ministry.nil?
       entity = ministry.update_from_entity

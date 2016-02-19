@@ -18,15 +18,10 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'POST /v5/churches' do
-    let(:church) { FactoryGirl.build(:church, target_area: ministry, security: 0) }
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
-    let(:attributes) do
-      attributes = church.attributes.with_indifferent_access
-      attributes[:ministry_id] = attributes.delete(:target_area_id)
-      attributes
-    end
+    let(:attributes) { FactoryGirl.build(:church, ministry: ministry, security: 0).attributes }
 
     context 'as admin' do
       it 'creates a church' do
@@ -75,14 +70,13 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'PUT /v5/churches/:id' do
-    let(:church) { FactoryGirl.create(:church, target_area: ministry) }
+    let(:church) { FactoryGirl.create(:church, ministry: ministry) }
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
-      attributes = church.attributes.with_indifferent_access
-      attributes[:ministry_id] = attributes.delete(:target_area_id)
-      attributes.merge(size: attributes[:size] + 1)
+      church.size += 1
+      church.attributes.with_indifferent_access
     end
 
     context 'as admin' do
@@ -103,7 +97,7 @@ RSpec.describe 'V5::Churches', type: :request do
         assignment.update(role: 'self_assigned')
         other_ministry = FactoryGirl.create(:ministry)
 
-        put "/v5/churches/#{church.id}", { ministry_id: other_ministry.ministry_id },
+        put "/v5/churches/#{church.id}", { ministry_id: other_ministry.id },
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
         expect(response).to_not be_success

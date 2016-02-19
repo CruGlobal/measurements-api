@@ -10,7 +10,7 @@ describe V5::TokenAndUserSerializer do
         last_name: 'Stark'
       )
       TokenAndUser.new(access_token: token, person: Person.create(
-        person_id: 'asdf',
+        gr_id: SecureRandom.uuid,
         first_name: token.first_name,
         last_name: token.last_name,
         cas_guid: token.key_guid,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160219193336) do
+ActiveRecord::Schema.define(version: 20160219193441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20160219193336) do
     t.datetime "updated_at",     null: false
     t.uuid     "gr_id"
     t.integer  "ministry_id"
-    t.integer  "person_id"
+    t.integer  "created_by_id"
     t.integer  "vc_id"
   end
 
@@ -157,7 +157,7 @@ ActiveRecord::Schema.define(version: 20160219193336) do
   add_foreign_key "church_values", "churches", on_update: :cascade, on_delete: :restrict
   add_foreign_key "churches", "churches", column: "parent_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "churches", "ministries", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "churches", "people", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "churches", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "ministries", "ministries", column: "parent_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "user_content_locales", "ministries", on_update: :cascade, on_delete: :cascade
   add_foreign_key "user_content_locales", "people", on_update: :cascade, on_delete: :cascade

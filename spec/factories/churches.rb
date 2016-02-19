@@ -17,7 +17,7 @@ FactoryGirl.define do
     development 1
 
     factory :church_with_ministry do
-      association :target_area, factory: :ministry
+      association :ministry
     end
   end
 end
