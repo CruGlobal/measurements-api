@@ -73,6 +73,7 @@ module GlobalRegistry
     # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
 
     # Set self attribute value from Global Registry Entity property and value
+    # rubocop:disable Metrics/MethodLength
     def attribute_from_entity_property(property, value = nil)
       case property.to_sym
       when :id
@@ -91,6 +92,7 @@ module GlobalRegistry
         super(property, value)
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     module ClassMethods
       # Global Registry Entity type

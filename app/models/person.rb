@@ -80,7 +80,7 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     elsif ministry.is_a? Integer
       assignments.find_by(ministry_id: ministry)
     else
-      assignments.includes(:ministry).find_by(ministries:{gr_id: ministry})
+      assignments.includes(:ministry).find_by(ministries: { gr_id: ministry })
     end
   end
 
