@@ -64,7 +64,7 @@ class ChurchFilter
   end
 
   def root_ministry
-    Ministry.find_by(id: @filters[:ministry_id])
+    Ministry.find_by(gr_id: @filters[:ministry_id])
   end
 
   def user_approved
@@ -92,7 +92,7 @@ class ChurchFilter
                    else
                      Church.securities['local_private_church']
                    end
-    table[:ministry_id].eq(@filters[:ministry_id]).and(table[:security].gteq(secure_level))
+    table[:ministry_id].eq(root_ministry.try(:id)).and(table[:security].gteq(secure_level))
   end
 
   def table
