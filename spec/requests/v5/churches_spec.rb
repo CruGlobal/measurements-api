@@ -9,7 +9,7 @@ RSpec.describe 'V5::Churches', type: :request do
     let(:json) { JSON.parse(response.body) }
 
     it 'responds with churches' do
-      get '/v5/churches', { show_all: true, ministy_id: SecureRandom.uuid },
+      get '/v5/churches', { show_all: true, ministy_id: ministry.gr_id },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
 
       expect(response).to be_success

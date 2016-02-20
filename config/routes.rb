@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resources :ministries, only: [:index, :show, :create, :update]
     resources :target_cities, only: [:index, :show, :create, :update]
     resources :training_completion, only: [:create, :update, :destroy]
-    resources :training, only: [:index, :create, :update, :destroy]
+    resources :trainings, only: [:index, :create, :update, :destroy]
     resources :user_preferences, only: [:index, :create]
   end
 

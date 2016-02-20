@@ -9,5 +9,6 @@ class Power
 
   include Powers::AssignmentPowers
   include Powers::ChurchPowers
+  include Powers::TrainingPowers
   include Powers::MinistryPowers
 end
