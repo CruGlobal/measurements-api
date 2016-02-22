@@ -18,6 +18,33 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'POST /v5/trainings' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+    let(:json) { JSON.parse(response.body) }
+
+    let(:attributes) do
+      FactoryGirl.attributes_for(:training, ministry: ministry).merge(ministry_id: ministry.gr_id)
+    end
+
+    context 'as admin' do
+      before do
+        post '/v5/trainings', attributes,
+             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      end
+      it 'creates a training' do
+        expect(response).to be_success
+        expect(Audit.last.message).to end_with attributes[:name]
+        training = Training.last
+        expect(training.name).to eq attributes[:name]
+        expect(training.created_by_id).to eq user.id
+        expect(json['type']).to_not be_nil
+      end
+
+      # we can turn this on when we make the training completions
+      it 'also creates a training completion'
+      # do
+      #   expect(training.completions.count).to eq 1
+      # end
+    end
   end
 
   describe 'PUT /v5/trainings/:id' do

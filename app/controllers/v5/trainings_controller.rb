@@ -39,7 +39,10 @@ module V5
     end
 
     def save_training
-      render json: @training, status: 201 if @training.save
+      return unless @training.save
+      render json: @training,
+             serializer: V5::TrainingSerializer,
+             status: 201
     end
 
     def render_errors
@@ -47,7 +50,7 @@ module V5
     end
 
     def training_params
-      permitted_params = []
+      permitted_params = [:name, :ministry_id, :type, :mcc, :date, :latitude, :longitude, :participants]
       permitted_params = params.permit(permitted_params)
       permitted_params[:created_by_id] = current_user.id
       permitted_params[:ministry_id] = Ministry.find_by(gr_id: permitted_params[:ministry_id]).try(:id)
