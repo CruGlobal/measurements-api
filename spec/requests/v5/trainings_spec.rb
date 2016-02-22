@@ -45,8 +45,66 @@ RSpec.describe 'V5::Churches', type: :request do
       #   expect(training.completions.count).to eq 1
       # end
     end
+
+    context 'as self-assigned' do
+      before do
+        assignment.update(role: 'self_assigned')
+      end
+      it 'fails to create training' do
+        expect do
+          post '/v5/trainings', attributes,
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to_not be_success
+        end.to_not change { Training.count }
+      end
+    end
   end
 
   describe 'PUT /v5/trainings/:id' do
+    let(:training) { FactoryGirl.create(:training, ministry: ministry) }
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+    let(:other_ministry) { FactoryGirl.create(:ministry) }
+
+    let(:json) { JSON.parse(response.body) }
+
+    let(:attributes) { { latitude: 50.5, ministry_id: other_ministry.gr_id } }
+
+    context 'as admin' do
+      it 'updates training' do
+        FactoryGirl.create(:assignment, person: user, ministry: other_ministry, role: 7)
+
+        put "/v5/trainings/#{training.id}", attributes,
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to be_success
+        training.reload
+        expect(training.latitude).to eq attributes[:latitude]
+        expect(training.ministry).to eq other_ministry
+        expect(json['type']).to_not be_nil
+      end
+
+      context 'moving to unapproved ministry' do
+        it 'fails to update training' do
+          put "/v5/trainings/#{training.id}", attributes,
+              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to_not be_success
+        end
+      end
+    end
+
+    context 'as self-assigned' do
+      before do
+        assignment.update(role: 'self_assigned')
+      end
+
+      it 'fails to create training' do
+        put "/v5/trainings/#{training.id}", { latitude: 60.7 },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to_not be_success
+      end
+    end
   end
 end

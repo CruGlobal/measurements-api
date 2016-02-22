@@ -6,7 +6,7 @@ module Powers
       # Power definitions
 
       power :changeable_trainings do
-        Training.where(ministry: @assignment.ministry) unless @assignment.blank? || @assignment.blocked_role?
+        Training.where(ministry: @assignment.ministry) if @assignment.leader_role?
       end
 
       power :trainings do
