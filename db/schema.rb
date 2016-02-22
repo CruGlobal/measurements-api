@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160219221910) do
+ActiveRecord::Schema.define(version: 20160222213157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,17 @@ ActiveRecord::Schema.define(version: 20160219221910) do
     t.datetime "updated_at",   null: false
   end
 
+  create_table "training_completions", force: :cascade do |t|
+    t.integer  "phase"
+    t.integer  "number_completed"
+    t.datetime "date"
+    t.integer  "training_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "training_completions", ["training_id"], name: "index_training_completions_on_training_id", using: :btree
+
   create_table "trainings", force: :cascade do |t|
     t.integer  "ministry_id"
     t.string   "name"
@@ -175,6 +186,7 @@ ActiveRecord::Schema.define(version: 20160219221910) do
   add_foreign_key "churches", "ministries", on_update: :cascade, on_delete: :restrict
   add_foreign_key "churches", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "ministries", "ministries", column: "parent_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "training_completions", "trainings", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "ministries", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "user_content_locales", "ministries", on_update: :cascade, on_delete: :cascade
