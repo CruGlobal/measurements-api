@@ -36,7 +36,7 @@ module V5
     end
 
     def load_assignment
-      @assignment ||= ::Assignment.find_by(assignment_id: params[:id])
+      @assignment ||= ::Assignment.find_by(gr_id: params[:id])
     end
 
     def build_assignment

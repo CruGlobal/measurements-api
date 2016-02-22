@@ -9,7 +9,7 @@ module V5
     end
 
     def id
-      object.assignment_id
+      object.gr_id
     end
   end
 end
