@@ -99,9 +99,39 @@ RSpec.describe 'V5::Churches', type: :request do
         assignment.update(role: 'self_assigned')
       end
 
-      it 'fails to create training' do
+      it 'fails to update training' do
         put "/v5/trainings/#{training.id}", { latitude: 60.7 },
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to_not be_success
+      end
+    end
+  end
+
+  describe 'PUT /v5/trainings/:id' do
+    let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+
+    context 'as admin' do
+      it 'deletes training' do
+        expect do
+          delete "/v5/trainings/#{training.id}", nil,
+                 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to be_success
+        end.to change(Training, :count).by(-1)
+        # .and(change { TrainingCompletion.count }.to(0))
+      end
+    end
+
+    context 'as self-assigned' do
+      before do
+        assignment.update(role: 'self_assigned')
+      end
+
+      it 'fails to delete training' do
+        delete "/v5/trainings/#{training.id}", nil,
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
         expect(response).to_not be_success
       end

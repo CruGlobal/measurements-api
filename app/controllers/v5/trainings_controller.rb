@@ -1,6 +1,6 @@
 module V5
   class TrainingsController < V5::BaseUserController
-    power :trainings, map: { [:create, :update] => :changeable_trainings }, as: :training_scope
+    power :trainings, map: { [:create, :update, :destroy] => :changeable_trainings }, as: :training_scope
 
     def index
       render json: filtered_trainings,
@@ -18,10 +18,16 @@ module V5
       create
     end
 
+    def destroy
+      load_training
+      @training.destroy
+      render nothing: true, status: 201
+    end
+
     private
 
     def request_power
-      ministry_id = if params[:action] == 'update'
+      ministry_id = if params[:action] == 'update' || params[:action] == 'destroy'
                       Training.find_by(id: params[:id]).try(:ministry).try(:gr_id)
                     else
                       params[:ministry_id]

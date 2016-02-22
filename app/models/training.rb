@@ -10,7 +10,7 @@ class Training < ActiveRecord::Base
   validates :mcc, presence: { message: "Could not find required field: 'mcc'" }
   validates :date, presence: { message: "Could not find required field: 'date'" }
 
-  # has_many :completions
+  # has_many :completions, dependent: :destroy
   def completions
     [] # stubbed for now
   end
