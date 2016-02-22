@@ -1,7 +1,7 @@
 class Ministry
   class UserCreatedMinistry < ::Ministry
     validates :min_code, uniqueness: true, on: :create
-    before_validation :generate_min_code, on: :create, if: 'ministry_id.blank?'
+    before_validation :generate_min_code, on: :create, if: 'gr_id.blank?'
 
     # Prefix new ministries min_code with parent min_code if WHQ ministry
     def generate_min_code

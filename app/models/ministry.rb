@@ -18,6 +18,8 @@ class Ministry < ActiveRecord::Base
   has_many :assignments, dependent: :destroy, inverse_of: :ministry
   has_many :people, through: :assignments
 
+  has_many :user_content_locales, dependent: :destroy
+
   auto_strip_attributes :name
 
   validates :name, presence: true

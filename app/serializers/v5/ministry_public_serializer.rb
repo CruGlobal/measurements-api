@@ -1,5 +1,6 @@
 module V5
   class MinistryPublicSerializer < ActiveModel::Serializer
+    # Only renders "public" ministry attributes
     attributes :ministry_id, :name
 
     def ministry_id

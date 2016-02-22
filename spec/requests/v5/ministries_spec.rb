@@ -6,10 +6,6 @@ RSpec.describe 'V5::Ministries', type: :request do
       ministries = []
       ministries << FactoryGirl.create(:ministry)
       ministries << FactoryGirl.create(:ministry)
-      ministries << FactoryGirl.create(:ministry)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
       ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
       ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
       ministries
@@ -17,12 +13,9 @@ RSpec.describe 'V5::Ministries', type: :request do
 
     it 'responds with all ministries' do
       get '/v5/ministries', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
-      json = JSON.parse(response.body)
-
       expect(response).to be_success
+      json = JSON.parse(response.body)
       expect(json.length).to be ministries.length
-      ministry = json.sample
-      expect(ministry.keys).to contain_exactly('ministry_id', 'name')
     end
 
     context 'with refresh=true' do
@@ -46,16 +39,14 @@ RSpec.describe 'V5::Ministries', type: :request do
         get "/v5/ministries/#{ministry.gr_id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly('status', 'reason')
+        expect(json.keys).to contain_exactly('reason')
       end
     end
 
     context 'with an admin or leader assignment' do
       let!(:assignment) do
-        FactoryGirl.create(:assignment,
-                           person_id: person.id,
-                           ministry_id: ministry.id,
-                           role: %i(admin leader).sample)
+        FactoryGirl.create(:assignment, person_id: person.id, ministry_id: ministry.id,
+                                        role: %i(admin leader inherited_admin inherited_leader).sample)
       end
 
       it 'responds with the ministry details' do
@@ -64,45 +55,7 @@ RSpec.describe 'V5::Ministries', type: :request do
 
         expect(response).to be_success
         expect(response).to have_http_status(200)
-        expect(response.body).to include_json(ministry_id: ministry.gr_id,
-                                              min_code: ministry.min_code,
-                                              name: ministry.name,
-                                              location_zoom: ministry.location_zoom,
-                                              location: {
-                                                # Conversion is lossy, compare lossy values
-                                                latitude: ministry.latitude.to_json.to_f,
-                                                longitude: ministry.longitude.to_json.to_f
-                                              })
-      end
-    end
-
-    context 'with an inherited admin/leader assignment' do
-      let!(:assignment) do
-        FactoryGirl.create(:assignment,
-                           person_id: person.id,
-                           ministry_id: ministry.id,
-                           role: %i(admin leader).sample)
-      end
-      let(:sub_ministry) do
-        FactoryGirl.create(:ministry, parent_id: ministry.id, latitude: nil, longitude: nil)
-      end
-
-      it 'responds with the ministry details' do
-        get "/v5/ministries/#{sub_ministry.gr_id}", nil,
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
-
-        expect(response).to be_success
-        expect(response).to have_http_status(200)
-        expect(response.body).to include_json(ministry_id: sub_ministry.gr_id,
-                                              min_code: sub_ministry.min_code,
-                                              name: sub_ministry.name,
-                                              location_zoom: sub_ministry.location_zoom,
-                                              location: {
-                                                # Ministry missing lat/lng should have parent values
-                                                # Conversion is lossy, compare lossy values
-                                                latitude: ministry.latitude.to_json.to_f,
-                                                longitude: ministry.longitude.to_json.to_f
-                                              })
+        expect(response.body).to include_json(ministry_id: ministry.gr_id, min_code: ministry.min_code)
       end
     end
 
@@ -119,8 +72,32 @@ RSpec.describe 'V5::Ministries', type: :request do
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly('status', 'reason')
+        expect(json.keys).to contain_exactly('reason')
       end
     end
   end
+
+  # describe 'POST /v5/ministries' do
+  #   context 'anyone can create a ministry' do
+  #     let(:ministry) { FactoryGirl.build(:ministry) }
+  #     before do
+  #       gr_create_ministry_request(ministry)
+  #     end
+  #     it 'responds successfully with the new ministry' do
+  #       expect do
+  #         post '/v5/ministries', ministry.attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+  #
+  #         expect(response).to be_success
+  #         json = JSON.parse(response.body).with_indifferent_access
+  #         expect(json[:ministry_id]).to be_uuid
+  #         expect(json[:team_members]).to be_an Array
+  #
+  #       end.to change { Ministry.count }.by(1).and(change {Assignments.count}.by(1))
+  #     end
+  #   end
+  #
+  #   context 'does not update existing ministries' do
+  #
+  #   end
+  # end
 end
