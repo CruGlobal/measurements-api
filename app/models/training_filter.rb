@@ -8,7 +8,6 @@ class TrainingFilter
   def filter(trainings)
     filtered_trainings = filter_by_tree(trainings)
     filter_by_time(filtered_trainings)
-    trainings
   end
 
   def filter_by_tree(trainings)
@@ -17,6 +16,10 @@ class TrainingFilter
 
   def filter_by_time(trainings)
     return trainings if clean_filter(:show_all)
+    # where date is within the last year or a completion within the last year
+    trainings.includes(:completions).references(:training_completions)
+             .where('trainings.date > ? or training_completions.date > ?', 1.year.ago, 1.year.ago)
+    # but we can't return that yet since training completions aren't there
     trainings.where('date > ?', 1.year.ago)
   end
 
@@ -24,7 +27,11 @@ class TrainingFilter
 
   # methods that tell us about the user and the ministry they are requesting
   def ministry_list
-    root_ministry.descendants_ids + [root_ministry.id]
+    if clean_filter(:show_tree)
+      root_ministry.descendants_ids + [root_ministry.id]
+    else
+      root_ministry.id
+    end
   end
 
   def root_ministry
