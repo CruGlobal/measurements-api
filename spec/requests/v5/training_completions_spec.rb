@@ -95,5 +95,32 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
   end
 
   describe 'DELETE /v5/training_completion/:id' do
+    let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
+
+    context 'as admin' do
+      it 'deletes completion' do
+        expect do
+          delete "/v5/training_completion/#{completion.id}", nil,
+                 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to be_success
+        end.to change(TrainingCompletion, :count).by(-1)
+      end
+    end
+
+    context 'as self-assigned' do
+      before do
+        assignment.update(role: 'self_assigned')
+      end
+
+      it 'fails to delete completion' do
+        expect do
+          delete "/v5/training_completion/#{completion.id}", nil,
+                 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to_not be_success
+        end.to_not change(TrainingCompletion, :count)
+      end
+    end
   end
 end
