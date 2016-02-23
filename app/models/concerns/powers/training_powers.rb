@@ -7,6 +7,11 @@ module Powers
       power :trainings do
         Training.where(ministry: @assignment.ministry) if @assignment.leader_role?
       end
+
+      power :training_completions do
+        return unless @assignment.leader_role?
+        TrainingCompletion.includes(:training).where(trainings: { ministry_id: @assignment.ministry.id })
+      end
     end
 
     def assignable_training_ministries
