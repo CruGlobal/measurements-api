@@ -22,7 +22,8 @@ RSpec.describe 'V5::Churches', type: :request do
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
-      FactoryGirl.attributes_for(:training, ministry: ministry).merge(ministry_id: ministry.gr_id)
+      FactoryGirl.attributes_for(:training, ministry: ministry)
+                 .merge(ministry_id: ministry.gr_id, participants: 6)
     end
 
     context 'as admin' do
@@ -39,11 +40,10 @@ RSpec.describe 'V5::Churches', type: :request do
         expect(json['type']).to_not be_nil
       end
 
-      # we can turn this on when we make the training completions
-      it 'also creates a training completion'
-      # do
-      #   expect(training.completions.count).to eq 1
-      # end
+      it 'also creates a training completion' do
+        training = Training.last
+        expect(training.completions.count).to eq 1
+      end
     end
 
     context 'as self-assigned' do
