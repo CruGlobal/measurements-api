@@ -1,6 +1,6 @@
 module V5
   class TrainingsController < V5::BaseUserController
-    power :trainings, map: { [:create, :update, :destroy] => :changeable_trainings }, as: :training_scope
+    power :trainings, as: :training_scope
 
     def index
       render json: filtered_trainings,

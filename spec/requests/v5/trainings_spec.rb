@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'V5::Churches', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
+  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
 
   describe 'GET /v5/training' do
     let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
@@ -10,7 +11,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
     it 'responds with trainings' do
       get '/v5/training', { ministry_id: ministry.gr_id },
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
       expect(response).to be_success
       expect(json.first['id']).to be training.id
@@ -18,7 +19,6 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'POST /v5/training' do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
@@ -63,7 +63,6 @@ RSpec.describe 'V5::Churches', type: :request do
 
   describe 'PUT /v5/training/:id' do
     let(:training) { FactoryGirl.create(:training, ministry: ministry) }
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:other_ministry) { FactoryGirl.create(:ministry) }
 
     let(:json) { JSON.parse(response.body) }
@@ -111,7 +110,6 @@ RSpec.describe 'V5::Churches', type: :request do
   describe 'DELETE /v5/training/:id' do
     let(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
 
     context 'as admin' do
       it 'deletes training' do

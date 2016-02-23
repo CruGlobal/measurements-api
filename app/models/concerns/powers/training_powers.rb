@@ -4,13 +4,8 @@ module Powers
 
     included do
       # Power definitions
-
-      power :changeable_trainings do
-        Training.where(ministry: @assignment.ministry) if @assignment.leader_role?
-      end
-
       power :trainings do
-        Training.all
+        Training.where(ministry: @assignment.ministry) if @assignment.leader_role?
       end
     end
 
