@@ -3,7 +3,11 @@ require 'rails_helper'
 describe V5::TrainingSerializer do
   describe 'single training' do
     let(:ministry) { FactoryGirl.build(:ministry) }
-    let(:resource) { FactoryGirl.create(:training, ministry: ministry) }
+    let(:resource) do
+      t = FactoryGirl.build_stubbed(:training, ministry: ministry)
+      t.completions.build(phase: 1, number_completed: 20, date: t.date)
+      t
+    end
     let(:serializer) { V5::TrainingSerializer.new(resource) }
     let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
@@ -18,6 +22,8 @@ describe V5::TrainingSerializer do
       expect(hash[:latitude]).to_not be_nil
       expect(hash[:longitude]).to_not be_nil
       expect(hash[:gcm_training_completions]).to be_an Array
+      # this will tell us if it is using the TrainingCompletionsSerializer
+      expect(hash[:gcm_training_completions].first[:date].length).to be 10
     end
   end
 end

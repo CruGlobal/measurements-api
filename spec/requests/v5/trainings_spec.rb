@@ -109,7 +109,8 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'PUT /v5/trainings/:id' do
-    let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
+    let(:training) { FactoryGirl.create(:training, ministry: ministry) }
+    let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
 
     context 'as admin' do
@@ -120,7 +121,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
           expect(response).to be_success
         end.to change(Training, :count).by(-1)
-        # .and(change { TrainingCompletion.count }.to(0))
+          .and(change { TrainingCompletion.count }.to(0))
       end
     end
 

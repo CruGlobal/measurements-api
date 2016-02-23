@@ -1,8 +1,8 @@
 module V5
   class TrainingSerializer < ActiveModel::Serializer
-    attributes :id, :id, :ministry_id, :name, :date, :type, :mcc, :latitude, :longitude
+    attributes :id, :ministry_id, :name, :date, :type, :mcc, :latitude, :longitude
 
-    has_many :completions, key: :gcm_training_completions
+    has_many :completions, key: :gcm_training_completions, serializer: TrainingCompletionSerializer
 
     def ministry_id
       object.ministry.gr_id
