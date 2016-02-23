@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'V5::Churches', type: :request do
+RSpec.describe 'V5::TrainingCompletions', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
   let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
@@ -49,5 +49,51 @@ RSpec.describe 'V5::Churches', type: :request do
         end.to_not change(TrainingCompletion, :count)
       end
     end
+  end
+
+  describe 'PUT /v5/training_completion/:id' do
+    let(:completion) { FactoryGirl.create(:training_completion, training: training) }
+    let(:other_local_training) { FactoryGirl.create(:training, ministry: ministry) }
+
+    let(:attributes) { { number_completed: 50, date: '2014-12-1' } }
+
+    context 'as admin' do
+      it 'updates completion' do
+        put "/v5/training_completion/#{completion.id}", attributes,
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to be_success
+        completion.reload
+        expect(completion.number_completed).to be 50
+        expect(json['training_id']).to be training.id
+      end
+
+      context 'moving to other training' do
+        it 'fails to update completion' do
+          put "/v5/training_completion/#{completion.id}",
+              attributes.merge(training_id: other_local_training.id),
+              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          completion.reload
+          expect(completion.training).to eq training
+        end
+      end
+    end
+
+    context 'as self-assigned' do
+      before do
+        assignment.update(role: 'self_assigned')
+      end
+
+      it 'fails to update completion' do
+        put "/v5/training_completion/#{completion.id}", { number_completed: 30 },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to_not be_success
+      end
+    end
+  end
+
+  describe 'DELETE /v5/training_completion/:id' do
   end
 end

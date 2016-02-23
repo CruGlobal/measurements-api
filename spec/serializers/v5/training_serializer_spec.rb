@@ -6,6 +6,7 @@ describe V5::TrainingSerializer do
     let(:resource) do
       t = FactoryGirl.build_stubbed(:training, ministry: ministry)
       t.completions.build(phase: 1, number_completed: 20, date: t.date)
+      t.completions.build(phase: 2, number_completed: 30, date: t.date + 1.month)
       t
     end
     let(:serializer) { V5::TrainingSerializer.new(resource) }
@@ -22,6 +23,7 @@ describe V5::TrainingSerializer do
       expect(hash[:latitude]).to_not be_nil
       expect(hash[:longitude]).to_not be_nil
       expect(hash[:gcm_training_completions]).to be_an Array
+      expect(hash[:gcm_training_completions].length).to be 2
       # this will tell us if it is using the TrainingCompletionsSerializer
       expect(hash[:gcm_training_completions].first[:date].length).to be 10
     end
