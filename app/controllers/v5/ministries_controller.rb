@@ -45,6 +45,7 @@ module V5
 
     def build_ministry
       @ministry ||= current_power.create_ministry.new
+      @ministry.created_by = current_user if @ministry.respond_to? :created_by=
       @ministry.attributes = ministry_params
       @ministry.save
     end
@@ -67,10 +68,17 @@ module V5
       render json: @ministry, status: status, serializer: MinistrySerializer if @ministry
     end
 
+    def render_errors
+      render json: @ministry.errors.messages, status: :bad_request
+    end
+
     def ministry_params
       valid_params = %i(name parent_id min_code lmi_show lmi_hide mccs ministry_scope
                         default_mcc hide_reports_tab location location_zoom)
-      post_params.permit valid_params
+      permitted_params = post_params.permit valid_params
+      permitted_params[:parent_id] =
+        Ministry.ministry(permitted_params[:parent_id]).try(:id) if permitted_params.key? :parent_id
+      permitted_params
     end
 
     protected
@@ -91,8 +99,8 @@ module V5
 
     def render_consul_powerless(exception)
       case params[:action].to_sym
-      when :show
-        api_error 'INSUFFICIENT_RIGHTS - You must be a member of one of the following roles:' \
+      when :show, :update
+        api_error 'INSUFFICIENT_RIGHTS - You must be a member of one of the following roles: ' \
          "#{Assignment::LEADER_ROLES.join(', ')}.", status: :unauthorized
       else
         super

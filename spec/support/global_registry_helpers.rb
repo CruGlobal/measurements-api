@@ -27,7 +27,7 @@ module GlobalRegistryHelpers
 
   def gr_create_ministry_request(ministry = nil)
     ministry ||= FactoryGirl.create(:ministry)
-    response = { ministry: { id: SecureRandom.uuid, client_integration_id: ministry.min_code } }
+    response = { ministry: { id: ministry.gr_id, client_integration_id: ministry.min_code } }
     WebMock
       .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
       .to_return(status: 201, body: { entity: response }.to_json, headers: {})

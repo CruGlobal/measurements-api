@@ -1,7 +1,7 @@
 class Training
   class UserCreatedTraining < ::Training
-    after_save :write_audit
-    after_save :create_first_completion
+    after_create :write_audit
+    after_create :create_first_completion
 
     attr_accessor :participants
 

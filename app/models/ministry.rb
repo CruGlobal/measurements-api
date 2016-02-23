@@ -26,6 +26,10 @@ class Ministry < ActiveRecord::Base
   validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
                           unless: 'default_mcc.blank?'
 
+  authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
+
+  after_save :update_all_assignments, if: 'parent_id_changed?'
+
   # Find Ministry by gr_id, update from Global Registry if nil or refresh is true
   def self.ministry(gr_id, refresh = false)
     ministry = find_by(gr_id: gr_id)
@@ -51,5 +55,9 @@ class Ministry < ActiveRecord::Base
     return nil if ministry.nil?
     return ministry if SCOPES.include?(ministry.ministry_scope)
     parent_whq_ministry(ministry.parent)
+  end
+
+  def update_all_assignments
+    # ap 'Should Update Assignments'
   end
 end

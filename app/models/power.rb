@@ -11,4 +11,8 @@ class Power
   include Powers::ChurchPowers
   include Powers::TrainingPowers
   include Powers::MinistryPowers
+
+  protected
+
+  attr_reader :user, :assignment
 end
