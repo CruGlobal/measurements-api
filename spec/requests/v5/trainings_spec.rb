@@ -4,12 +4,12 @@ RSpec.describe 'V5::Churches', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
 
-  describe 'GET /v5/trainings' do
+  describe 'GET /v5/training' do
     let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let(:json) { JSON.parse(response.body) }
 
     it 'responds with trainings' do
-      get '/v5/trainings', { ministry_id: ministry.gr_id },
+      get '/v5/training', { ministry_id: ministry.gr_id },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
 
       expect(response).to be_success
@@ -17,7 +17,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
   end
 
-  describe 'POST /v5/trainings' do
+  describe 'POST /v5/training' do
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
@@ -28,7 +28,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
     context 'as admin' do
       before do
-        post '/v5/trainings', attributes,
+        post '/v5/training', attributes,
              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
       end
       it 'creates a training' do
@@ -52,7 +52,7 @@ RSpec.describe 'V5::Churches', type: :request do
       end
       it 'fails to create training' do
         expect do
-          post '/v5/trainings', attributes,
+          post '/v5/training', attributes,
                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
           expect(response).to_not be_success
@@ -61,7 +61,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
   end
 
-  describe 'PUT /v5/trainings/:id' do
+  describe 'PUT /v5/training/:id' do
     let(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:other_ministry) { FactoryGirl.create(:ministry) }
@@ -74,7 +74,7 @@ RSpec.describe 'V5::Churches', type: :request do
       it 'updates training' do
         FactoryGirl.create(:assignment, person: user, ministry: other_ministry, role: 7)
 
-        put "/v5/trainings/#{training.id}", attributes,
+        put "/v5/training/#{training.id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
         expect(response).to be_success
@@ -86,7 +86,7 @@ RSpec.describe 'V5::Churches', type: :request do
 
       context 'moving to unapproved ministry' do
         it 'fails to update training' do
-          put "/v5/trainings/#{training.id}", attributes,
+          put "/v5/training/#{training.id}", attributes,
               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
           expect(response).to_not be_success
@@ -100,7 +100,7 @@ RSpec.describe 'V5::Churches', type: :request do
       end
 
       it 'fails to update training' do
-        put "/v5/trainings/#{training.id}", { latitude: 60.7 },
+        put "/v5/training/#{training.id}", { latitude: 60.7 },
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
         expect(response).to_not be_success
@@ -108,7 +108,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
   end
 
-  describe 'PUT /v5/trainings/:id' do
+  describe 'DELETE /v5/training/:id' do
     let(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
@@ -116,7 +116,7 @@ RSpec.describe 'V5::Churches', type: :request do
     context 'as admin' do
       it 'deletes training' do
         expect do
-          delete "/v5/trainings/#{training.id}", nil,
+          delete "/v5/training/#{training.id}", nil,
                  'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
           expect(response).to be_success
@@ -131,7 +131,7 @@ RSpec.describe 'V5::Churches', type: :request do
       end
 
       it 'fails to delete training' do
-        delete "/v5/trainings/#{training.id}", nil,
+        delete "/v5/training/#{training.id}", nil,
                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
         expect(response).to_not be_success

@@ -9,8 +9,8 @@ Rails.application.routes.draw do
     resources :measurements, only: [:index, :show, :create]
     resources :ministries, only: [:index, :show, :create, :update]
     resources :target_cities, only: [:index, :show, :create, :update]
-    resources :training_completion, only: [:create, :update, :destroy]
-    resources :trainings, only: [:index, :create, :update, :destroy]
+    resources :training_completions, only: [:create, :update, :destroy], path: 'training_completion'
+    resources :trainings, only: [:index, :create, :update, :destroy], path: 'training'
     resources :user_preferences, only: [:index, :create]
   end
 
