@@ -34,7 +34,7 @@ module Powers
               .where(assignments: Assignment.leader_condition)
     end
 
-    def assignable_church_ministries_on_create
+    def assignable_church_user_created_church_ministries
       # assigment.ministry_id is going to be the id the user is trying to create a church on
       [@assignment.ministry] if @assignment.present? && !@assignment.blocked?
     end

@@ -21,7 +21,7 @@ module Powers
               .where(assignments: Assignment.leader_condition)
     end
 
-    def assignable_training_ministries_on_create
+    def assignable_training_user_created_training_ministries
       # assigment.ministry_id is going to be the id the user is trying to create a training on
       [@assignment.ministry] if @assignment.present? && !@assignment.blocked?
     end

@@ -21,8 +21,12 @@ module V5
     private
 
     def request_power
-      ministry = Training.find_by(id: params[:training_id]).try(:ministry)
-      Power.new(current_user, ministry)
+      training = if params[:action] == 'update' || params[:action] == 'destroy'
+                   TrainingCompletion.find_by(id: params[:id]).try(:training)
+                 else
+                   Training.find_by(id: params[:training_id])
+                 end
+      Power.new(current_user, training.try(:ministry))
     end
 
     def load_training_completion

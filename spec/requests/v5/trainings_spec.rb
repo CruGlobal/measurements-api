@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'V5::Churches', type: :request do
+RSpec.describe 'V5::Trainings', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
   let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }

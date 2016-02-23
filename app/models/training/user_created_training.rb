@@ -15,8 +15,6 @@ class Training
       completions.create(phase: 1, number_completed: participants, date: date)
     end
 
-    assignable_values_for :ministry do
-      Power.current.assignable_training_ministries_on_create
-    end
+    authorize_values_for :ministry
   end
 end

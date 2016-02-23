@@ -7,8 +7,6 @@ class Church
                    message: "A new church created by #{created_by.full_name}: #{name}")
     end
 
-    assignable_values_for :ministry do
-      Power.current.assignable_church_ministries_on_create
-    end
+    authorize_values_for :ministry
   end
 end
