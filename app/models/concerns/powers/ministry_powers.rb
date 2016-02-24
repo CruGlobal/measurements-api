@@ -23,7 +23,7 @@ module Powers
     def assignable_ministry_parent_ids
       # All Ministries of which user has a leader role
       ids = Ministry.includes(:assignments).where(assignments: { person: user })
-              .where(assignments: Assignment.leader_condition).pluck(:id)
+                    .where(assignments: Assignment.leader_condition).pluck(:id)
       # Direct Leaders of this ministry may remove the parent
       ids << nil if assignment.present? && assignment.leader_role?(false)
       ids

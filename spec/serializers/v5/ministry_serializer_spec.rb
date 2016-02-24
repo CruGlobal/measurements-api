@@ -43,19 +43,19 @@ RSpec.describe V5::MinistrySerializer do
     end
 
     it 'have correct attribute values' do
-      expect(json[:ministry_id]).to be ministry.gr_id
-      expect(json[:parent_id]).to be parent.gr_id
-      expect(json[:name]).to be ministry.name
-      expect(json[:min_code]).to be ministry.min_code
-      expect(json[:ministry_id]).to be ministry.gr_id
-      expect(json[:location_zoom]).to be ministry.location_zoom
-      expect(json[:hide_reports_tab]).to be ministry.hide_reports_tab
+      expect(json[:ministry_id]).to eq(ministry.gr_id)
+      expect(json[:parent_id]).to eq(parent.gr_id)
+      expect(json[:name]).to eq(ministry.name)
+      expect(json[:min_code]).to eq(ministry.min_code)
+      expect(json[:ministry_id]).to eq(ministry.gr_id)
+      expect(json[:location_zoom]).to eq(ministry.location_zoom)
+      expect(json[:hide_reports_tab]).to eq(ministry.hide_reports_tab)
       expect(json[:lmi_show]).to match_array(ministry.lmi_show)
       expect(json[:lmi_hide]).to match_array(ministry.lmi_hide)
       expect(json[:mccs]).to match_array(ministry.mccs)
       expect(json[:content_locales]).to match_array(ministry.user_content_locales.pluck(:locale).uniq)
-      expect(json[:team_members].length).to be ministry.assignments.length
-      expect(json[:sub_ministries].length).to be ministry.children.length
+      expect(json[:team_members].length).to eq(ministry.assignments.length)
+      expect(json[:sub_ministries].length).to eq(ministry.children.length)
     end
   end
 end

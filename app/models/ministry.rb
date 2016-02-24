@@ -12,8 +12,7 @@ class Ministry < ActiveRecord::Base
   include GlobalRegistry::EntityMethods
   include GlobalRegistry::Ministry
 
-  has_many :children, class_name: 'Ministry', foreign_key: :parent_id
-  belongs_to :parent, class_name: 'Ministry'
+  acts_as_nested_set dependent: :nullify
 
   has_many :assignments, dependent: :destroy, inverse_of: :ministry
   has_many :people, through: :assignments

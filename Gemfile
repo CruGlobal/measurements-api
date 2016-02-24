@@ -25,6 +25,7 @@ gem 'auto_strip_attributes', '~> 2.0'
 gem 'arel'
 gem 'consul'
 gem 'assignable_values'
+gem 'awesome_nested_set'
 
 group :development, :test do
   gem 'dotenv-rails'

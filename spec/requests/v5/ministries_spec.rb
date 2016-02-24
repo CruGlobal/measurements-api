@@ -46,7 +46,7 @@ RSpec.describe 'V5::Ministries', type: :request do
     context 'with an admin or leader assignment' do
       let!(:assignment) do
         FactoryGirl.create(:assignment, person_id: person.id, ministry_id: ministry.id,
-                                        role: %i(admin leader inherited_admin inherited_leader).sample)
+                                        role: %i(admin leader).sample)
       end
 
       it 'responds with the ministry details' do
