@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160222213157) do
+ActiveRecord::Schema.define(version: 20160224193932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,25 @@ ActiveRecord::Schema.define(version: 20160222213157) do
 
   add_index "churches", ["gr_id"], name: "index_churches_on_gr_id", unique: true, using: :btree
   add_index "churches", ["parent_id"], name: "index_churches_on_parent_id", using: :btree
+
+  create_table "measurements", force: :cascade do |t|
+    t.string   "perm_link"
+    t.string   "english"
+    t.string   "description"
+    t.string   "section"
+    t.string   "column"
+    t.integer  "sort_order"
+    t.uuid     "total_id"
+    t.uuid     "local_id"
+    t.uuid     "person_id"
+    t.boolean  "stage"
+    t.integer  "parent_id"
+    t.boolean  "leader_only"
+    t.boolean  "supported_staff_only"
+    t.string   "mcc_filter"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "ministries", force: :cascade do |t|
     t.uuid     "gr_id"
