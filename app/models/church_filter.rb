@@ -22,7 +22,7 @@ class ChurchFilter
   end
 
   def filter_tree_and_show_all(churches)
-    if Power.current && !Power.current.role_approved
+    if Power.current && !Power.current.role_approved?
       return churches.where(public) if clean_filter(:show_all)
       return Church.none
     end

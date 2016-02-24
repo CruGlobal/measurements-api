@@ -58,6 +58,5 @@ class Ministry < ActiveRecord::Base
   end
 
   def update_all_assignments
-    # ap 'Should Update Assignments'
   end
 end

@@ -4,9 +4,10 @@ module Powers
 
     included do
       # Power definitions
-      power :role_approved do
-        @assignment.present? && @assignment.approved_role?
-      end
+    end
+
+    def role_approved?
+      @assignment.present? && @assignment.approved_role?
     end
   end
 end
