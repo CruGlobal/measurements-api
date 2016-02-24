@@ -76,7 +76,7 @@ module GlobalRegistry
 
       # Find Entities (internally uses find_entities_in_batches)
       def find_entities_each(params = {})
-        fail 'block required' unless block_given?
+        raise 'block required' unless block_given?
         find_entities_in_batches(params) do |entities|
           entities.each do |entity|
             next unless entity.key? params[:entity_type]
@@ -87,7 +87,7 @@ module GlobalRegistry
 
       # Find Entities in paged batches
       def find_entities_in_batches(params = {})
-        fail 'block required' unless block_given?
+        raise 'block required' unless block_given?
         params['page'] = 1 unless params.key? 'page'
         params['per_page'] = 50 unless params.key? 'per_page'
         loop do

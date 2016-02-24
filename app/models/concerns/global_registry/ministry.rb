@@ -107,7 +107,7 @@ module GlobalRegistry
       end
 
       def all_gr_ministries
-        fail 'block required' unless block_given?
+        raise 'block required' unless block_given?
         all_active_ministries do |entity|
           yield entity
         end
@@ -118,7 +118,7 @@ module GlobalRegistry
 
       # Find id, name for all active ministries
       def all_active_ministries
-        fail 'block required' unless block_given?
+        raise 'block required' unless block_given?
         find_entities_each(
           entity_type: 'ministry',
           levels: 0,
@@ -132,7 +132,7 @@ module GlobalRegistry
 
       # Find id, name for all ministries missing the active property
       def all_ministries_missing_active
-        fail 'block required' unless block_given?
+        raise 'block required' unless block_given?
         find_entities_each(
           entity_type: 'ministry',
           levels: 0,
