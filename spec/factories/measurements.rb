@@ -1,14 +1,14 @@
 FactoryGirl.define do
   factory :measurement do
-    perm_link 'MyString'
+    perm_link 'lmi_total_my_string'
     english 'MyString'
     description 'MyString'
     section 'MyString'
     column 'MyString'
     sort_order 1
-    total_id ''
-    local_id ''
-    person_id ''
+    total_id { SecureRandom.uuid }
+    local_id { SecureRandom.uuid }
+    person_id { SecureRandom.uuid }
     stage false
     parent_id nil
     leader_only false

@@ -7,6 +7,9 @@ module V5
     end
 
     def show
+      render json: load_measurement,
+             serializer: V5::MeasurementTypeSerializer,
+             scope: { ministry_id: ministry.id, locale: params[:locale] }
     end
 
     def create
@@ -16,6 +19,13 @@ module V5
     end
 
     private
+
+    def load_measurement
+      @measurement ||= Measurement.find_by(total_id: params[:id])
+      @measurement ||= Measurement.find_by('perm_link = ? OR perm_link = ?',
+                                           "lmi_total_#{params[:id]}",
+                                           "lmi_total_custom_#{params[:id]}")
+    end
 
     def ministry
       Ministry.find_by(gr_id: params[:ministry_id])
