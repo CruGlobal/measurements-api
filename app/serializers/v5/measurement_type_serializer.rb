@@ -33,7 +33,7 @@ module V5
     end
 
     def locale
-      if object.measurement_translations.where(language: scope[:locale], ministry: scope[:ministry]).any?
+      if object.measurement_translations.where(language: scope[:locale], ministry_id: scope[:ministry_id]).any?
         scope[:locale]
       else
         'en'

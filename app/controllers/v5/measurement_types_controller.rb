@@ -3,7 +3,7 @@ module V5
     def index
       render json: Measurement.all,
              each_serializer: V5::MeasurementTypeSerializer,
-             scope: { ministry_id: params[:ministry_id], locale: params[:locale] }
+             scope: { ministry_id: ministry.id, locale: params[:locale] }
     end
 
     def show
@@ -13,6 +13,12 @@ module V5
     end
 
     def update
+    end
+
+    private
+
+    def ministry
+      Ministry.find_by(gr_id: params[:ministry_id])
     end
   end
 end

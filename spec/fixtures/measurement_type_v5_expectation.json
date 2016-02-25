@@ -1,0 +1,19 @@
+{
+  "perm_link_stub": "build_holyspirit",
+  "perm_link": "lmi_total_build_holyspirit",
+  "is_custom": false,
+  "english": "Presenting the Holy Spirit",
+  "description": "Number of people",
+  "section": "build",
+  "column": "faith",
+  "sort_order": 11,
+  "total_id": "5a5cdcde-d55a-11e3-b358-12725f8f377c",
+  "local_id": "b65aaf6e-b13e-11e4-98a3-12c37bb2d521",
+  "person_id": "72157726-b13e-11e4-98a2-12c37bb2d521",
+  "leader_only": false,
+  "supported_staff_only": false,
+  "id": 1,
+  "localized_name": "Présenter le Saint-Esprit",
+  "localized_description": "Nombre de personnes",
+  "locale": "fr"
+}

@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :measurements_translation do
+  factory :measurement_translation do
     measurement nil
     language 'MyString'
     name 'MyString'
