@@ -22,9 +22,7 @@ module V5
 
     def load_measurement
       @measurement ||= Measurement.find_by(total_id: params[:id])
-      @measurement ||= Measurement.find_by('perm_link = ? OR perm_link = ?',
-                                           "lmi_total_#{params[:id]}",
-                                           "lmi_total_custom_#{params[:id]}")
+      @measurement ||= Measurement.find_by_perm_link(params[:id])
     end
 
     def ministry
