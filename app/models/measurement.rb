@@ -1,4 +1,22 @@
 class Measurement < ActiveRecord::Base
   belongs_to :parent, class_name: 'Measurement'
-  has_many :measurements_translations
+  has_many :measurement_translations
+
+  def perm_link_stub
+    perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
+  end
+
+  def localized_name(language, ministry)
+    ministry = ministry.id if ministry.is_a? Ministry
+    translation = measurement_translations.find_by(language: language, ministry: ministry)
+    return english unless translation
+    translation.name
+  end
+
+  def localized_description(language, ministry)
+    ministry = ministry.id if ministry.is_a? Ministry
+    translation = measurement_translations.find_by(language: language, ministry: ministry)
+    return description unless translation
+    translation.description
+  end
 end

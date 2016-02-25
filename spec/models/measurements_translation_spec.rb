@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-RSpec.describe MeasurementsTranslation, type: :model do
+RSpec.describe MeasurementTranslation, type: :model do
 end
