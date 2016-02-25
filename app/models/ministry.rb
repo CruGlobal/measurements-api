@@ -14,6 +14,13 @@ class Ministry < ActiveRecord::Base
 
   acts_as_nested_set dependent: :nullify
 
+  scope :inherited_ministries, lambda { |person|
+    joins(inherited_ministry_join)
+      .joins(assignment_join)
+      .where(assignments: { person_id: person.id })
+      .distinct
+  }
+
   has_many :assignments, dependent: :destroy, inverse_of: :ministry
   has_many :people, through: :assignments
 
@@ -26,8 +33,6 @@ class Ministry < ActiveRecord::Base
                           unless: 'default_mcc.blank?'
 
   authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
-
-  after_save :update_all_assignments, if: 'parent_id_changed?'
 
   # Find Ministry by gr_id, update from Global Registry if nil or refresh is true
   def self.ministry(gr_id, refresh = false)
@@ -56,6 +61,30 @@ class Ministry < ActiveRecord::Base
     parent_whq_ministry(ministry.parent)
   end
 
-  def update_all_assignments
+  class << self
+    private
+
+    # Arel methods
+    def inherited_ministry_join
+      arel_table
+        .join(arel_table.alias('self'))
+        .on(inherited_left_condition.and(inherited_right_condition))
+        .join_sources
+    end
+
+    def inherited_left_condition
+      arel_table.alias('self')[left_column_name].lteq(arel_table[left_column_name])
+    end
+
+    def inherited_right_condition
+      arel_table.alias('self')[right_column_name].gteq(arel_table[right_column_name])
+    end
+
+    def assignment_join
+      arel_table
+        .join(Assignment.arel_table)
+        .on(Assignment.arel_table[:ministry_id].eq(arel_table.alias('self')[:id]))
+        .join_sources
+    end
   end
 end

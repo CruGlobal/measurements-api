@@ -21,6 +21,7 @@ class Assignment < ActiveRecord::Base
   validates :role, inclusion: { in: VALID_INPUT_ROLES, message: '\'%{value}\' is not a valid Team Role' }
 
   scope :leaders, -> { where(leader_condition) }
+  scope :local_leaders, -> { where(local_leader_condition) }
 
   def approved_role?
     APPROVED_ROLES.include? role
@@ -32,6 +33,10 @@ class Assignment < ActiveRecord::Base
 
   def self.leader_condition
     { role: roles.slice(*LEADER_ROLES).values }
+  end
+
+  def self.local_leader_condition
+    { role: roles.slice(*LOCAL_LEADER_ROLES).values }
   end
 
   def inherited_role?

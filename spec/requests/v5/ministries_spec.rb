@@ -82,15 +82,14 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:person) { FactoryGirl.create(:person) }
       context 'with required attributes' do
         let(:ministry) { FactoryGirl.build(:ministry) }
-        before do
-          gr_create_ministry_request(ministry)
-        end
+        let!(:gr_ministry) { gr_create_ministry_request(ministry) }
         it 'responds successfully with the new ministry' do
           expect do
             post '/v5/ministries', ministry.attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
             expect(response).to be_success
             expect(response).to have_http_status(201)
+            # expect(gr_ministry).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
             expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
 
