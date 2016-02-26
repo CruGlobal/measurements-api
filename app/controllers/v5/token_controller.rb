@@ -1,6 +1,7 @@
 module V5
   class TokenController < V5::BaseUserController
     before_action :authenticate_request, except: [:index]
+    around_filter :with_current_power, except: [:index]
 
     def index
       api_error "You must pass in a service ticket ('st' parameter)" and return if params[:st].blank?
