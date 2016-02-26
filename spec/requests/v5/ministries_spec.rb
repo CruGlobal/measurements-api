@@ -125,7 +125,7 @@ RSpec.describe 'V5::Ministries', type: :request do
       context 'as leader of parent ministry' do
         let!(:assignment) do
           FactoryGirl.create(:assignment, ministry: parent, person: person,
-                                          role: %i(admin leader inherited_admin inherited_leader).sample)
+                                          role: %i(admin leader).sample)
         end
 
         it 'responds successfully with new ministry' do
@@ -162,11 +162,13 @@ RSpec.describe 'V5::Ministries', type: :request do
     let(:person) { FactoryGirl.create(:person) }
     context 'unknown ministry' do
       let(:ministry) { FactoryGirl.build(:ministry) }
+      let!(:gr_request_stub) { gr_get_invalid_ministry_request(ministry) }
 
       it 'responds with HTTP 401' do
         put "/v5/ministries/#{ministry.gr_id}", ministry.attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
+        expect(gr_request_stub).to have_been_requested
         expect(response).to_not be_success
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body).with_indifferent_access
@@ -192,7 +194,7 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:ministry) { FactoryGirl.create(:ministry) }
       let!(:assignment) do
         FactoryGirl.create(:assignment, ministry: ministry, person: person,
-                                        role: %i(admin leader inherited_admin inherited_leader).sample)
+                                        role: %i(admin leader).sample)
       end
 
       context 'change basic attributes' do
@@ -226,7 +228,7 @@ RSpec.describe 'V5::Ministries', type: :request do
         let(:other) { FactoryGirl.create(:ministry) }
         let!(:other_assignment) do
           FactoryGirl.create(:assignment, ministry: other, person: person,
-                                          role: %i(admin leader inherited_admin inherited_leader).sample)
+                                          role: %i(admin leader).sample)
         end
 
         it 'responds successfully with updated ministry' do

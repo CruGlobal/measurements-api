@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Ministry, type: :model do
-
   describe 'scope: inherited_ministries(person)' do
     let(:person) { FactoryGirl.create(:person) }
     let!(:ministries) do
