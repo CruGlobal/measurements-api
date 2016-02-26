@@ -17,7 +17,8 @@ class Ministry < ActiveRecord::Base
   scope :inherited_ministries, lambda { |person|
     joins(inherited_ministry_join)
       .joins(assignment_join)
-      .where(assignments: { person_id: person.id })
+      .where(assignments: { person_id: person.id } )
+      .where(assignments: Assignment.local_leader_condition)
       .distinct
   }
 

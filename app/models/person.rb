@@ -99,10 +99,6 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     inherited_assignment_for_ministry(ministry).try(:role)
   end
 
-  def inherited_leader_ministries
-    Ministry.inherited_ministries(self).where(assignments: Assignment.local_leader_condition)
-  end
-
   def self.entity_type
     'person'
   end
