@@ -9,31 +9,31 @@ module Powers
       end
 
       power :show_ministry do
-        # Only leaders may show or update a ministry
-        assignment.ministry if assignment.present? && assignment.leader_role?
+        # Only leaders/inherited leaders may show or update a ministry
+        ministry if inherited_assignment.present?
       end
 
       power :create_ministry do
-        # current Power is for parent ministry
+        # current Assignment is for parent ministry
         # Anyone can create Ministries, only leaders of a ministry can create sub-ministries
-        ::Ministry::UserCreatedMinistry unless assignment.present? && !assignment.leader_role?
+        ::Ministry::UserCreatedMinistry unless ministry.present? && inherited_assignment.blank?
       end
     end
 
     def assignable_ministry_parent_ids
-      # All Ministries of which user has a leader role
-      ids = Ministry.includes(:assignments).where(assignments: { person: user })
-                    .where(assignments: Assignment.leader_condition).pluck(:id)
-      # Direct Leaders of this ministry may remove the parent
+      # All Inherited ministries (admin/leader ancestors)
+      ids = Ministry.inherited_ministries(user).pluck(:id)
+      # Direct Leaders of this ministry may orphan the ministry
       ids << nil if assignment.present? && assignment.leader_role?(false)
       ids
     end
 
     def assignable_ministry_user_created_ministry_parent_ids
-      # All Ministries of which user has a leader role
-      ids = assignable_ministry_parent_ids
+      # Called during user creation of a new Ministry, assignment here is for the parent ministry if set
+      # All Inherited ministries (admin/leader ancestors)
+      ids = Ministry.inherited_ministries(user).pluck(:id)
       # Anyone can create a ministry without a parent
-      ids << nil if assignment.blank?
+      ids << nil
       ids
     end
   end

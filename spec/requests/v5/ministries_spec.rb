@@ -59,6 +59,23 @@ RSpec.describe 'V5::Ministries', type: :request do
       end
     end
 
+    context 'with an inherited admin or leader assignment' do
+      let(:sub_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      let!(:assignment) do
+        FactoryGirl.create(:assignment, person: person, ministry: ministry,
+                                        role: %i(admin leader).sample)
+      end
+
+      it 'responds with the ministry details' do
+        get "/v5/ministries/#{sub_ministry.gr_id}", nil,
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+
+        expect(response).to be_success
+        expect(response).to have_http_status(200)
+        expect(response.body).to include_json(ministry_id: sub_ministry.gr_id, min_code: sub_ministry.min_code)
+      end
+    end
+
     context 'with a non admin/leader assignment' do
       let!(:assignment) do
         FactoryGirl.create(:assignment,
@@ -82,14 +99,14 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:person) { FactoryGirl.create(:person) }
       context 'with required attributes' do
         let(:ministry) { FactoryGirl.build(:ministry) }
-        let!(:gr_ministry) { gr_create_ministry_request(ministry) }
+        let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
         it 'responds successfully with the new ministry' do
           expect do
             post '/v5/ministries', ministry.attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
             expect(response).to be_success
             expect(response).to have_http_status(201)
-            # expect(gr_ministry).to have_been_requested
+            expect(gr_request_stub).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
             expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
 
@@ -118,11 +135,9 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:parent) { FactoryGirl.create(:ministry) }
       let(:ministry) { FactoryGirl.build(:ministry, parent: parent) }
       let(:attributes) { ministry.attributes.merge parent_id: parent.gr_id }
-      before :each do
-        gr_create_ministry_request(ministry)
-      end
 
       context 'as leader of parent ministry' do
+        let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
         let!(:assignment) do
           FactoryGirl.create(:assignment, ministry: parent, person: person,
                                           role: %i(admin leader).sample)
@@ -134,6 +149,7 @@ RSpec.describe 'V5::Ministries', type: :request do
 
             expect(response).to be_success
             expect(response).to have_http_status(201)
+            expect(gr_request_stub).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
             expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
             expect(json[:parent_id]).to be_uuid.and(eq parent.gr_id)
@@ -221,6 +237,44 @@ RSpec.describe 'V5::Ministries', type: :request do
 
           expect(response).to_not be_success
           expect(response).to have_http_status(400)
+        end
+      end
+
+      context 'change parent_id to ministry with leader role' do
+        let(:other) { FactoryGirl.create(:ministry) }
+        let!(:other_assignment) do
+          FactoryGirl.create(:assignment, ministry: other, person: person,
+                                          role: %i(admin leader).sample)
+        end
+
+        it 'responds successfully with updated ministry' do
+          put "/v5/ministries/#{ministry.gr_id}", { parent_id: other.gr_id },
+              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+
+          expect(response).to be_success
+          expect(response).to have_http_status(200)
+          expect(response.body).to include_json(ministry_id: ministry.gr_id, parent_id: other.gr_id)
+        end
+      end
+    end
+
+    context 'as an inherited leader' do
+      let(:parent) { FactoryGirl.create(:ministry) }
+      let(:ministry) { FactoryGirl.create(:ministry, parent: parent) }
+      let!(:assignment) do
+        FactoryGirl.create(:assignment, ministry: parent, person: person,
+                                        role: %i(admin leader).sample)
+      end
+
+      context 'change basic attributes' do
+        let(:changes) { FactoryGirl.build(:ministry).attributes.slice(%w(min_code mccs lmi_hide lmi_show)) }
+
+        it 'responds successfully with updated ministry' do
+          put "/v5/ministries/#{ministry.gr_id}", changes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+
+          expect(response).to be_success
+          expect(response).to have_http_status(200)
+          expect(response.body).to include_json(ministry.attributes.slice(%w(name location_zoom)).merge(changes))
         end
       end
 

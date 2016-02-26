@@ -23,6 +23,7 @@ class Power
 
   attr_reader :user, :ministry, :assignment, :inherited_assignment
 
+  # Direct Assignment at this ministry
   def assignment
     return @assignment if @assignment_set
     @assignment = user.assignment_for_ministry(ministry) unless ministry.blank?
@@ -30,6 +31,7 @@ class Power
     @assignment
   end
 
+  # Inherited admin or leader Assignment at this ministry
   def inherited_assignment
     return @inherited_assignment if @inherited_assignment_set
     @inherited_assignment = user.inherited_assignment_for_ministry(ministry) unless ministry.blank?
