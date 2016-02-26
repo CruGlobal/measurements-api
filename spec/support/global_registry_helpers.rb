@@ -25,6 +25,14 @@ module GlobalRegistryHelpers
       .to_return(status: 200, body: { entities: [response] }.to_json, headers: {})
   end
 
+  def gr_get_invalid_ministry_request(ministry)
+    ministry ||= FactoryGirl.build(:ministry)
+    response = { error: 'We couldn\'t find the record you were looking for.' }
+    WebMock
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{ministry.gr_id}")
+      .to_return(status: 404, body: response.to_json, headers: {})
+  end
+
   def gr_create_ministry_request(ministry = nil)
     ministry ||= FactoryGirl.create(:ministry)
     response = { ministry: { id: ministry.gr_id, client_integration_id: ministry.min_code } }

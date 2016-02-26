@@ -62,6 +62,8 @@ GEM
     ast (2.2.0)
     auto_strip_attributes (2.0.6)
       activerecord (>= 3.0)
+    awesome_nested_set (3.0.3)
+      activerecord (>= 4.0.0, < 5)
     awesome_print (1.6.1)
     builder (3.2.2)
     coderay (1.1.0)
@@ -314,6 +316,7 @@ DEPENDENCIES
   arel
   assignable_values
   auto_strip_attributes (~> 2.0)
+  awesome_nested_set
   awesome_print
   consul
   coveralls

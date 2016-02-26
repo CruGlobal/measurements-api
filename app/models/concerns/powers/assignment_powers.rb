@@ -7,7 +7,7 @@ module Powers
     end
 
     def role_approved?
-      @assignment.present? && @assignment.approved_role?
+      assignment.present? && assignment.approved_role?
     end
   end
 end

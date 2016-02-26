@@ -46,7 +46,7 @@ RSpec.describe 'V5::Ministries', type: :request do
     context 'with an admin or leader assignment' do
       let!(:assignment) do
         FactoryGirl.create(:assignment, person_id: person.id, ministry_id: ministry.id,
-                                        role: %i(admin leader inherited_admin inherited_leader).sample)
+                                        role: %i(admin leader).sample)
       end
 
       it 'responds with the ministry details' do
@@ -82,15 +82,14 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:person) { FactoryGirl.create(:person) }
       context 'with required attributes' do
         let(:ministry) { FactoryGirl.build(:ministry) }
-        before do
-          gr_create_ministry_request(ministry)
-        end
+        let!(:gr_ministry) { gr_create_ministry_request(ministry) }
         it 'responds successfully with the new ministry' do
           expect do
             post '/v5/ministries', ministry.attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
             expect(response).to be_success
             expect(response).to have_http_status(201)
+            # expect(gr_ministry).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
             expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
 
@@ -126,7 +125,7 @@ RSpec.describe 'V5::Ministries', type: :request do
       context 'as leader of parent ministry' do
         let!(:assignment) do
           FactoryGirl.create(:assignment, ministry: parent, person: person,
-                                          role: %i(admin leader inherited_admin inherited_leader).sample)
+                                          role: %i(admin leader).sample)
         end
 
         it 'responds successfully with new ministry' do
@@ -163,11 +162,13 @@ RSpec.describe 'V5::Ministries', type: :request do
     let(:person) { FactoryGirl.create(:person) }
     context 'unknown ministry' do
       let(:ministry) { FactoryGirl.build(:ministry) }
+      let!(:gr_request_stub) { gr_get_invalid_ministry_request(ministry) }
 
       it 'responds with HTTP 401' do
         put "/v5/ministries/#{ministry.gr_id}", ministry.attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
+        expect(gr_request_stub).to have_been_requested
         expect(response).to_not be_success
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body).with_indifferent_access
@@ -193,7 +194,7 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:ministry) { FactoryGirl.create(:ministry) }
       let!(:assignment) do
         FactoryGirl.create(:assignment, ministry: ministry, person: person,
-                                        role: %i(admin leader inherited_admin inherited_leader).sample)
+                                        role: %i(admin leader).sample)
       end
 
       context 'change basic attributes' do
@@ -227,7 +228,7 @@ RSpec.describe 'V5::Ministries', type: :request do
         let(:other) { FactoryGirl.create(:ministry) }
         let!(:other_assignment) do
           FactoryGirl.create(:assignment, ministry: other, person: person,
-                                          role: %i(admin leader inherited_admin inherited_leader).sample)
+                                          role: %i(admin leader).sample)
         end
 
         it 'responds successfully with updated ministry' do

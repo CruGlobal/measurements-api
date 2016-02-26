@@ -1,7 +1,5 @@
 class Assignment
   class UserCreatedAssignment < ::Assignment
-    VALID_INPUT_ROLES = %w(leader admin member self_assigned blocked former_member).freeze
-
     # Virtual attributes
     attr_accessor :username, :key_guid
 

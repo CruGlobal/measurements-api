@@ -75,17 +75,28 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   end
 
   def assignment_for_ministry(ministry)
-    if ministry.is_a? Ministry
-      assignments.find_by(ministry_id: ministry.id)
-    elsif ministry.is_a? Integer
-      assignments.find_by(ministry_id: ministry)
-    else
-      assignments.includes(:ministry).find_by(ministries: { gr_id: ministry })
-    end
+    ministry = ministry_param ministry
+    return unless ministry.present?
+    assignments.find_by(ministry: ministry)
+  end
+
+  def inherited_assignment_for_ministry(ministry)
+    ministry = ministry_param ministry
+    return unless ministry.present?
+    ancestor = ministry.self_and_ancestors.includes(:assignments)
+                       .where(assignments: { person_id: id }.merge(Assignment.local_leader_condition))
+                       .order('assignments.role DESC').first
+    return unless ancestor
+    assignment = assignment_for_ministry(ancestor)
+    Assignment.new(person: self, ministry: ministry, role: "inherited_#{assignment.role}") if assignment
   end
 
   def role_for_ministry(ministry)
     assignment_for_ministry(ministry).try(:role)
+  end
+
+  def inherited_role_for_ministry(ministry)
+    inherited_assignment_for_ministry(ministry).try(:role)
   end
 
   def self.entity_type
@@ -135,5 +146,18 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  private
+
+  # Return Ministry by id or uuid with Global Registry fallback
+  def ministry_param(ministry)
+    if ministry.is_a? Integer
+      Ministry.find_by(id: ministry)
+    elsif Uuid.uuid? ministry
+      Ministry.ministry(ministry)
+    elsif ministry.is_a? Ministry
+      ministry
+    end
   end
 end

@@ -5,25 +5,25 @@ module Powers
     included do
       # Power definitions
       power :trainings do
-        Training.where(ministry: @assignment.ministry) if @assignment.leader_role?
+        Training.where(ministry: assignment.ministry) if assignment.leader_role?
       end
 
       power :training_completions do
-        return unless @assignment.leader_role?
-        TrainingCompletion.includes(:training).where(trainings: { ministry_id: @assignment.ministry.id })
+        return unless assignment.leader_role?
+        TrainingCompletion.includes(:training).where(trainings: { ministry_id: assignment.ministry.id })
       end
     end
 
     def assignable_training_ministries
       # this should only be called in the context of a user update
-      return Ministry.all.pluck(:id) if @user.blank?
-      Ministry.includes(:assignments).where(assignments: { person: @user })
+      return Ministry.all.pluck(:id) if user.blank?
+      Ministry.includes(:assignments).where(assignments: { person: user })
               .where(assignments: Assignment.leader_condition)
     end
 
     def assignable_training_user_created_training_ministries
-      # assigment.ministry_id is going to be the id the user is trying to create a training on
-      [@assignment.ministry] if @assignment.present? && !@assignment.blocked?
+      # assignment.ministry_id is going to be the id the user is trying to create a training on
+      [assignment.ministry] if assignment.present? && !assignment.blocked?
     end
   end
 end

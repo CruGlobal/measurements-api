@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(version: 20160224221904) do
 
   create_table "ministries", force: :cascade do |t|
     t.uuid     "gr_id"
-    t.integer  "parent_id"
     t.string   "name"
     t.string   "min_code"
     t.string   "area_code"
@@ -124,6 +123,10 @@ ActiveRecord::Schema.define(version: 20160224221904) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.uuid     "parent_gr_id"
+    t.integer  "parent_id"
+    t.integer  "lft",                           null: false
+    t.integer  "rgt",                           null: false
+    t.integer  "depth",            default: 0,  null: false
   end
 
   add_index "ministries", ["gr_id"], name: "index_ministries_on_gr_id", unique: true, using: :btree
@@ -219,7 +222,6 @@ ActiveRecord::Schema.define(version: 20160224221904) do
   add_foreign_key "churches", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "measurement_translations", "measurements", on_update: :cascade, on_delete: :cascade
   add_foreign_key "measurement_translations", "ministries", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "ministries", "ministries", column: "parent_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "training_completions", "trainings", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "ministries", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict

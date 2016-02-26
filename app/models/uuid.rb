@@ -1,6 +1,6 @@
 class Uuid
   def self.uuid?(id)
-    return postgres_uuid?(id) unless id.blank?
+    return postgres_uuid?(id) unless id.blank? || !id.is_a?(String)
     false
   end
 
