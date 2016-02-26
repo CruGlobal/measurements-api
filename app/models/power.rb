@@ -3,7 +3,7 @@ class Power
 
   def initialize(user, ministry = nil)
     # Power requires a valid user, ministry optional
-    fail(Consul::Error, 'User required') unless user.present?
+    raise(Consul::Error, 'User required') unless user.present?
     @user = user
     @ministry = if ministry.is_a? Integer
                   Ministry.find_by(id: ministry)
