@@ -31,9 +31,12 @@ Metrics/AbcSize:
 Metrics/CyclomaticComplexity:
   Max: 9
 
+Metrics/ClassLength:
+  Max: 150
+
 GuardClause:
   MinBodyLength: 3
 
 Style/Lambda:
   Exclude:
-      - config/**/*
+    - config/**/*

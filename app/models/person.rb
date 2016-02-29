@@ -1,4 +1,4 @@
-class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
+class Person < ActiveRecord::Base
   include GlobalRegistry::EntityMethods
 
   has_many :user_content_locales, dependent: :destroy
