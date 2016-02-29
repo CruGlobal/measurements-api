@@ -1,15 +1,13 @@
 module V5
   class MeasurementTypesController < V5::BaseUserController
     def index
-      render json: Measurement.all,
-             each_serializer: V5::MeasurementTypeSerializer,
-             scope: { ministry_id: ministry.id, locale: params[:locale] }
+      render json: MeasurementType.all(ministry_id: ministry.id, locale: params[:locale] || 'en'),
+             each_serializer: V5::MeasurementTypeSerializer
     end
 
     def show
-      render json: load_measurement,
-             serializer: V5::MeasurementTypeSerializer,
-             scope: { ministry_id: ministry.id, locale: params[:locale] }
+      render json: load_measurement_type,
+             serializer: V5::MeasurementTypeSerializer
     end
 
     def create
@@ -18,15 +16,18 @@ module V5
     end
 
     def update
-      load_measurement
+      load_measurement_type
       create
     end
 
     private
 
-    def load_measurement
-      @measurement_type ||= Measurement.find_by(total_id: params[:id])
-      @measurement_type ||= Measurement.find_by_perm_link(params[:id])
+    def load_measurement_type
+      return @measurement_type if @measurement_type
+      measurement = Measurement.find_by(total_id: params[:id])
+      measurement ||= Measurement.find_by_perm_link(params[:id])
+      @measurement_type = MeasurementType.new(measurement: measurement, ministry_id: ministry.id,
+                                              locale: params[:locale] || 'en')
     end
 
     def build_measurement_type
@@ -36,7 +37,7 @@ module V5
 
     def save_measurement_type
       return unless @measurement_type.save
-      render json: @measurement_type.measurement,
+      render json: @measurement_type,
              serializer: V5::MeasurementTypeSerializer,
              status: 201
     end

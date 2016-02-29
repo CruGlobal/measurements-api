@@ -7,7 +7,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
 
   describe 'GET /v5/measurement_types' do
     let(:json) { JSON.parse(response.body) }
-    let!(:measurement) { FactoryGirl.create(:measurement) }
+    let!(:measurement) { FactoryGirl.create(:measurement, english: 'English Name') }
 
     it 'responds with measurement types' do
       get '/v5/measurement_types', { ministry_id: ministry.gr_id, locale: 'en' },
@@ -15,6 +15,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
 
       expect(response).to be_success
       expect(json.first['id']).to be measurement.id
+      expect(json.first['localized_name']).to eq 'English Name'
     end
   end
 

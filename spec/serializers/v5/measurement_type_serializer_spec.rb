@@ -13,10 +13,10 @@ describe V5::MeasurementTypeSerializer do
       FactoryGirl.create(:measurement_translation, measurement: m, ministry: ministry,
                                                    language: 'fr', name: 'Présenter le Saint-Esprit',
                                                    description: 'Nombre de personnes')
-      m.reload
+      MeasurementType.find_by(measurement_id: m.total_id, ministry_id: ministry.id, locale: 'fr')
     end
     let(:serializer) do
-      V5::MeasurementTypeSerializer.new(resource, scope: { ministry_id: ministry.id, locale: 'fr' })
+      V5::MeasurementTypeSerializer.new(resource)
     end
     let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }

@@ -20,24 +20,21 @@ module V5
 
     attribute :custom?, key: :is_custom
 
+    delegate :locale, :measurement, to: :object
+    delegate :id, :perm_link, :person_id, :local_id, :total_id, :leader_only,
+             :supported_staff_only, :perm_link_stub,
+             to: :measurement
+
     def custom?
-      object.perm_link.sub('lmi_total_', '').starts_with?('custom_')
+      perm_link.sub('lmi_total_', '').starts_with?('custom_')
     end
 
     def localized_name
-      object.localized_name(scope[:locale], scope[:ministry_id])
+      object.localized_name || object.english
     end
 
     def localized_description
-      object.localized_description(scope[:locale], scope[:ministry_id])
-    end
-
-    def locale
-      if object.measurement_translations.where(language: scope[:locale], ministry_id: scope[:ministry_id]).any?
-        scope[:locale]
-      else
-        'en'
-      end
+      object.localized_description || object.description
     end
   end
 end
