@@ -1,7 +1,7 @@
 module V5
   class MeasurementTypesController < V5::BaseUserController
     def index
-      render json: MeasurementType.all(ministry_id: ministry.id, locale: params[:locale] || 'en'),
+      render json: MeasurementType.all(ministry_id: ministry.try(:id), locale: params[:locale] || 'en'),
              each_serializer: V5::MeasurementTypeSerializer
     end
 
@@ -26,7 +26,7 @@ module V5
       return @measurement_type if @measurement_type
       measurement = Measurement.find_by(total_id: params[:id])
       measurement ||= Measurement.find_by_perm_link(params[:id])
-      @measurement_type = MeasurementType.new(measurement: measurement, ministry_id: ministry.id,
+      @measurement_type = MeasurementType.new(measurement: measurement, ministry_id: ministry.try(:id),
                                               locale: params[:locale] || 'en')
     end
 
@@ -43,7 +43,10 @@ module V5
     end
 
     def ministry
-      Ministry.find_by(gr_id: params[:ministry_id])
+      return @ministry if @ministry || params[:ministry_id].blank?
+      @ministry = Ministry.find_by(gr_id: params[:ministry_id])
+      params[:ministry_id] = nil unless @ministry
+      @ministry
     end
 
     def render_errors
