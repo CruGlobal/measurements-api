@@ -76,18 +76,63 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
   end
 
   describe 'PUT /v5/measurement_type/:id' do
-    # let(:json) { JSON.parse(response.body) }
-    # let(:measurement) { FactoryGirl.create(:measurement) }
-    #
-    # let(:attributes) { { } }
-    #
-    # it 'updates measurement type' do
-    #   put "/v5/measurement_type/#{measurement.total_id}", attributes,
-    #       'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
-    #
-    #   expect(response).to be_success
-    #   measurement.reload
-    #   expect(json['id']).to_not be_nil
-    # end
+    let(:json) { JSON.parse(response.body) }
+    let(:measurement) { FactoryGirl.create(:measurement) }
+    let(:parent_meas) { FactoryGirl.create(:measurement) }
+
+    let(:attributes) { { english: 'different name', parent_id: parent_meas.total_id, sort_order: 10 } }
+
+    it 'updates measurement type without locale params' do
+      put "/v5/measurement_types/#{measurement.total_id}", attributes,
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+      old_m_attributes = measurement.attributes
+      measurement.reload
+      new_m_attributes = measurement.attributes
+      what_changed = Hash[*(old_m_attributes.to_a - new_m_attributes.to_a).flatten].except('updated_at')
+
+      expect(response).to be_success
+      # expect that the object was rendered on the way back
+      expect(json['id']).to be measurement.id
+      # we don't want other things changing without us knowing
+      expect(what_changed.count).to be 3
+      expect(measurement.english).to eq 'different name'
+      expect(measurement.parent.id).to eq parent_meas.id
+      expect(measurement.sort_order).to be 10
+    end
+
+    it "doesn't update perm_link of non-custom meas" do
+      measurement.update(perm_link: 'lmi_total_gospel_convos')
+
+      expect do
+        put "/v5/measurement_types/#{measurement.total_id}", attributes,
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      end.to_not change{ measurement.reload.perm_link }
+    end
+
+    it 'updates measurement translation' do
+      translation = FactoryGirl.create(:measurement_translation, measurement: measurement,
+                                                                 language: 'fr', ministry: ministry)
+
+      expect do
+        put "/v5/measurement_types/#{measurement.total_id}",
+            { locale: 'fr', ministry_id: ministry.gr_id, localized_name: 'Totally different' },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      end.to change(MeasurementTranslation, :count).by(0)
+      translation.reload
+      expect(translation.name).to eq 'Totally different'
+    end
+
+    it 'creates measurement translation' do
+      expect do
+        put "/v5/measurement_types/#{measurement.total_id}",
+            { locale: 'fr', ministry_id: ministry.gr_id, localized_name: 'Totally different' },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      end.to change(MeasurementTranslation, :count).by(1)
+
+      translation = measurement.measurement_translations.last
+      expect(translation.name).to eq 'Totally different'
+      expect(translation.language).to eq 'fr'
+    end
   end
 end

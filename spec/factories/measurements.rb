@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :measurement do
-    perm_link 'lmi_total_my_string'
+    perm_link 'lmi_total_custom_my_string'
     english 'MyString'
     description 'MyString'
     section 'MyString'

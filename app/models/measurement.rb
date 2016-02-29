@@ -2,6 +2,10 @@ class Measurement < ActiveRecord::Base
   belongs_to :parent, class_name: 'Measurement'
   has_many :measurement_translations
 
+  validates :person_id, presence: true
+  validates :local_id, presence: true
+  validates :total_id, presence: true
+
   def perm_link_stub
     perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
   end

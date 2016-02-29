@@ -21,11 +21,9 @@ class MeasurementType < ActiveModelSerializers::Model
 
     Measurement.transaction do
       send_gr_measurement_types
-      return false unless ensure_type_ids_present
-
       build_measurement
+      return false unless measurement.valid?
       build_translation if can_build_trans
-
       measurement.save!
       @translation.save! if @translation
       true
@@ -38,6 +36,7 @@ class MeasurementType < ActiveModelSerializers::Model
     if attributes[:measurement]
       meas_attributes = attributes[:measurement].attributes.symbolize_keys.slice(*ATTRIBUTES)
       attributes = meas_attributes.merge(attributes)
+      attributes[:perm_link_stub] ||= attributes[:measurement].perm_link_stub
     end
     super(attributes)
   end
@@ -61,7 +60,11 @@ class MeasurementType < ActiveModelSerializers::Model
 
   def build_measurement
     self.measurement ||= Measurement.new
-    measurement.attributes = measurement_attributes
+    measurement.attributes = if measurement.new_record?
+                               measurement_attributes
+                             else
+                               measurement_attributes.except(:perm_link)
+                             end
   end
 
   def measurement_attributes
@@ -105,7 +108,8 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def check_perm_link_unique
-    return unless Measurement.find_by_perm_link(perm_link_stub)
+    matching_measurement = Measurement.find_by_perm_link(perm_link_stub)
+    return unless matching_measurement && matching_measurement.id != measurement.id
 
     errors.add(:perm_link_stub, 'perm_link_stub is being used by another measurement_type. It must be unique.')
   end
@@ -118,6 +122,8 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def send_gr_measurement_types
+    return unless measurement.blank? || measurement.new_record?
+
     @total_id = send_gr_measurement_type(nil, 'total', MINISTRY_TYPE_ID)
     @local_id = send_gr_measurement_type('Local', 'local', MINISTRY_TYPE_ID)
     @person_id = send_gr_measurement_type('Person', nil, ASSIGNMENT_TYPE_ID)
@@ -139,7 +145,11 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def ensure_type_ids_present
-    @total_id.present? && @local_id.present? && @person_id.present?
+    if measurement.present?
+      measurement.total_id.present? && measurement.local_id.present? && measurement.person_id.present?
+    else
+      @total_id.present? && @local_id.present? && @person_id.present?
+    end
   end
 
   def can_build_trans
