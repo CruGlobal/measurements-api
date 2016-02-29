@@ -39,20 +39,12 @@ class MeasurementType < ActiveModelSerializers::Model
       attributes[:perm_link_stub] ||= attributes[:measurement].perm_link_stub
     end
     super(attributes)
+    build_translation if measurement.present?
   end
 
-  def self.find_by(args)
-    measurement = args[:measurement]
-    measurement ||= Measurement.find_by(total_id: args[:measurement_id])
-    return unless measurement
-    type = new(measurement: measurement, locale: args[:locale], ministry_id: args[:ministry_id])
-    type.send(:build_translation)
-    type
-  end
-
-  def self.all(args)
+  def self.all_localized_with(args)
     Measurement.all.map do |measurement|
-      find_by(args.merge(measurement: measurement))
+      new(args.merge(measurement: measurement))
     end
   end
 
@@ -83,8 +75,8 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def build_translation
-    @translation = measurement.measurement_translations.find_or_initialize_by(ministry_id: ministry_id,
-                                                                              language: locale)
+    @translation ||= measurement.measurement_translations.find_or_initialize_by(ministry_id: ministry_id,
+                                                                                language: locale)
     @translation.attributes = translation_attributes
     self.localized_name ||= @translation.name
     self.localized_description ||= @translation.description

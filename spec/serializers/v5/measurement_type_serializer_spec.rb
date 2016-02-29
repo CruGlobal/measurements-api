@@ -13,7 +13,7 @@ describe V5::MeasurementTypeSerializer do
       FactoryGirl.create(:measurement_translation, measurement: m, ministry: ministry,
                                                    language: 'fr', name: 'Présenter le Saint-Esprit',
                                                    description: 'Nombre de personnes')
-      MeasurementType.find_by(measurement_id: m.total_id, ministry_id: ministry.id, locale: 'fr')
+      MeasurementType.new(measurement: m, ministry_id: ministry.id, locale: 'fr')
     end
     let(:serializer) do
       V5::MeasurementTypeSerializer.new(resource)

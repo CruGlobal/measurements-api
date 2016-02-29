@@ -107,7 +107,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect do
         put "/v5/measurement_types/#{measurement.total_id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
-      end.to_not change{ measurement.reload.perm_link }
+      end.to_not change { measurement.reload.perm_link }
     end
 
     it 'updates measurement translation' do

@@ -1,7 +1,8 @@
 module V5
   class MeasurementTypesController < V5::BaseUserController
     def index
-      render json: MeasurementType.all(ministry_id: ministry.try(:id), locale: params[:locale] || 'en'),
+      render json: MeasurementType.all_localized_with(ministry_id: ministry.try(:id),
+                                                      locale: params[:locale] || 'en'),
              each_serializer: V5::MeasurementTypeSerializer
     end
 
