@@ -23,6 +23,13 @@ class Assignment < ActiveRecord::Base
   scope :leaders, -> { where(leader_condition) }
   scope :local_leaders, -> { where(local_leader_condition) }
 
+  scope :ancestor_assignments, lambda { |ministry|
+    joins(ministries_join)
+      .joins(inherited_ministries_join)
+      .where(ministry_condition(ministry.id).and(assignment_condition(ministry.id)))
+      .order(ministry_ordering)
+  }
+
   def approved_role?
     APPROVED_ROLES.include? role
   end
@@ -45,5 +52,58 @@ class Assignment < ActiveRecord::Base
 
   def blocked_role?
     BLOCKED_ROLES.include? role
+  end
+
+  def as_inherited_assignment(min_id = nil)
+    return nil unless leader_role?
+    Assignment.new(person_id: person_id,
+                   ministry_id: min_id.present? ? min_id : ministry_id,
+                   role: inherited_role? ? role : "inherited_#{role}".to_sym)
+  end
+
+  class << self
+    private
+
+    def ministry_table
+      Ministry.arel_table
+    end
+
+    def inherited_ministry_table
+      Ministry.arel_table.alias('inherited')
+    end
+
+    def ministries_join
+      arel_table
+        .join(ministry_table)
+        .on(ministry_table[:id].eq(arel_table[:ministry_id]))
+        .join_sources
+    end
+
+    def inherited_ministries_join
+      arel_table
+        .join(inherited_ministry_table)
+        .on(inherited_left_condition.and(inherited_right_condition))
+        .join_sources
+    end
+
+    def inherited_left_condition
+      inherited_ministry_table[Ministry.left_column_name].gteq(ministry_table[Ministry.left_column_name])
+    end
+
+    def inherited_right_condition
+      inherited_ministry_table[Ministry.right_column_name].lteq(ministry_table[Ministry.right_column_name])
+    end
+
+    def assignment_condition(ministry_id)
+      arel_table[:ministry_id].eq(ministry_id).or(arel_table[:role].in(local_leader_condition[:role]))
+    end
+
+    def ministry_condition(ministry_id)
+      inherited_ministry_table[:id].eq(ministry_id)
+    end
+
+    def ministry_ordering
+      ministry_table[:lft].desc
+    end
   end
 end

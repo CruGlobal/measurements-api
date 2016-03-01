@@ -14,8 +14,13 @@ module V5
                :hide_reports_tab,
                :content_locales
 
-    has_many :assignments, key: :team_members, serializer: TeamMemberSerializer
+    has_many :team_members, serializer: TeamMemberSerializer
     has_many :children, key: :sub_ministries, serializer: MinistrySubMinistrySerializer
+
+    def attributes(args)
+      # Remove nil values
+      super(args).reject { |_k, v| v.nil? }
+    end
 
     def ministry_id
       object.gr_id

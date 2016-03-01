@@ -1,32 +1,16 @@
 require 'rails_helper'
 
 describe Ministry, type: :model do
+  before :all do
+    @ministries = FactoryGirl.create(:ministry_hierarchy)
+  end
+  after :all do
+    Ministry.delete_all
+  end
+  let!(:ministries) { @ministries }
+
   describe 'scope: inherited_ministries(person)' do
-    before :all do
-      @ministries = {}
-      @ministries[:a] = FactoryGirl.create(:ministry, name: 'A')
-      @ministries[:b] = FactoryGirl.create(:ministry, name: 'B')
-      @ministries[:c] = FactoryGirl.create(:ministry, name: 'C')
-      @ministries[:a1] = FactoryGirl.create(:ministry, name: 'A1', parent: @ministries[:a])
-      @ministries[:a2] = FactoryGirl.create(:ministry, name: 'A2', parent: @ministries[:a])
-      @ministries[:a3] = FactoryGirl.create(:ministry, name: 'A3', parent: @ministries[:a])
-      @ministries[:a21] = FactoryGirl.create(:ministry, name: 'A21', parent: @ministries[:a2])
-      @ministries[:a22] = FactoryGirl.create(:ministry, name: 'A22', parent: @ministries[:a2])
-      @ministries[:a31] = FactoryGirl.create(:ministry, name: 'A31', parent: @ministries[:a3])
-      @ministries[:c1] = FactoryGirl.create(:ministry, name: 'C1', parent: @ministries[:c])
-      @ministries[:c11] = FactoryGirl.create(:ministry, name: 'C11', parent: @ministries[:c1])
-      @ministries[:c12] = FactoryGirl.create(:ministry, name: 'C12', parent: @ministries[:c1])
-      @ministries[:c121] = FactoryGirl.create(:ministry, name: 'C121', parent: @ministries[:c12])
-      @ministries[:c122] = FactoryGirl.create(:ministry, name: 'C122', parent: @ministries[:c12])
-      @ministries[:c123] = FactoryGirl.create(:ministry, name: 'C123', parent: @ministries[:c12])
-    end
-
-    after :all do
-      Ministry.delete_all
-    end
-
     let(:person) { FactoryGirl.create(:person) }
-    let!(:ministries) { @ministries }
     subject { Ministry.inherited_ministries(person).to_a }
 
     context 'person with no assignments' do
@@ -71,6 +55,107 @@ describe Ministry, type: :model do
       it 'returns an empty array' do
         expect(subject).to be_an Array
         expect(subject.length).to eq 10
+      end
+    end
+  end
+
+  describe '#team_members' do
+    let(:team_members) do
+      team_members = {}
+      team_members[:A] = FactoryGirl.create(:person)
+      team_members[:B] = FactoryGirl.create(:person)
+      team_members[:C] = FactoryGirl.create(:person)
+      team_members[:D] = FactoryGirl.create(:person)
+      team_members[:E] = FactoryGirl.create(:person)
+      team_members
+    end
+    let!(:assignments) do
+      FactoryGirl.create(:assignment, person: team_members[:A], ministry: ministries[:c1], role: :leader)
+      FactoryGirl.create(:assignment, person: team_members[:A], ministry: ministries[:c12], role: :admin)
+      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c], role: :admin)
+      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c1], role: :leader)
+      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c12], role: :member)
+      FactoryGirl.create(:assignment, person: team_members[:C], ministry: ministries[:c1], role: :member)
+      FactoryGirl.create(:assignment, person: team_members[:C], ministry: ministries[:c123], role: :leader)
+      FactoryGirl.create(:assignment, person: team_members[:D], ministry: ministries[:c], role: :blocked)
+      FactoryGirl.create(:assignment, person: team_members[:D], ministry: ministries[:c12], role: :member)
+      FactoryGirl.create(:assignment, person: team_members[:E], ministry: ministries[:c11], role: :admin)
+    end
+
+    describe 'for ministry `C`' do
+      subject { ministries[:c].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 2
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:B].id, :admin.to_s], [team_members[:D].id, :blocked.to_s])
+      end
+    end
+
+    describe 'for ministry `C1`' do
+      subject { ministries[:c1].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 3
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:A].id, :leader.to_s],
+                                       [team_members[:B].id, :leader.to_s],
+                                       [team_members[:C].id, :member.to_s])
+      end
+    end
+
+    describe 'for ministry `C11`' do
+      subject { ministries[:c11].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 3
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:A].id, :inherited_leader.to_s],
+                                       [team_members[:B].id, :inherited_admin.to_s],
+                                       [team_members[:E].id, :admin.to_s])
+      end
+    end
+
+    describe 'for ministry `C12`' do
+      subject { ministries[:c12].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 3
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:A].id, :admin.to_s],
+                                       [team_members[:B].id, :member.to_s],
+                                       [team_members[:D].id, :member.to_s])
+      end
+    end
+
+    describe 'for ministry `C121`' do
+      subject { ministries[:c121].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 2
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:A].id, :inherited_admin.to_s],
+                                       [team_members[:B].id, :inherited_admin.to_s])
+      end
+    end
+
+    describe 'for ministry `C123`' do
+      subject { ministries[:c123].team_members }
+
+      it 'has team members' do
+        expect(subject.length).to eq 3
+        assignments = subject.collect { |member| [member.person_id, member.role] }
+        expect(assignments).to include([team_members[:A].id, :inherited_admin.to_s],
+                                       [team_members[:B].id, :inherited_admin.to_s],
+                                       [team_members[:C].id, :leader.to_s])
+      end
+    end
+
+    describe 'for ministry `A22`' do
+      subject { ministries[:a22].team_members }
+
+      it 'does not have team members' do
+        expect(subject.length).to eq 0
       end
     end
   end

@@ -9,9 +9,8 @@ module V5
                :key_guid
 
     def attributes(args)
-      data = super
       # Remove nil values
-      data.reject { |_k, v| v.nil? }
+      super(args).reject { |_k, v| v.nil? }
     end
 
     def assignment_id

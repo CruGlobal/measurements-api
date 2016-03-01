@@ -47,19 +47,26 @@ class Ministry < ActiveRecord::Base
     ministry
   end
 
-  def descendants_ids
-    children.map do |child|
-      child.descendants_ids.append child.id
-    end.flatten
+  def team_members # rubocop:disable Metrics/AbcSize
+    members = {}
+    Assignment.ancestor_assignments(self).each do |assignment|
+      # Direct Assignments take precedence
+      members[assignment.person_id] = assignment if assignment.ministry_id == id
+      # Next if direct assignment and it's not inherited
+      next if members[assignment.person_id].try(:ministry_id) == id &&
+              !members[assignment.person_id].try(:inherited_role?)
+
+      # Keep highest Inherited assignment per person
+      if members[assignment.person_id].blank? || members[assignment.person_id].try(:[], :role) < assignment[:role]
+        members[assignment.person_id] = assignment.as_inherited_assignment(id)
+      end
+    end
+    members.values
   end
 
-  protected
-
-  # Walks ministry ancestors until it finds a ministry with a WHQ scope
-  def parent_whq_ministry(ministry = nil)
-    return nil if ministry.nil?
-    return ministry if SCOPES.include?(ministry.ministry_scope)
-    parent_whq_ministry(ministry.parent)
+  # Find first ancestor ministry with a ministry scope
+  def parent_whq_ministry
+    ancestors.order(lft: :desc).find_by(ministry_scope: SCOPES)
   end
 
   class << self

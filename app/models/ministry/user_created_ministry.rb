@@ -21,7 +21,7 @@ class Ministry
     def generate_min_code
       return unless min_code.is_a? String
       self.min_code = min_code.downcase.gsub(/\s+/, '_')
-      ministry = parent_whq_ministry(parent)
+      ministry = parent_whq_ministry
       self.min_code = [ministry.min_code, min_code].join('_') unless ministry.nil?
     end
   end

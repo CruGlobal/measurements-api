@@ -3,7 +3,10 @@ require 'rails_helper'
 RSpec.describe V5::MinistrySerializer do
   describe 'a ministry' do
     let(:parent) { FactoryGirl.create(:ministry) }
-    let(:ministry) { FactoryGirl.create(:ministry, parent: parent) }
+    let(:ministry) do
+      FactoryGirl.create(:ministry, parent: parent, default_mcc: Ministry::MCCS.sample,
+                                    ministry_scope: Ministry::SCOPES.sample)
+    end
     let!(:sub_ministries) do
       [FactoryGirl.create(:ministry, parent: ministry),
        FactoryGirl.create(:ministry, parent: ministry),
