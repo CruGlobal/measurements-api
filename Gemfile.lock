@@ -9,9 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/CruGlobal/global_registry_client.git
-  revision: 59306d6faa4a25ffebe6793cbfa47bdfd5e36c29
+  revision: db84449e2a4b5615cc30365e9ada852a3014694b
+  branch: objectivity
   specs:
-    global_registry (1.0.8)
+    global_registry (1.1.0)
       activesupport
       oj (~> 2.13.0)
       oj_mimic_json
