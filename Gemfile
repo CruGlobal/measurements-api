@@ -26,6 +26,7 @@ gem 'arel'
 gem 'consul'
 gem 'assignable_values'
 gem 'awesome_nested_set'
+gem 'global_registry', git: 'https://github.com/CruGlobal/global_registry_client.git'
 
 group :development, :test do
   gem 'dotenv-rails'

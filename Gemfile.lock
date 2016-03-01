@@ -8,6 +8,17 @@ GIT
       redis
 
 GIT
+  remote: https://github.com/CruGlobal/global_registry_client.git
+  revision: 59306d6faa4a25ffebe6793cbfa47bdfd5e36c29
+  specs:
+    global_registry (1.0.8)
+      activesupport
+      oj (~> 2.13.0)
+      oj_mimic_json
+      rest-client (~> 1.6.7)
+      retryable-rb (~> 1.1.0)
+
+GIT
   remote: https://github.com/rails-api/active_model_serializers.git
   revision: 72c2c9f0d7c665ce1b32dbbd4ca5687b1afd320e
   specs:
@@ -100,12 +111,6 @@ GEM
       redis (~> 3.0)
     ffi (1.9.10)
     formatador (0.2.5)
-    global_registry (1.0.8)
-      activesupport
-      oj (~> 2.13.0)
-      oj_mimic_json
-      rest-client (~> 1.6.7)
-      retryable-rb (~> 1.1.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     guard (2.13.0)
@@ -324,6 +329,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   fakeredis
+  global_registry!
   guard-rspec
   guard-rubocop
   http_logger
