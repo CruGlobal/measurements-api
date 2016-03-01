@@ -28,7 +28,7 @@ class TrainingFilter
   # methods that tell us about the user and the ministry they are requesting
   def ministry_list
     if clean_filter(:show_tree)
-      root_ministry.descendants_ids + [root_ministry.id]
+      root_ministry.descendants.pluck(:id) + [root_ministry.id]
     else
       root_ministry.id
     end

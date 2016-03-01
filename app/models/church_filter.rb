@@ -60,7 +60,7 @@ class ChurchFilter
 
   # methods that tell us about the user and the ministry they are requesting
   def ministry_list
-    root_ministry.descendants_ids
+    root_ministry.descendants.pluck(:id)
   end
 
   def root_ministry
