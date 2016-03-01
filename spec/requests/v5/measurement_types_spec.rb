@@ -89,7 +89,8 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       old_m_attributes = measurement.attributes
       measurement.reload
       new_m_attributes = measurement.attributes
-      what_changed = Hash[*(old_m_attributes.to_a - new_m_attributes.to_a).flatten].except('updated_at')
+      what_changed = Hash[*(old_m_attributes.to_a - new_m_attributes.to_a).flatten]
+                     .except('updated_at', 'created_at')
 
       expect(response).to be_success
       # expect that the object was rendered on the way back
