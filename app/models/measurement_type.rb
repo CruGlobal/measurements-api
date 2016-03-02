@@ -135,9 +135,9 @@ class MeasurementType < ActiveModelSerializers::Model
                 else
                   "lmi_custom_#{perm_link_stub}"
                 end
-    json = GlobalRegistry::MeasurementType.post(name: name, frequency: 'monthly', unit: 'People',
-                                                description: description, perm_link: perm_link,
-                                                related_entity_type_id: related_id)
+    json = gr_singleton.post(name: name, frequency: 'monthly', unit: 'People',
+                             description: description, perm_link: perm_link,
+                             related_entity_type_id: related_id)
     json['measurement_type']['id']
   end
 
@@ -151,5 +151,9 @@ class MeasurementType < ActiveModelSerializers::Model
 
   def can_build_trans
     true unless ministry_id.blank? || (localized_name.blank? && localized_description.blank?)
+  end
+
+  def gr_singleton
+    GlobalRegistry::MeasurementType.new(access_token: SystemAccessToken.current)
   end
 end
