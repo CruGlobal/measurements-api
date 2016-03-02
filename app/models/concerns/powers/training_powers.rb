@@ -16,7 +16,6 @@ module Powers
 
     def assignable_training_ministries
       # this should only be called in the context of a user update
-      return Ministry.all.pluck(:id) if user.blank?
       Ministry.includes(:assignments).where(assignments: { person: user })
               .where(assignments: Assignment.leader_condition)
     end
