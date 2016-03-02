@@ -8,8 +8,8 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
     let!(:measurement) { FactoryGirl.create(:measurement, english: 'English Name') }
 
     it 'responds with measurement types' do
-      get '/v5/sys_measurement_types', { access_token: authenticate_api, ministry_id: ministry.gr_id,
-                                         locale: 'en' }
+      get '/v5/sys_measurement_types', access_token: authenticate_api, ministry_id: ministry.gr_id,
+                                       locale: 'en'
 
       expect(response).to be_success
       expect(json.first['id']).to be measurement.id
@@ -25,13 +25,13 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
 
       it 'fails when no token is sent' do
         WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
-            .to_return(status: 400)
+               .to_return(status: 400)
 
         random_token = SecureRandom.uuid
-        get '/v5/sys_measurement_types', { access_token: random_token }
+        get '/v5/sys_measurement_types', access_token: random_token
         expect(response).to_not be_success
 
-        get '/v5/sys_measurement_types', { },
+        get '/v5/sys_measurement_types', {},
             'HTTP_AUTHORIZATION': "Bearer #{random_token}"
         expect(response).to_not be_success
       end

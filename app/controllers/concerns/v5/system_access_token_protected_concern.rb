@@ -1,5 +1,5 @@
 module V5
-  module AccessTokenProtectedConcern
+  module SystemAccessTokenProtectedConcern
     extend ActiveSupport::Concern
 
     protected
@@ -19,22 +19,24 @@ module V5
       auth_header = request.env['HTTP_AUTHORIZATION'] || ''
       match = auth_header.match(/^Bearer\s(.*)/)
       return match[1] if match.present?
-      false
-    end
-
-    # grabs access_token from url param if present
-    def access_token_from_url
-      params[:token]
+      nil
     end
 
     def render_unauthorized
       headers['WWW-Authenticate'] =
-        %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
+          %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
       api_error 'Bad token', status: 401
     end
 
+    def access_token_from_url
+      params[:access_token]
+    end
+
     def check_token(token)
-      CruLib::AccessToken.read(token)
+      resp = GlobalRegistry::System.new(access_token: token).get(limit: 1)
+      resp.present? ? token : nil
+    rescue RestClient::BadRequest
+      nil
     end
   end
 end
