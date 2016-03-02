@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'V5::MeasurementTypes', type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:ministry) { FactoryGirl.create(:ministry) }
 
   describe 'GET /v5/sys_measurement_types' do
@@ -14,6 +16,34 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect(response).to be_success
       expect(json.first['id']).to be measurement.id
       expect(json.first['localized_name']).to eq 'English Name'
+    end
+
+    it 'caches authentication' do
+      token = CruLib::AccessToken.new.token
+
+      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
+                          .with(headers: { 'Authorization' => "Bearer #{token}" })
+                          .to_return(status: 200, body: { access: 'granted' }.to_json)
+
+      get '/v5/sys_measurement_types', access_token: token
+      travel_to 5.hours.from_now do
+        get '/v5/sys_measurement_types', access_token: token
+      end
+      expect(gr_request).to have_been_requested.times(1)
+    end
+
+    it 'reauthenticates authentication after expire' do
+      token = CruLib::AccessToken.new.token
+
+      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
+                          .with(headers: { 'Authorization' => "Bearer #{token}" })
+                          .to_return(status: 200, body: { access: 'granted' }.to_json)
+
+      get '/v5/sys_measurement_types', access_token: token
+      travel_to 2.days.from_now do
+        get '/v5/sys_measurement_types', access_token: token
+      end
+      expect(gr_request).to have_been_requested.times(2)
     end
 
     context 'with bad authentication' do
