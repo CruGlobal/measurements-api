@@ -8,7 +8,7 @@ module AuthenticationHelpers
   def authenticate_api
     token = CruLib::AccessToken.new.token
 
-    WebMock.stub_request(:get, 'https://api.global-registry.org/systems?limit=1')
+    WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
            .with(headers: { 'Authorization' => "Bearer #{token}" })
            .to_return(status: 200, body: { access: 'granted' }.to_json)
 

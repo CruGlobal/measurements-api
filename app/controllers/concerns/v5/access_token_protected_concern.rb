@@ -35,8 +35,7 @@ module V5
     # grabs access_token from url param if present
     def access_token_from_url(param = nil)
       param ||= :token
-      params[param] unless params[param].blank?
-      false
+      params[param]
     end
 
     def render_unauthorized
@@ -48,6 +47,8 @@ module V5
     def check_token(token)
       gr = GlobalRegistry::System.new(access_token: token)
       gr.get(limit: 1).present?
+    rescue RestClient::BadRequest
+      false
     end
   end
 end
