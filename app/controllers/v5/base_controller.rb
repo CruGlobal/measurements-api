@@ -28,5 +28,10 @@ module V5
       end
       params
     end
+
+    def save_status_code(create = false)
+      return :created if create || params[:action] == 'create'
+      :ok
+    end
   end
 end

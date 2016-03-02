@@ -48,7 +48,7 @@ module V5
       return unless @training.save
       render json: @training,
              serializer: V5::TrainingSerializer,
-             status: 201
+             status: save_status_code
     end
 
     def render_errors

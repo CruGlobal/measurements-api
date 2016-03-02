@@ -48,6 +48,11 @@ class MeasurementType < ActiveModelSerializers::Model
     end
   end
 
+  def new_record?
+    return true if measurement.blank?
+    measurement.new_record?
+  end
+
   private
 
   def build_measurement

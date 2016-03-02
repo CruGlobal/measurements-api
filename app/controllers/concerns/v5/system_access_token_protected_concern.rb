@@ -24,7 +24,7 @@ module V5
 
     def render_unauthorized
       headers['WWW-Authenticate'] =
-          %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
+        %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
       api_error 'Bad token', status: 401
     end
 

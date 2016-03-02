@@ -37,10 +37,11 @@ module V5
     end
 
     def save_measurement_type
+      new_record = @measurement_type.new_record?
       return unless @measurement_type.save
       render json: @measurement_type,
              serializer: V5::MeasurementTypeSerializer,
-             status: 201
+             status: save_status_code(new_record)
     end
 
     def ministry

@@ -39,7 +39,7 @@ module V5
     end
 
     def save_church
-      render json: @church, status: 201 if @church.save
+      render json: @church, status: save_status_code if @church.save
     end
 
     def render_errors

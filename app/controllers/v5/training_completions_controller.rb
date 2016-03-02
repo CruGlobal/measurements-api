@@ -30,7 +30,7 @@ module V5
     end
 
     def load_training_completion
-      @completion ||= training_completion_scope.find_by(id: params[:id])
+      @completion ||= training_completion_scope.find(params[:id])
     end
 
     def build_training_completion
@@ -43,7 +43,7 @@ module V5
       return unless @completion.save
       render json: @completion,
              serializer: V5::TrainingCompletionSerializer,
-             status: 201
+             status: save_status_code
     end
 
     def render_errors

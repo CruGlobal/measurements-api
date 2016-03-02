@@ -66,7 +66,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       post '/v5/measurement_types', attributes,
            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
-      expect(response).to be_success
+      expect(response.code.to_i).to be 201
       expect(json['id']).to_not be_nil
 
       expect(Measurement.last.english).to eq 'Number of Non-Staff Reporting'
@@ -92,7 +92,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       what_changed = Hash[*(old_m_attributes.to_a - new_m_attributes.to_a).flatten]
                      .except('updated_at', 'created_at')
 
-      expect(response).to be_success
+      expect(response.code.to_i).to be 200
       # expect that the object was rendered on the way back
       expect(json['id']).to be measurement.id
       # we don't want other things changing without us knowing
