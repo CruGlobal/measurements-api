@@ -37,4 +37,24 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       end
     end
   end
+
+  describe 'GET /v5/sys_measurement_type/{id}' do
+    let!(:measurement) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_my_string') }
+    let(:json) { JSON.parse(response.body) }
+
+    it 'finds measurement based on total_id' do
+      get "/v5/sys_measurement_type/#{measurement.total_id}", { ministry_id: ministry.gr_id },
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+
+      expect(response).to be_success
+      expect(json['id']).to be measurement.id
+    end
+
+    it 'finds measurement based on perm_link' do
+      get '/v5/sys_measurement_type/my_string', { ministry_id: ministry.gr_id },
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+
+      expect(json['id']).to be measurement.id
+    end
+  end
 end
