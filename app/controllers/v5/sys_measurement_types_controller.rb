@@ -1,6 +1,7 @@
 module V5
   class SysMeasurementTypesController < V5::BaseSystemsController
     def index
+      raise if SystemAccessToken.current.nil?
       render json: MeasurementType.all_localized_with(ministry_id: ministry.try(:id),
                                                       locale: params[:locale] || 'en'),
              each_serializer: V5::MeasurementTypeSerializer

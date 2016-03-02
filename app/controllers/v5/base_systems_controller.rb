@@ -3,11 +3,11 @@ module V5
     include V5::SystemAccessTokenProtectedConcern
 
     before_action :authenticate_request
-    around_filter :with_token
+    around_action :with_token
 
-    def with_token(&action)
+    def with_token(&_)
       SystemAccessToken.current = @access_token
-      action.call
+      yield
     ensure
       SystemAccessToken.current = nil
     end
