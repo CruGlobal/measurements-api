@@ -87,4 +87,44 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect(json['id']).to be measurement.id
     end
   end
+
+  describe 'POST /v5/measurement_types' do
+    let(:json) { JSON.parse(response.body) }
+
+    let(:attributes) do
+      {
+        perm_link_stub: 'nbr_nonstaff_reporting',
+        english: 'Number of Non-Staff Reporting',
+        description: 'Number of Non-Staff Reporting',
+        localized_name: 'Présenter le Saint-Esprit',
+        localized_description: "Nombre de personnes avec lesquelles le ministère de l'Esprit Saint",
+        section: 'other',
+        column: 'other',
+        sort_order: 99,
+        ministry_id: ministry.gr_id,
+        locale: 'fr'
+      }
+    end
+
+    let(:token) { authenticate_api }
+
+    before do
+      WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
+             .with(headers: { 'Authorization': "Bearer #{token}" })
+             .to_return(status: 200, body: { measurement_type: { id: SecureRandom.uuid } }.to_json, headers: {})
+    end
+
+    it 'creates a measurement type' do
+      expect do
+        post '/v5/sys_measurement_types', attributes, 'HTTP_AUTHORIZATION': "Bearer #{token}"
+      end.to change(Measurement, :count).by(1).and(change(MeasurementTranslation, :count).by(1))
+
+      expect(response.code.to_i).to be 201
+      expect(json['id']).to_not be_nil
+
+      expect(Measurement.last.english).to eq 'Number of Non-Staff Reporting'
+
+      expect(MeasurementTranslation.last.name).to eq 'Présenter le Saint-Esprit'
+    end
+  end
 end
