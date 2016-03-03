@@ -1,9 +1,16 @@
 module V5
-  class BaseSystemsController < BaseController
+  module BaseSystemsController
+    extend ActiveSupport::Concern
     include V5::SystemAccessTokenProtectedConcern
 
-    before_action :authenticate_request
-    around_action :with_token
+    included do
+      around_action :with_token
+      skip_around_action :with_current_power
+    end
+
+    def current_user
+      nil
+    end
 
     def with_token(&_)
       SystemAccessToken.current = @access_token
