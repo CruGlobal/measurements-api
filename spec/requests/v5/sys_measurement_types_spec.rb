@@ -142,4 +142,25 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect(Measurement.last.perm_link).to eq 'lmi_total_reporting'
     end
   end
+
+  describe 'PUT /v5/sys_measurement_type/:id' do
+    let(:json) { JSON.parse(response.body) }
+    let(:measurement) { FactoryGirl.create(:measurement) }
+    let(:parent_meas) { FactoryGirl.create(:measurement) }
+
+    let(:attributes) { { english: 'different name', parent_id: parent_meas.total_id, sort_order: 10 } }
+
+    it 'updates measurement type without locale params' do
+      put "/v5/sys_measurement_types/#{measurement.total_id}", attributes,
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+
+      expect(response.code.to_i).to be 200
+      # expect that the object was rendered on the way back
+      expect(json['id']).to be measurement.id
+      measurement.reload
+      expect(measurement.english).to eq 'different name'
+      expect(measurement.parent.id).to eq parent_meas.id
+      expect(measurement.sort_order).to be 10
+    end
+  end
 end

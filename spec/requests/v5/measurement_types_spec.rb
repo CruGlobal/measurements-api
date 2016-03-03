@@ -102,8 +102,8 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect(measurement.sort_order).to be 10
     end
 
-    it "doesn't update perm_link of non-custom meas" do
-      measurement.update(perm_link: 'lmi_total_gospel_convos')
+    it "doesn't update perm_link" do
+      measurement.update(perm_link: 'lmi_total_custom_reporting')
 
       expect do
         put "/v5/measurement_types/#{measurement.total_id}", attributes,
