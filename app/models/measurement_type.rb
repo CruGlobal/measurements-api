@@ -6,7 +6,7 @@ class MeasurementType < ActiveModelSerializers::Model
   define_callbacks :save
 
   ATTRIBUTES = [:english, :perm_link_stub, :description, :section, :column, :sort_order, :parent_id,
-                :localized_name, :localized_description, :ministry_id, :locale, :measurement].freeze
+                :localized_name, :localized_description, :ministry_id, :locale, :measurement, :is_core].freeze
   attr_accessor(*ATTRIBUTES)
 
   validates :english, presence: { message: "Could not find required field: 'english'" }
@@ -68,7 +68,7 @@ class MeasurementType < ActiveModelSerializers::Model
     {
       english: english,
       description: description,
-      perm_link: "lmi_total_custom_#{perm_link_stub}",
+      perm_link: gen_perm_link,
       sort_order: sort_order || 90,
       total_id: @total_id,
       local_id: @local_id,
@@ -77,6 +77,16 @@ class MeasurementType < ActiveModelSerializers::Model
       column: column || 'other',
       parent_id: parent_id
     }.compact
+  end
+
+  def gen_perm_link(perm_link_prefix = 'total')
+    self.is_core = ActiveRecord::Type::Boolean.new.type_cast_from_user(is_core)
+    perm_link_prefix = "#{perm_link_prefix}_" unless perm_link_prefix.blank? || perm_link_prefix.end_with?('_')
+    if is_core
+      "lmi_#{perm_link_prefix}#{perm_link_stub}"
+    else
+      "lmi_#{perm_link_prefix}custom_#{perm_link_stub}"
+    end
   end
 
   def build_translation
@@ -130,11 +140,7 @@ class MeasurementType < ActiveModelSerializers::Model
     name = english
     name = "#{english} (#{name_type})" if name_type
 
-    perm_link = if perm_link_prefix
-                  "lmi_#{perm_link_prefix}_custom_#{perm_link_stub}"
-                else
-                  "lmi_custom_#{perm_link_stub}"
-                end
+    perm_link = gen_perm_link(perm_link_prefix || '')
     json = gr_singleton.post(name: name, frequency: 'monthly', unit: 'People',
                              description: description, perm_link: perm_link,
                              related_entity_type_id: related_id)

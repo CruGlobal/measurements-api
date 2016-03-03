@@ -88,12 +88,12 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
     end
   end
 
-  describe 'POST /v5/measurement_types' do
+  describe 'POST /v5/sys_measurement_types' do
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
       {
-        perm_link_stub: 'nbr_nonstaff_reporting',
+        perm_link_stub: 'reporting',
         english: 'Number of Non-Staff Reporting',
         description: 'Number of Non-Staff Reporting',
         localized_name: 'Présenter le Saint-Esprit',
@@ -109,9 +109,9 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
     let(:token) { authenticate_api }
 
     before do
-      WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
-             .with(headers: { 'Authorization': "Bearer #{token}" })
-             .to_return(status: 200, body: { measurement_type: { id: SecureRandom.uuid } }.to_json, headers: {})
+      @gr_meas_type_request = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
+                                     .with(headers: { 'Authorization': "Bearer #{token}" })
+                                     .to_return(body: { measurement_type: { id: SecureRandom.uuid } }.to_json)
     end
 
     it 'creates a measurement type' do
@@ -123,8 +123,23 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       expect(json['id']).to_not be_nil
 
       expect(Measurement.last.english).to eq 'Number of Non-Staff Reporting'
+      expect(Measurement.last.perm_link).to eq 'lmi_total_custom_reporting'
 
       expect(MeasurementTranslation.last.name).to eq 'Présenter le Saint-Esprit'
+
+      # expect that we used the users token for the GR request
+      expect(@gr_meas_type_request).to have_been_requested.times(3)
+    end
+
+    it 'creates a core measurement type' do
+      expect do
+        post '/v5/sys_measurement_types', attributes.merge(is_core: '1'),
+             'HTTP_AUTHORIZATION': "Bearer #{token}"
+      end.to change(Measurement, :count).by(1)
+
+      expect(response.code.to_i).to be 201
+
+      expect(Measurement.last.perm_link).to eq 'lmi_total_reporting'
     end
   end
 end
