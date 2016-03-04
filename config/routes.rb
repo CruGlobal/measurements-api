@@ -2,7 +2,8 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   get 'monitors/lb'
   api_version(module: 'V5', path: { value: 'v5' }) do
-    resources :token, only: [:index, :destroy]
+    resources :token, only: :index
+    delete '/token', to: 'token#destroy'
     resources :assignments, only: [:index, :show, :create, :update]
     resources :churches, only: [:index, :create, :update]
     resources :measurement_types, only: [:index, :create, :update]

@@ -25,4 +25,14 @@ module CASHelpers
         </cas:serviceResponse>
       )
   end
+
+  def invalid_ticket_response
+    %(
+      <cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+          <cas:authenticationFailure code="INVALID_TICKET">
+             ticket PT-1856376-1HMgO86Z2ZKeByc5XdYD not recognized
+          </cas:authenticationFailure>
+      </cas:serviceResponse>
+    )
+  end
 end
