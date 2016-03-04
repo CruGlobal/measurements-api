@@ -26,7 +26,7 @@ RSpec.describe V5::MinistrySerializer do
     let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
-    it 'have attributes' do
+    it 'has attributes' do
       expect(json[:ministry_id]).to be_uuid
       expect(json[:name]).to_not be_nil
       expect(json[:min_code]).to_not be_nil
@@ -45,7 +45,7 @@ RSpec.describe V5::MinistrySerializer do
       expect(json).to include(:default_mcc, :ministry_scope)
     end
 
-    it 'have correct attribute values' do
+    it 'has correct attribute values' do
       expect(json[:ministry_id]).to eq(ministry.gr_id)
       expect(json[:parent_id]).to eq(parent.gr_id)
       expect(json[:name]).to eq(ministry.name)

@@ -19,6 +19,7 @@ class Assignment < ActiveRecord::Base
   alias_attribute :team_role, :role
   validates :role, presence: true
   validates :role, inclusion: { in: VALID_INPUT_ROLES, message: '\'%{value}\' is not a valid Team Role' }
+  authorize_values_for :role
 
   scope :leaders, -> { where(leader_condition) }
   scope :local_leaders, -> { where(local_leader_condition) }

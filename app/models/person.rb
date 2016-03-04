@@ -83,12 +83,12 @@ class Person < ActiveRecord::Base
   def inherited_assignment_for_ministry(ministry)
     ministry = ministry_param ministry
     return unless ministry.present?
-    ancestor = ministry.self_and_ancestors.includes(:assignments)
+    ancestor = ministry.self_and_ancestors.joins(:assignments)
                        .where(assignments: { person_id: id }.merge(Assignment.local_leader_condition))
                        .order('assignments.role DESC').first
     return unless ancestor
     assignment = assignment_for_ministry(ancestor)
-    Assignment.new(person: self, ministry: ministry, role: "inherited_#{assignment.role}") if assignment
+    assignment.as_inherited_assignment(ministry.id) if assignment
   end
 
   def role_for_ministry(ministry)

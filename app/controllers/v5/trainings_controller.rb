@@ -21,7 +21,7 @@ module V5
     def destroy
       load_training
       @training.destroy
-      render nothing: true, status: 201
+      render nothing: true, status: 204
     end
 
     private

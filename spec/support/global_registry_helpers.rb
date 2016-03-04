@@ -40,4 +40,10 @@ module GlobalRegistryHelpers
       .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
       .to_return(status: 201, body: { entity: response }.to_json, headers: {})
   end
+
+  def gr_update_assignment_request(_assignment)
+    WebMock
+      .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
+      .to_return(status: 200, body: { entity: {} }.to_json, headers: {})
+  end
 end

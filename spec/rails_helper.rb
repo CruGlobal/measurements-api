@@ -30,4 +30,5 @@ RSpec.configure do |config|
   config.include AuthenticationHelpers
   config.include CASHelpers
   config.include GlobalRegistryHelpers
+  config.include ModelHelpers
 end

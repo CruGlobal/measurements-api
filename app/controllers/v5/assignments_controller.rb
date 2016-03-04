@@ -1,5 +1,10 @@
 module V5
   class AssignmentsController < V5::BaseUserController
+    power :assignments, map: {
+      [:show] => :showable_assignments,
+      [:update] => :updateable_assignments
+    }, as: :assignment_scope
+
     def index
       load_assignments
       render_assignments
@@ -7,7 +12,7 @@ module V5
 
     def show
       load_assignment
-      render_assignment or api_error('Invalid assignment ID')
+      render_assignment or api_error('Invalid assignment id')
     end
 
     def create
@@ -21,7 +26,7 @@ module V5
 
     def update
       permit_params %i(team_role)
-      load_assignment
+      load_assignment or api_error('Invalid assignment id') && return
       if build_assignment
         render_assignment :ok
       else
@@ -31,12 +36,22 @@ module V5
 
     private
 
+    def request_power
+      ministry_id = case params[:action].to_sym
+                    when :update, :show
+                      Assignment.find_by(gr_id: params[:id]).try(:ministry).try(:gr_id)
+                    else
+                      params[:ministry_id]
+                    end
+      Power.new(current_user, ministry_id)
+    end
+
     def load_assignments
-      @assignments ||= current_user.assignments
+      @assignments ||= assignment_scope
     end
 
     def load_assignment
-      @assignment ||= ::Assignment.find_by(gr_id: params[:id])
+      @assignment ||= assignment_scope.find_by(gr_id: params[:id])
     end
 
     def build_assignment
@@ -51,7 +66,7 @@ module V5
     end
 
     def render_assignments
-      render json: @assignments, status: :ok
+      render json: @assignments, status: :ok, each_serializer: V5::AssignmentSerializer
     end
 
     def render_errors
@@ -64,7 +79,23 @@ module V5
 
     def assignment_params
       @permitted_params ||= {}
-      post_params.permit(@permitted_params)
+      attributes = post_params.permit(@permitted_params)
+      # Rename and delete uuid params
+      { person_id: :person_gr_id, ministry_id: :ministry_gr_id }.each do |k, v|
+        attributes[v] = attributes[k] if attributes.key?(k) && Uuid.uuid?(attributes[k])
+        attributes.delete(k)
+      end
+      attributes
+    end
+
+    def render_consul_powerless(exception)
+      message = case params[:action].to_sym
+                when :show
+                  '\'ministry_id\' missing or invalid'
+                else
+                  exception.message
+                end
+      api_error(message, status: :unauthorized)
     end
   end
 end
