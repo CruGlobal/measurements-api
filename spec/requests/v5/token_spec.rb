@@ -64,4 +64,11 @@ RSpec.describe 'V5::Tokens', type: :request do
       end
     end
   end
+
+  describe 'DELETE /v5/tokens' do
+    it 'removes token from redis' do
+      expect_any_instance_of(Redis).to receive(:del)
+      delete '/v5/token', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+    end
+  end
 end
