@@ -40,20 +40,19 @@ RSpec.describe MeasurementList, type: :model do
     end
 
     before do
-      meas = FactoryGirl.create(:measurement)
-
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.total_id}")
-             .with(query: hash_including({}))
+      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.total_id}?")
+             .with(query: hash_including)
              .to_return(body: measurement_json(ministry.gr_id).to_json)
       WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.local_id}")
-             .with(query: hash_including({}))
+             .with(query: hash_including)
              .to_return(body: measurement_json(ministry.gr_id).to_json)
       WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.person_id}")
-             .with(query: hash_including({}))
+             .with(query: hash_including)
              .to_return(body: measurement_json(user.gr_id).to_json)
     end
 
-    let(:list) { MeasurementList.new(ministry_id: ministry.gr_id) }
+    let(:meas) { FactoryGirl.create(:measurement) }
+    let(:list) { MeasurementList.new(ministry_id: ministry.gr_id, mcc: 'DS') }
 
     it 'returns Measurements' do
       expect(load.first).to be_a Measurement
@@ -64,10 +63,19 @@ RSpec.describe MeasurementList, type: :model do
       expect(meas.total).to eq 4
     end
 
+    it 'filters by mcc_filter' do
+      meas.update(mcc_filter: 'DS')
+      FactoryGirl.create(:measurement, mcc_filter: 'SLM')
+
+      expect(load.count).to be 1
+
+      meas.update(mcc_filter: nil)
+
+      expect(load.count).to be 1
+    end
+
     it 'filters by ministry hide_values'
     it 'filters by ministry show_values'
-
-    it 'filters by mcc_filter'
 
     it 'loads historical data'
   end

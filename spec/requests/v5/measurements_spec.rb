@@ -24,7 +24,7 @@ RSpec.describe 'V5::Measurements', type: :request do
     def stub_gr_measurement_calls(meas)
       %w(total_id local_id person_id).each do |key|
         WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.send(key)}")
-               .with(query: hash_including({}))
+               .with(query: hash_including)
                .to_return(body: measurement_json.to_json)
       end
     end

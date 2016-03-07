@@ -13,9 +13,9 @@ class MeasurementList
   end
 
   def load
-    raise if ministry_id.blank?
+    raise if ministry_id.blank? || mcc.blank?
 
-    @measurements = Measurement.all
+    @measurements = Measurement.where(mcc_filter: [nil, mcc])
     @measurements.each(&method(:load_gr_value))
   end
 
@@ -28,6 +28,7 @@ class MeasurementList
         'filters[related_entity_id]': ministry_id,
         'filters[period_from]': period_from,
         'filters[period_to]': period,
+        'filters[dimension]': dimension_filter(level),
         per_page: 250
       }
       gr_resp = GlobalRegistry::MeasurementType.find(measurement_level_id, filter_params)
@@ -40,5 +41,13 @@ class MeasurementList
     return period unless historical
     from = Date.parse("#{period}-01") - 11.months
     from.strftime('%Y-%m')
+  end
+
+  def dimension_filter(level)
+    if level == :total
+      mcc
+    else
+      "#{mcc}_#{source}"
+    end
   end
 end

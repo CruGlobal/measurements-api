@@ -13,6 +13,6 @@ FactoryGirl.define do
     parent_id nil
     leader_only false
     supported_staff_only false
-    mcc_filter 'MyString'
+    mcc_filter nil
   end
 end
