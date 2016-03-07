@@ -1,11 +1,9 @@
 module V5
   class TokenAndUserSerializer < ActiveModel::Serializer
-    attributes :status, :session_ticket
+    attributes :status, :session_ticket, :assignments
 
     has_one :user
     has_one :user_preferences, serializer: UserPreferencesSerializer
-
-    has_many :assignments
 
     def user
       {
@@ -21,6 +19,12 @@ module V5
       object.person
     end
 
-    delegate :assignments, to: :object
+    def assignments
+      # We need to serialize ourselves, AMS doesn't serialize nested assignments (by design), we need deep nesting
+      object.person.try(:assignments).map do |assignment|
+        serializer = V5::AssignmentSerializer.new(assignment)
+        ActiveModel::Serializer::Adapter.create(serializer).as_json
+      end.compact
+    end
   end
 end
