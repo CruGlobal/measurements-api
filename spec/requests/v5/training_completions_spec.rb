@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe 'V5::TrainingCompletions', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
-  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let(:json) { JSON.parse(response.body) }
   let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
 
@@ -13,6 +12,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     end
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'creates a completion' do
         expect do
           post '/v5/training_completion', attributes,
@@ -37,9 +37,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'fails to create completion' do
         expect do
           post '/v5/training_completion', attributes,
@@ -58,6 +56,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     let(:attributes) { { number_completed: 50, date: '2014-12-1' } }
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'updates completion' do
         put "/v5/training_completion/#{completion.id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
@@ -81,9 +80,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to update completion' do
         put "/v5/training_completion/#{completion.id}", { number_completed: 30 },
@@ -98,6 +95,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'deletes completion' do
         expect do
           delete "/v5/training_completion/#{completion.id}", nil,
@@ -109,9 +107,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to delete completion' do
         expect do

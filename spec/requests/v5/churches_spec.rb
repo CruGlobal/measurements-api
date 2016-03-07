@@ -18,7 +18,6 @@ RSpec.describe 'V5::Churches', type: :request do
   end
 
   describe 'POST /v5/churches' do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
@@ -26,6 +25,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'creates a church' do
         expect do
           post '/v5/churches', attributes,
@@ -38,9 +38,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'can create public church' do
         expect do
           post '/v5/churches', attributes.merge(security: 2),
@@ -73,7 +71,6 @@ RSpec.describe 'V5::Churches', type: :request do
 
   describe 'PUT /v5/churches/:id' do
     let(:church) { FactoryGirl.create(:church, ministry: ministry) }
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
@@ -82,6 +79,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'updates church' do
         put "/v5/churches/#{church.id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
@@ -95,8 +93,8 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     context 'trying to move church to another ministry you do not have access to' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'fails to update' do
-        assignment.update(role: 'self_assigned')
         other_ministry = FactoryGirl.create(:ministry)
 
         put "/v5/churches/#{church.id}", { ministry_id: other_ministry.id },

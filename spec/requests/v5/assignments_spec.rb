@@ -167,13 +167,17 @@ RSpec.describe 'V5::Assignments', type: :request do
     context 'as a user with no assignment' do
       context 'create a self-assigned assignment' do
         let(:attributes) { { person_id: person.gr_id, ministry_id: ministries[:c1].gr_id, team_role: 'self_assigned' } }
+        let(:assignment) do
+          FactoryGirl.build(:assignment, person: person, ministry: ministries[:c1], role: 'self_assigned')
+        end
+        let!(:request_stub) { gr_create_assignment_request(assignment) }
 
         it 'responds successfully with new assignment' do
           post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
           expect(response).to be_success
           expect(response).to have_http_status 201
-          pending('Assignment still needs to create GR relationship')
+          expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
             .and(include('id'))
           expect(json['id']).to be_uuid
@@ -212,16 +216,19 @@ RSpec.describe 'V5::Assignments', type: :request do
 
       context 'self assign to different ministry' do
         let(:attributes) do
-          { person_id: person.gr_id, ministry_id: ministries[:c1].gr_id,
-            team_role: 'self_assigned' }
+          { person_id: person.gr_id, ministry_id: ministries[:c1].gr_id, team_role: 'self_assigned' }
         end
+        let(:new_assignment) do
+          FactoryGirl.build(:assignment, person: person, ministry: ministries[:c1], role: 'self_assigned')
+        end
+        let!(:request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
           post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
           expect(response).to be_success
           expect(response).to have_http_status 201
-          pending('Assignment still needs to create GR relationship')
+          expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
             .and(include('id'))
           expect(json['id']).to be_uuid
@@ -231,16 +238,19 @@ RSpec.describe 'V5::Assignments', type: :request do
       context 'create assignment for another user by person_id' do
         let(:other) { FactoryGirl.create(:person) }
         let(:attributes) do
-          { person_id: other.gr_id, ministry_id: ministries[:a22].gr_id,
-            team_role: 'admin' }
+          { person_id: other.gr_id, ministry_id: ministries[:a22].gr_id, team_role: 'admin' }
         end
+        let(:new_assignment) do
+          FactoryGirl.build(:assignment, person: other, ministry: ministries[:a22], role: 'admin')
+        end
+        let!(:request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
           post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
           expect(response).to be_success
           expect(response).to have_http_status 201
-          pending('Assignment still needs to create GR relationship')
+          expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
             .and(include('id'))
           expect(json['id']).to be_uuid
@@ -250,10 +260,13 @@ RSpec.describe 'V5::Assignments', type: :request do
       context 'create assignment for another user by username' do
         let(:other) { FactoryGirl.build(:person) }
         let(:attributes) do
-          { username: other.cas_username, ministry_id: ministries[:a22].gr_id,
-            team_role: 'member' }
+          { username: other.cas_username, ministry_id: ministries[:a22].gr_id, team_role: 'member' }
         end
         let!(:request_stub) { gr_person_request_by_username(other) }
+        let(:new_assignment) do
+          FactoryGirl.build(:assignment, person: other, ministry: ministries[:a22], role: 'member')
+        end
+        let!(:assignment_request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
           post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
@@ -261,7 +274,7 @@ RSpec.describe 'V5::Assignments', type: :request do
           expect(response).to be_success
           expect(response).to have_http_status 201
           expect(request_stub).to have_been_requested
-          pending('Assignment still needs to create GR relationship')
+          expect(assignment_request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
             .and(include('id'))
           expect(json['id']).to be_uuid
@@ -360,7 +373,6 @@ RSpec.describe 'V5::Assignments', type: :request do
             expect(response).to have_http_status 200
             expect(json).to include('ministry_id' => ministries[:a21].gr_id, 'team_role' => 'leader',
                                     'id' => member_assignment.gr_id)
-            pending('Update GR relationship with updated role')
             expect(request_stub).to have_been_requested
           end
         end

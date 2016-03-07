@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe ChurchFilter, type: :model do
   let(:user) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry) }
-  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
   let!(:parent_church) do
     FactoryGirl.create(:church, ministry: ministry,
                                 development: 2, latitude: -10, longitude: 10)
@@ -14,6 +13,7 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by development' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     it 'shows all' do
       filters = { hide_church: 'false', show_all: '1', ministry_id: ministry.gr_id }
       filtered = ChurchFilter.new(filters).filter(Church.all)
@@ -32,6 +32,7 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by show all' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     let(:unrelated_pub_church) { FactoryGirl.create(:church_with_ministry) }
     let(:unrelated_private_church) do
       FactoryGirl.create(:church_with_ministry, security: Church.securities['private_church'])
@@ -68,6 +69,7 @@ RSpec.describe ChurchFilter, type: :model do
     let(:admin_power) { Power.new(user, ministry) }
 
     context 'as admin user' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'includes child churches' do
         Power.with_power(admin_power) do
           expect(filtered).to include church2
@@ -90,9 +92,8 @@ RSpec.describe ChurchFilter, type: :model do
     end
 
     context 'as unknown user' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :blocked) }
       it "doesn't include private child churches" do
-        user.assignments.first.update(role: 0)
-
         Power.with_power(admin_power) do
           expect(filtered).to_not include church2
         end
@@ -101,6 +102,7 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by lat/long' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     let!(:church2) do
       FactoryGirl.create(:church, ministry: ministry, latitude: 10, longitude: 40)
     end
@@ -130,6 +132,7 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context 'filter by period' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     before do
       # hasn't started yet
       parent_church.update(start_date: 1.year.from_now)

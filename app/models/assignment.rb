@@ -21,6 +21,8 @@ class Assignment < ActiveRecord::Base
   validates :role, inclusion: { in: VALID_INPUT_ROLES, message: '\'%{value}\' is not a valid Team Role' }
   authorize_values_for :role
 
+  after_update :update_gr_relationship, if: 'gr_id.present?'
+
   scope :leaders, -> { where(leader_condition) }
   scope :local_leaders, -> { where(local_leader_condition) }
 
@@ -60,6 +62,12 @@ class Assignment < ActiveRecord::Base
     Assignment.new(person_id: person_id,
                    ministry_id: min_id.present? ? min_id : ministry_id,
                    role: inherited_role? ? role : "inherited_#{role}".to_sym)
+  end
+
+  protected
+
+  def update_gr_relationship
+    GlobalRegistry::Entity.put(gr_id, entity: { ministry_membership: { team_role: role } })
   end
 
   class << self

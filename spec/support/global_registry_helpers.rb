@@ -41,9 +41,23 @@ module GlobalRegistryHelpers
       .to_return(status: 201, body: { entity: response }.to_json, headers: {})
   end
 
-  def gr_update_assignment_request(_assignment)
+  def gr_create_assignment_request(assignment)
+    response = { person: {
+      id: assignment.person.gr_id,
+      'ministry:relationship' => [{ ministry: assignment.ministry.gr_id,
+                                    relationship_entity_id: assignment.gr_id || SecureRandom.uuid,
+                                    client_integration_id: "_#{assignment.person.gr_id}_#{assignment.ministry.gr_id}",
+                                    team_role: assignment.role
+                                  }] } }
     WebMock
-      .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
+      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{assignment.person.gr_id}")
+      .with(query: { fields: 'ministry:relationship', full_response: 'true' })
+      .to_return(status: 200, body: { entity: response }.to_json, headers: {})
+  end
+
+  def gr_update_assignment_request(assignment)
+    WebMock
+      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{assignment.gr_id}")
       .to_return(status: 200, body: { entity: {} }.to_json, headers: {})
   end
 end

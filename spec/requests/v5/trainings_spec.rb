@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe 'V5::Trainings', type: :request do
   let(:ministry) { FactoryGirl.create(:ministry) }
   let(:user) { FactoryGirl.create(:person) }
-  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
 
   describe 'GET /v5/training' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let(:json) { JSON.parse(response.body) }
 
@@ -27,6 +27,7 @@ RSpec.describe 'V5::Trainings', type: :request do
     end
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       before do
         post '/v5/training', attributes,
              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
@@ -47,9 +48,7 @@ RSpec.describe 'V5::Trainings', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'fails to create training' do
         expect do
           post '/v5/training', attributes,
@@ -70,9 +69,8 @@ RSpec.describe 'V5::Trainings', type: :request do
     let(:attributes) { { latitude: 50.5, ministry_id: other_ministry.gr_id } }
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'updates training' do
-        FactoryGirl.create(:assignment, person: user, ministry: other_ministry, role: 7)
-
         put "/v5/training/#{training.id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
@@ -94,9 +92,7 @@ RSpec.describe 'V5::Trainings', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to update training' do
         put "/v5/training/#{training.id}", { latitude: 60.7 },
@@ -112,6 +108,7 @@ RSpec.describe 'V5::Trainings', type: :request do
     let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
 
     context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'deletes training' do
         expect do
           delete "/v5/training/#{training.id}", nil,
@@ -124,9 +121,7 @@ RSpec.describe 'V5::Trainings', type: :request do
     end
 
     context 'as self-assigned' do
-      before do
-        assignment.update(role: 'self_assigned')
-      end
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to delete training' do
         delete "/v5/training/#{training.id}", nil,

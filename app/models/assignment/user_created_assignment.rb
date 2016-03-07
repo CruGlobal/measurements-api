@@ -1,13 +1,14 @@
 class Assignment
   class UserCreatedAssignment < ::Assignment
+    RELATIONSHIP = 'ministry:relationship'.freeze
+
     # Virtual attributes
     attr_accessor :username, :key_guid, :person_gr_id, :ministry_gr_id
 
     before_validation :lookup_person, on: :create
     before_validation :lookup_ministry, on: :create
 
-    # validates :role, inclusion: { in: VALID_INPUT_ROLES,
-    #                               message: '\'%{value}\' is not a valid Team Role' }
+    before_create :create_gr_relationship
 
     authorize_values_for :role
 
@@ -31,6 +32,20 @@ class Assignment
                         Person.person(key_guid)
                       end
       end
+    end
+
+    def create_gr_relationship
+      response = GlobalRegistry::Entity.put(person.gr_id,
+                                            { entity: { person: { RELATIONSHIP => {
+                                              ministry: ministry.gr_id,
+                                              client_integration_id: "_#{person.gr_id}_#{ministry.gr_id}",
+                                              team_role: role
+                                            }, 'client_integration_id' => '' } } },
+                                            params: { full_response: true, fields: RELATIONSHIP })
+      assignment = response['entity']['person'][RELATIONSHIP].find do |relationship|
+        relationship['ministry'] == ministry.gr_id
+      end
+      self.gr_id = assignment['relationship_entity_id']
     end
   end
 end
