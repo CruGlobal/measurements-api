@@ -18,6 +18,7 @@ class Power
   include Powers::ChurchPowers
   include Powers::TrainingPowers
   include Powers::MinistryPowers
+  include Powers::MeasurementPowers
 
   protected
 

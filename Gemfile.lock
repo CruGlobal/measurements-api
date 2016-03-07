@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/CruGlobal/global_registry_client.git
-  revision: a965b2e89b987a38d9a7008c374d11e469575f70
+  revision: cc4cfe56b67b5560af740aaeba7d4ed00c64db28
   specs:
     global_registry (1.1.0)
       activesupport
