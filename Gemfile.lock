@@ -1,15 +1,4 @@
 GIT
-  remote: git://github.com/CruGlobal/global_registry_client.git
-  revision: cc4cfe56b67b5560af740aaeba7d4ed00c64db28
-  specs:
-    global_registry (1.1.0)
-      activesupport
-      oj (~> 2.13.0)
-      oj_mimic_json
-      rest-client (~> 1.6.7)
-      retryable-rb (~> 1.1.0)
-
-GIT
   remote: https://github.com/CruGlobal/cru_lib.git
   revision: 8da4a0abb7195c0ad4e23aaf26e55ead312c441a
   specs:
@@ -111,6 +100,12 @@ GEM
       redis (~> 3.0)
     ffi (1.9.10)
     formatador (0.2.5)
+    global_registry (1.1.0)
+      activesupport
+      oj (~> 2.13.0)
+      oj_mimic_json
+      rest-client (~> 1.6.7)
+      retryable-rb (~> 1.1.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     guard (2.13.0)
@@ -329,7 +324,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   fakeredis
-  global_registry!
+  global_registry (= 1.1.0)
   guard-rspec
   guard-rubocop
   http_logger
