@@ -1,16 +1,6 @@
 GIT
-  remote: https://github.com/CruGlobal/cru_lib.git
-  revision: 8da4a0abb7195c0ad4e23aaf26e55ead312c441a
-  specs:
-    cru_lib (0.0.6)
-      active_model_serializers
-      global_registry
-      redis
-
-GIT
-  remote: https://github.com/CruGlobal/global_registry_client.git
-  revision: db84449e2a4b5615cc30365e9ada852a3014694b
-  branch: objectivity
+  remote: git://github.com/CruGlobal/global_registry_client.git
+  revision: a965b2e89b987a38d9a7008c374d11e469575f70
   specs:
     global_registry (1.1.0)
       activesupport
@@ -18,6 +8,15 @@ GIT
       oj_mimic_json
       rest-client (~> 1.6.7)
       retryable-rb (~> 1.1.0)
+
+GIT
+  remote: https://github.com/CruGlobal/cru_lib.git
+  revision: 8da4a0abb7195c0ad4e23aaf26e55ead312c441a
+  specs:
+    cru_lib (0.0.6)
+      active_model_serializers
+      global_registry
+      redis
 
 GIT
   remote: https://github.com/rails-api/active_model_serializers.git
