@@ -23,7 +23,8 @@ class MeasurementList
   private
 
   def load_gr_value(measurement)
-    Power.current.measurement_levels.each do |level|
+    levels = Power.current.try(:measurement_levels) || [:total, :local, :person]
+    levels.each do |level|
       measurement_level_id = measurement.send("#{level}_id")
       filter_params = {
         'filters[related_entity_id]': ministry_id,
