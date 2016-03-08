@@ -20,10 +20,12 @@ RSpec.describe MeasurementList, type: :model do
           perm_link: 'LMI',
           measurements: [
             {
-              id: SecureRandom.uuid,
-              period: '2015-04',
-              value: '4.0',
-              related_entity_id: related_entity_id
+              id: SecureRandom.uuid, period: (Time.zone.today - 4.months).strftime('%Y-%m'),
+              value: '3.0', related_entity_id: related_entity_id
+            },
+            {
+              id: SecureRandom.uuid, period: (Time.zone.today - 5.months).strftime('%Y-%m'),
+              value: '1.0', related_entity_id: related_entity_id
             }
           ]
         }
@@ -137,6 +139,10 @@ RSpec.describe MeasurementList, type: :model do
       end
     end
 
-    it 'loads historical data'
+    it 'loads historical data' do
+      list.historical = true
+      expect(list.load.first.total).to be_a Hash
+      expect(list.load.first.total.count).to be 12
+    end
   end
 end

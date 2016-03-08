@@ -23,26 +23,53 @@ class MeasurementList
   private
 
   def load_gr_value(measurement)
+    return load_historic_gr_values(measurement) if historical
     levels = Power.current.try(:measurement_levels) || [:total, :local, :person]
     levels.each do |level|
       measurement_level_id = measurement.send("#{level}_id")
-      filter_params = {
-        'filters[related_entity_id]': ministry_id,
-        'filters[period_from]': period_from,
-        'filters[period_to]': period,
-        'filters[dimension]': dimension_filter(level),
-        per_page: 250
-      }
+      filter_params = gr_request_params(level)
       gr_resp = GlobalRegistry::MeasurementType.find(measurement_level_id, filter_params)
-      value = gr_resp['measurement_type']['measurements'].first.try(:[], 'value')
-      measurement.send("#{level}=", value.to_f)
+      value = gr_resp['measurement_type']['measurements'].map { |m| m['value'].to_f }.sum
+      measurement.send("#{level}=", value)
     end
   end
 
+  def load_historic_gr_values(measurement)
+    return unless can_historic
+    gr_resp = GlobalRegistry::MeasurementType
+              .find(measurement.total_id, gr_request_params(:total))['measurement_type']['measurements']
+    measurement.total = build_total_hash(gr_resp)
+  end
+
+  def build_total_hash(gr_resp)
+    total_hash = {}
+    i_period = period_from
+    loop do
+      total_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
+      break if i_period == period
+      i_period = (Date.parse("#{i_period}-01") + 1.month).strftime('%Y-%m')
+    end
+    total_hash
+  end
+
+  def gr_request_params(level)
+    {
+      'filters[related_entity_id]': ministry_id,
+      'filters[period_from]': period_from,
+      'filters[period_to]': period,
+      'filters[dimension]': dimension_filter(level),
+      per_page: 250
+    }
+  end
+
   def period_from
-    return period unless historical
+    return period unless historical && can_historic
     from = Date.parse("#{period}-01") - 11.months
     from.strftime('%Y-%m')
+  end
+
+  def can_historic
+    Power.current.blank? || Power.current.historic_measurements
   end
 
   def dimension_filter(level)
