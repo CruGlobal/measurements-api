@@ -74,8 +74,20 @@ RSpec.describe MeasurementList, type: :model do
       expect(load.count).to be 1
     end
 
-    it 'filters by ministry hide_values'
-    it 'filters by ministry show_values'
+    it 'filters by ministry hide_values and show_values' do
+      meas.update(perm_link: 'lmi_total_custom_to_be_shown')
+      meas2 = FactoryGirl.create(:measurement, perm_link: 'lmi_total_hidden')
+      FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_not_shown')
+
+      ministry.update(lmi_hide: ['hidden'], lmi_show: ['to_be_shown'])
+
+      expect(load.count).to be 1
+
+      meas.update(perm_link: 'lmi_total_not_hidden')
+      meas2.update(perm_link: 'lmi_total_custom_asdf')
+
+      expect(load.count).to be 1
+    end
 
     it 'loads historical data'
   end

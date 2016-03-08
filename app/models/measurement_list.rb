@@ -16,6 +16,7 @@ class MeasurementList
     raise if ministry_id.blank? || mcc.blank?
 
     @measurements = Measurement.where(mcc_filter: [nil, mcc])
+    @measurements = filter_by_show_hide
     @measurements.each(&method(:load_gr_value))
   end
 
@@ -49,5 +50,38 @@ class MeasurementList
     else
       "#{mcc}_#{source}"
     end
+  end
+
+  def filter_by_show_hide
+    query = []
+    query = [show_filter] if ministry.lmi_show.present?
+    query << hide_filter if ministry.lmi_hide.present?
+    if query.count == 2
+      @measurements.where(query[0].or(query[1]))
+    elsif query.count == 1
+      @measurements.where(query[0])
+    else
+      @measurements
+    end
+  end
+
+  def ministry
+    Ministry.find_by(gr_id: ministry_id)
+  end
+
+  # show the custom measurements
+  def show_filter
+    perm_links = ministry.lmi_show.map { |lmi| "lmi_total_custom_#{lmi}" }
+    table[:perm_link].in(perm_links)
+  end
+
+  # core measurements to hide
+  def hide_filter
+    perm_links = ministry.lmi_hide.map { |lmi| "lmi_total_#{lmi}" }
+    table[:perm_link].does_not_match('%_custom_%').and(table[:perm_link].not_in(perm_links))
+  end
+
+  def table
+    Measurement.arel_table
   end
 end
