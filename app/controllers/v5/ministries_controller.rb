@@ -3,7 +3,7 @@ module V5
     power :ministries, map: {
       [:show, :update] => :show_ministry,
       [:create] => :create_ministry
-    }
+    }, as: :ministry_scope
 
     def index
       return if refresh_ministries
@@ -36,15 +36,15 @@ module V5
     private
 
     def load_ministries
-      @ministries ||= current_power.ministries
+      @ministries ||= ministry_scope
     end
 
     def load_ministry
-      @ministry ||= current_power.show_ministry
+      @ministry ||= ministry_scope
     end
 
     def build_ministry
-      @ministry ||= current_power.create_ministry.new
+      @ministry ||= ministry_scope.new
       @ministry.created_by = current_user if @ministry.respond_to? :created_by=
       @ministry.attributes = ministry_params
       @ministry.save
@@ -52,7 +52,7 @@ module V5
 
     def refresh_ministries
       if params.key?(:refresh) && params[:refresh] == 'true'
-        GlobalRegistry::SyncMinistriesWorker.perform_async
+        GlobalRegistry::SyncMinistriesWorker.perform_async(GlobalRegistryParameters.current)
         render status: :accepted, plain: 'Accepted'
         return true
       end

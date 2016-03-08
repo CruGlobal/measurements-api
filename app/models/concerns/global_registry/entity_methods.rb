@@ -5,7 +5,7 @@ module GlobalRegistry
     # Creates the entity in Global Registry
     def create_entity(_options = {})
       # TODO: Handle exceptions
-      GlobalRegistry::Entity.post(to_entity)['entity'][self.class.entity_type].with_indifferent_access
+      self.class.client.post(to_entity)['entity'][self.class.entity_type].with_indifferent_access
     end
 
     # Updates self from Global Registry entity with given :id
@@ -47,6 +47,11 @@ module GlobalRegistry
     end
 
     module ClassMethods
+      # GR Entity client with either server or system access token / x-forwarded-for parameters
+      def client
+        GlobalRegistry::Entity.new(GlobalRegistryParameters.current)
+      end
+
       def entity_type
         to_s.underscore
       end
@@ -60,14 +65,14 @@ module GlobalRegistry
       end
 
       def find_entity(id, params = {})
-        response = GlobalRegistry::Entity.find(id, params)
+        response = client.find(id, params)
         response['entity'].with_indifferent_access if response.key?('entity')
       rescue RestClient::ResourceNotFound
         nil
       end
 
       def find_entity_by(params = {})
-        results = GlobalRegistry::Entity.get(params)['entities']
+        results = client.get(params)['entities']
         return nil unless results[0] && results[0]
         results[0].with_indifferent_access
       rescue RestClient::ResourceNotFound
@@ -91,7 +96,7 @@ module GlobalRegistry
         params['page'] = 1 unless params.key? 'page'
         params['per_page'] = 50 unless params.key? 'per_page'
         loop do
-          response = GlobalRegistry::Entity.get(params)
+          response = client.get(params)
           yield response['entities'] if response.key? 'entities'
           break if response.key?('meta') && (response['meta']['next_page'] == false)
           params['page'] += 1

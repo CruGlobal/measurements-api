@@ -37,7 +37,7 @@ module V5
     def check_token(token)
       return token if token_has_auth(token)
 
-      resp = GlobalRegistry::System.new(access_token: token).get(limit: 1)
+      resp = GlobalRegistry::System.new(access_token: token, xff: request.remote_ip).get(limit: 1)
       return unless resp.present?
 
       Rails.cache.write(cache_key(token), '1', expires_in: SYSTEM_TOKEN_AUTH_TIMEOUT)

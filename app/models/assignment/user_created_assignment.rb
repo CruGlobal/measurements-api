@@ -35,17 +35,23 @@ class Assignment
     end
 
     def create_gr_relationship
-      response = GlobalRegistry::Entity.put(person.gr_id,
-                                            { entity: { person: { RELATIONSHIP => {
-                                              ministry: ministry.gr_id,
-                                              client_integration_id: "_#{person.gr_id}_#{ministry.gr_id}",
-                                              team_role: role
-                                            }, 'client_integration_id' => '' } } },
-                                            params: { full_response: true, fields: RELATIONSHIP })
-      assignment = response['entity']['person'][RELATIONSHIP].find do |relationship|
+      response = gr_client.put(person.gr_id,
+                               { entity: { person: { RELATIONSHIP => {
+                                 ministry: ministry.gr_id,
+                                 client_integration_id: "_#{person.gr_id}_#{ministry.gr_id}",
+                                 team_role: role
+                               }, 'client_integration_id' => '' } } },
+                               params: { full_response: true, fields: RELATIONSHIP })
+      assignment = assignment_from_gr_response(response)
+      self.gr_id = assignment['relationship_entity_id']
+    end
+
+    private
+
+    def assignment_from_gr_response(response)
+      response['entity']['person'][RELATIONSHIP].find do |relationship|
         relationship['ministry'] == ministry.gr_id
       end
-      self.gr_id = assignment['relationship_entity_id']
     end
   end
 end

@@ -13,10 +13,10 @@ module V5
     end
 
     def with_token(&_)
-      SystemAccessToken.current = @access_token
+      GlobalRegistryParameters.current = { access_token: @access_token, xff: request.remote_ip }
       yield
     ensure
-      SystemAccessToken.current = nil
+      GlobalRegistryParameters.current = nil
     end
   end
 end

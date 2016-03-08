@@ -32,6 +32,8 @@ class Ministry < ActiveRecord::Base
   validates :name, presence: true
   validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
                           unless: 'default_mcc.blank?'
+  validates :min_code, presence: true, uniqueness: true, on: :create
+  before_validation :generate_min_code, on: :create, if: 'gr_id.blank?'
 
   authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
 
@@ -67,6 +69,15 @@ class Ministry < ActiveRecord::Base
   # Find first ancestor ministry with a ministry scope
   def parent_whq_ministry
     ancestors.order(lft: :desc).find_by(ministry_scope: SCOPES)
+  end
+
+  # Prefix new ministries min_code with parent min_code if WHQ ministry
+  def generate_min_code
+    self.min_code = name if min_code.blank?
+    return unless min_code.is_a? String
+    self.min_code = min_code.downcase.gsub(/\s+/, '_')
+    ministry = parent_whq_ministry
+    self.min_code = [ministry.min_code, min_code].join('_') unless ministry.nil?
   end
 
   class << self

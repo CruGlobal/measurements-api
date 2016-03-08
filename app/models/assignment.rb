@@ -67,7 +67,11 @@ class Assignment < ActiveRecord::Base
   protected
 
   def update_gr_relationship
-    GlobalRegistry::Entity.put(gr_id, entity: { ministry_membership: { team_role: role } })
+    gr_client.put(gr_id, entity: { ministry_membership: { team_role: role } })
+  end
+
+  def gr_client
+    GlobalRegistry::Entity.new(GlobalRegistryParameters.current)
   end
 
   class << self
