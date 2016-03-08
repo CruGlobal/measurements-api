@@ -71,6 +71,8 @@ RSpec.describe 'V5::Trainings', type: :request do
     context 'as admin' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'updates training' do
+        FactoryGirl.create(:assignment, person: user, ministry: other_ministry, role: :admin)
+
         put "/v5/training/#{training.id}", attributes,
             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
