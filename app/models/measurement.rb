@@ -6,7 +6,7 @@ class Measurement < ActiveRecord::Base
   validates :local_id, presence: true
   validates :total_id, presence: true
 
-  attr_accessor :total, :local, :person
+  attr_accessor :total, :local, :person, :loaded_children
 
   def initialize(attributes = nil, options = {})
     super(attributes, options)

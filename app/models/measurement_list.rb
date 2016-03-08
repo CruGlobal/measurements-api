@@ -18,6 +18,7 @@ class MeasurementList
     @measurements = Measurement.where(mcc_filter: [nil, mcc])
     @measurements = filter_by_show_hide
     @measurements.each(&method(:load_gr_value))
+    split_children
   end
 
   private
@@ -113,5 +114,13 @@ class MeasurementList
 
   def table
     Measurement.arel_table
+  end
+
+  def split_children
+    @measurements.select do |meas|
+      children = @measurements.select { |child| child.parent_id == meas.id }
+      meas.loaded_children = children
+      next meas if meas.parent_id.blank?
+    end
   end
 end

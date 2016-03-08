@@ -14,7 +14,7 @@ RSpec.describe MeasurementList, type: :model do
   end
 
   describe '#load' do
-    def measurement_json(related_entity_id)
+    def measurement_json(related_entity_id = nil)
       {
         measurement_type: {
           perm_link: 'LMI',
@@ -32,16 +32,22 @@ RSpec.describe MeasurementList, type: :model do
       }
     end
 
+    def stub_measurement_gr_calls(measurement = nil)
+      measurement ||= meas
+
+      stub_measurement_type_gr(measurement.total_id, ministry.gr_id)
+      stub_measurement_type_gr(measurement.local_id, ministry.gr_id)
+      stub_measurement_type_gr(measurement.person_id, user.gr_id)
+    end
+
+    def stub_measurement_type_gr(type_id, related_entity_id)
+      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{type_id}?")
+             .with(query: hash_including)
+             .to_return(body: measurement_json(related_entity_id).to_json)
+    end
+
     before do
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.total_id}?")
-             .with(query: hash_including)
-             .to_return(body: measurement_json(ministry.gr_id).to_json)
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.local_id}")
-             .with(query: hash_including)
-             .to_return(body: measurement_json(ministry.gr_id).to_json)
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.person_id}")
-             .with(query: hash_including)
-             .to_return(body: measurement_json(user.gr_id).to_json)
+      stub_measurement_gr_calls
     end
 
     let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
@@ -143,6 +149,17 @@ RSpec.describe MeasurementList, type: :model do
       list.historical = true
       expect(list.load.first.total).to be_a Hash
       expect(list.load.first.total.count).to be 12
+    end
+
+    it 'folds children in parents' do
+      child_meas = FactoryGirl.create(:measurement, parent: meas, perm_link: 'lmi_total_asdf')
+      stub_measurement_gr_calls(child_meas)
+
+      resp = list.load
+
+      expect(resp.count).to be 1
+      expect(resp.first.loaded_children.count).to be 1
+      expect(resp.first.loaded_children.first.person).to eq 4
     end
   end
 end
