@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'V5::MeasurementTypes', type: :request do
+RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:ministry) { FactoryGirl.create(:ministry) }

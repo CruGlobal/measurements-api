@@ -1,5 +1,5 @@
 module V5
-  class SysMeasurementTypesController < V5::MeasurementTypesController
+  class SystemsMeasurementTypesController < V5::MeasurementTypesController
     include V5::BaseSystemsController
 
     private
