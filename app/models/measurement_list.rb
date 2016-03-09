@@ -29,9 +29,7 @@ class MeasurementList
     levels.each do |level|
       measurement_level_id = measurement.send("#{level}_id")
       filter_params = gr_request_params(level)
-      gr_resp = GlobalRegistry::MeasurementType
-                .new(GlobalRegistryParameters.current)
-                .find(measurement_level_id, filter_params)
+      gr_resp = GlobalRegistryClient.client(:measurement_type).find(measurement_level_id, filter_params)
       value = gr_resp['measurement_type']['measurements'].map { |m| m['value'].to_f }.sum
       measurement.send("#{level}=", value)
     end

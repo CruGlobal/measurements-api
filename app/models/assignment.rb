@@ -71,7 +71,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def gr_client
-    GlobalRegistry::Entity.new(GlobalRegistryParameters.current)
+    GlobalRegistryClient.client
   end
 
   class << self

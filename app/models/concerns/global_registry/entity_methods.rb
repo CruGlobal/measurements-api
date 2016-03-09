@@ -49,7 +49,7 @@ module GlobalRegistry
     module ClassMethods
       # GR Entity client with either server or system access token / x-forwarded-for parameters
       def client
-        GlobalRegistry::Entity.new(GlobalRegistryParameters.current)
+        GlobalRegistryClient.client
       end
 
       def entity_type

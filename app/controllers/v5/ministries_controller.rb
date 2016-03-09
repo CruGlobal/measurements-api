@@ -52,7 +52,7 @@ module V5
 
     def refresh_ministries
       if params.key?(:refresh) && params[:refresh] == 'true'
-        GlobalRegistry::SyncMinistriesWorker.perform_async(GlobalRegistryParameters.current)
+        GlobalRegistry::SyncMinistriesWorker.perform_async(GlobalRegistryClient.parameters)
         render status: :accepted, plain: 'Accepted'
         return true
       end

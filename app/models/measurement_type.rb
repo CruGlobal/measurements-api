@@ -171,6 +171,6 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def gr_singleton
-    GlobalRegistry::MeasurementType.new(GlobalRegistryParameters.current)
+    GlobalRegistryClient.client(:measurement_type)
   end
 end

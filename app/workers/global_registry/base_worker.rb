@@ -3,9 +3,9 @@ module GlobalRegistry
     include Sidekiq::Worker
 
     def perform(global_registry_params = {})
-      GlobalRegistryParameters.current = global_registry_params
+      GlobalRegistryClient.parameters = global_registry_params
       perform_with_gr
-      GlobalRegistryParameters.current = nil
+      GlobalRegistryClient.parameters = nil
     end
 
     def perform_with_gr
