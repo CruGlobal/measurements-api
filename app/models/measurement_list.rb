@@ -118,6 +118,7 @@ class MeasurementList
 
   def split_children
     @measurements.select do |meas|
+      # use select instead since we already have them loaded in memory
       children = @measurements.select { |child| child.parent_id == meas.id }
       meas.loaded_children = children
       next meas if meas.parent_id.blank?

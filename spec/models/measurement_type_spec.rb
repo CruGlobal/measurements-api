@@ -89,4 +89,41 @@ RSpec.describe MeasurementType, type: :model do
       end
     end
   end
+
+  describe '#destroy' do
+    before do
+      @measurement = FactoryGirl.create(:measurement)
+      @measurement_type = MeasurementType.new(measurement: @measurement)
+
+      @gr_meas_delete_total_stub =
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{@measurement.total_id}")
+      @gr_meas_delete_local_stub =
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{@measurement.local_id}")
+      @gr_meas_delete_person_stub =
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{@measurement.person_id}")
+    end
+
+    it 'removes Measurement from the db' do
+      expect { @measurement_type.destroy }.to change(Measurement, :count).by(-1)
+    end
+
+    it 'deletes it from GR' do
+      @measurement_type.destroy
+      expect(@gr_meas_delete_total_stub).to have_been_requested
+      expect(@gr_meas_delete_local_stub).to have_been_requested
+      expect(@gr_meas_delete_person_stub).to have_been_requested
+    end
+
+    it "only deletes if it doesn't have children" do
+      FactoryGirl.create(:measurement, parent: @measurement)
+
+      expect { @measurement_type.destroy }.to raise_error('measurements with children can not be destroyed')
+        .and(change(Measurement, :count).by(0))
+    end
+
+    it 'also deletes attached translations' do
+      FactoryGirl.create(:measurement_translation, measurement: @measurement)
+      expect { @measurement_type.destroy }.to change(MeasurementTranslation, :count).by(-1)
+    end
+  end
 end

@@ -29,7 +29,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       travel_to 5.hours.from_now do
         get '/v5/sys_measurement_types', access_token: token
       end
-      expect(gr_request).to have_been_requested.times(1)
+      expect(gr_request).to have_been_requested
     end
 
     it 'reauthenticates authentication after expire' do

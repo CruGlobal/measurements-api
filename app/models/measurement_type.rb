@@ -53,6 +53,17 @@ class MeasurementType < ActiveModelSerializers::Model
     measurement.new_record?
   end
 
+  def destroy
+    return unless measurement
+    raise 'measurements with children can not be destroyed' if measurement.children.any?
+
+    gr_singleton.delete(measurement.total_id)
+    gr_singleton.delete(measurement.local_id)
+    gr_singleton.delete(measurement.person_id)
+
+    measurement.destroy
+  end
+
   private
 
   def build_measurement
