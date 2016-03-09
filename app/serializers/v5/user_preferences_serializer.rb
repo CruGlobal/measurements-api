@@ -1,9 +1,5 @@
 module V5
   class UserPreferencesSerializer < ActiveModel::Serializer
-    PROPERTY_MAP_VIEWS = 'default_map_views'.freeze
-    PROPERTY_MEASUREMENT_STATES = 'default_measurement_states'.freeze
-    PROPERTY_CONTENT_LOCALES = 'content_locales'.freeze
-
     has_many :default_map_views
     has_many :default_measurement_states
     attribute :content_locales
@@ -17,7 +13,7 @@ module V5
     def content_locales
       locales = {}
       object.user_content_locales.each do |locale|
-        locales[locale.ministry_id] = locale.locale
+        locales[locale.ministry.gr_id] = locale.locale
       end
       locales
     end
@@ -25,7 +21,7 @@ module V5
     def default_map_views
       object.user_map_views.map do |view|
         {
-          ministry_id: view.ministry_id,
+          ministry_id: view.ministry.gr_id,
           location: {
             latitude: view.lat,
             longitude: view.long

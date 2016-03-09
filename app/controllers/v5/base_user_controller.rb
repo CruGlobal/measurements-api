@@ -30,7 +30,7 @@ module V5
     end
 
     def render_not_found
-      render text: 'Not Found', status: :not_found
+      api_error 'Not Found', status: :not_found
     end
   end
 end

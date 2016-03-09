@@ -1,33 +1,28 @@
 module V5
   class UserPreferencesController < V5::BaseUserController
     def index
-      person = Person.find_or_initialize(@access_token.key_guid)
-      api_error('Invalid User') unless person
-      render json: @person, serializer: UserPreferencesSerializer
+      load_person or render_not_found
+      render_preferences
     end
 
     def create
-      @person = Person.find_or_initialize(@access_token.key_guid)
-      api_error('Invalid User') unless @person
-      update_preferences(request.request_parameters)
-      render json: @person, serializer: UserPreferencesSerializer
+      load_person or render_not_found
+      update_preferences
+      render_preferences
     end
 
     private
 
-    def update_preferences(preferences = {})
-      preferences.each do |key, value|
-        case key
-        when UserPreferencesSerializer::PROPERTY_MAP_VIEWS
-          @person.add_or_update_map_views(value)
-        when UserPreferencesSerializer::PROPERTY_MEASUREMENT_STATES
-          @person.add_or_update_measurement_states(value)
-        when UserPreferencesSerializer::PROPERTY_CONTENT_LOCALES
-          @person.add_or_update_content_locales(value)
-        else
-          @person.add_or_update_preference(key, value)
-        end
-      end
+    def load_person
+      @person ||= ::Person::UpdatePreferences.find(current_user.id)
+    end
+
+    def render_preferences
+      render json: @person, serializer: UserPreferencesSerializer if @person
+    end
+
+    def update_preferences
+      @person.update_preferences(post_params)
     end
   end
 end
