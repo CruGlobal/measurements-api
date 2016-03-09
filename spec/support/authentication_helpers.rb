@@ -6,7 +6,7 @@ module AuthenticationHelpers
   end
 
   def authenticate_api
-    token = CruLib::AccessToken.new.token
+    token = SecureRandom.uuid.delete('-')
 
     WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
            .with(headers: { 'Authorization' => "Bearer #{token}" })

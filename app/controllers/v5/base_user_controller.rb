@@ -28,5 +28,9 @@ module V5
     def render_consul_powerless(exception)
       api_error(exception.message, status: :unauthorized)
     end
+
+    def render_not_found
+      render text: 'Not Found', status: :not_found
+    end
   end
 end

@@ -12,7 +12,7 @@ module V5
     end
 
     def show
-      load_ministry
+      load_ministry or render_not_found
       render_ministry
     end
 
@@ -25,7 +25,7 @@ module V5
     end
 
     def update
-      load_ministry
+      load_ministry or render_not_found && return
       if build_ministry
         render_ministry
       else
