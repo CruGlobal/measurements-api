@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :token, only: :index
     delete '/token', to: 'token#destroy'
     resources :assignments, only: [:index, :show, :create, :update]
+    resources :sys_assignments, only: [:create, :update], controller: 'systems_assignments'
     resources :churches, only: [:index, :create, :update]
     resources :measurement_types, only: [:index, :show, :create, :update]
     get '/measurement_type/:id', to: 'measurement_types#show'
