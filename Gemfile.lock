@@ -66,6 +66,11 @@ GEM
       activerecord (>= 4.0.0, < 5)
     awesome_print (1.6.1)
     builder (3.2.2)
+    carrierwave (0.10.0)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+      json (>= 1.7)
+      mime-types (>= 1.16)
     coderay (1.1.0)
     concurrent-ruby (1.0.0)
     connection_pool (2.2.0)
@@ -91,6 +96,7 @@ GEM
     edge_rider (0.3.1)
       activerecord
     erubis (2.7.0)
+    excon (0.48.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.5.0)
@@ -99,8 +105,23 @@ GEM
     fakeredis (0.5.0)
       redis (~> 3.0)
     ffi (1.9.10)
+    fog-aws (0.9.1)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+      ipaddress (~> 0.8)
+    fog-core (1.36.0)
+      builder
+      excon (~> 0.45)
+      formatador (~> 0.2)
+    fog-json (1.0.2)
+      fog-core (~> 1.0)
+      multi_json (~> 1.10)
+    fog-xml (0.1.2)
+      fog-core
+      nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
-    global_registry (1.1.0)
+    global_registry (1.2.0)
       activesupport
       oj (~> 2.13.0)
       oj_mimic_json
@@ -128,6 +149,7 @@ GEM
     hashdiff (0.2.3)
     http_logger (0.5.1)
     i18n (0.7.0)
+    ipaddress (0.8.3)
     json (1.8.3)
     listen (3.0.5)
       rb-fsevent (>= 0.9.3)
@@ -318,13 +340,15 @@ DEPENDENCIES
   auto_strip_attributes (~> 2.0)
   awesome_nested_set
   awesome_print
+  carrierwave
   consul
   coveralls
   cru_lib!
   dotenv-rails
   factory_girl_rails
   fakeredis
-  global_registry (= 1.1.0)
+  fog-aws
+  global_registry (= 1.2.0)
   guard-rspec
   guard-rubocop
   http_logger

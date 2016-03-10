@@ -26,7 +26,9 @@ gem 'arel'
 gem 'consul'
 gem 'assignable_values'
 gem 'awesome_nested_set'
-gem 'global_registry', '1.1.0'
+gem 'global_registry', '1.2.0'
+gem 'carrierwave'
+gem 'fog-aws'
 
 group :development, :test do
   gem 'dotenv-rails'
