@@ -6,6 +6,8 @@ module V5
     end
 
     def show
+      load_measurement
+      render json: @measurement, serializer: V5::MeasurementDetailsSerializer
     end
 
     def create
@@ -17,6 +19,12 @@ module V5
       @measurements ||= MeasurementList
                         .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
                         .load
+    end
+
+    def load_measurement
+      return @measurement if @measurement
+      @measurement = MeasurementDetails.new(params.permit(:id, :ministry_id, :mcc, :period))
+      @measurement.load
     end
   end
 end
