@@ -1,4 +1,5 @@
 class Training < ActiveRecord::Base
+  self.inheritance_column = nil
   belongs_to :ministry
   authorize_values_for :ministry
 

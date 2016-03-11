@@ -38,6 +38,7 @@ group :development, :test do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'pry-rails'
+  gem 'pry-byebug'
   gem 'http_logger'
   gem 'awesome_print'
 end
