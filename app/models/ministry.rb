@@ -26,6 +26,7 @@ class Ministry < ActiveRecord::Base
   has_many :people, through: :assignments
 
   has_many :user_content_locales, dependent: :destroy
+  has_many :stories, dependent: :destroy
 
   auto_strip_attributes :name
 
