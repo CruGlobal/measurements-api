@@ -5,6 +5,8 @@ class Ministry
 
     authorize_values_for :parent_id
 
+    validates :min_code, presence: true, on: :create
+
     after_create :create_admin_assignment
 
     private
