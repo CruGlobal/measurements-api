@@ -73,8 +73,6 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(details.local[Time.zone.today.strftime('%Y-%m')]).to eq 3
     end
 
-    it 'loads team'
-    it 'loads self_assigned'
     it 'loads split_measurements'
   end
 
@@ -119,9 +117,11 @@ RSpec.describe MeasurementDetails, type: :model do
 
     it 'loads my_measurements monthly values' do
       allow(details).to receive(:push_personal_to_gr)
+
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
+
       expect(details.my_measurements).to be_a Hash
       expect(details.my_measurements[Time.zone.today.strftime('%Y-%m')]).to eq 3
       expect(details.my_measurements[(Time.zone.today - 1.month).strftime('%Y-%m')]).to eq 1
@@ -138,10 +138,44 @@ RSpec.describe MeasurementDetails, type: :model do
       stub_measurement_type_gr(meas.total_id, child_min1.gr_id)
 
       details.load_sub_mins_from_gr
+
       expect(details.sub_ministries.count).to be 2
       expect(details.sub_ministries.first[:name]).to eq child_min1.name
       expect(details.sub_ministries.first[:total]).to eq 7
       expect(details.sub_ministries.last[:total]).to eq 0
+    end
+  end
+
+  describe '#load_team_members_from_gr' do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+
+    def measurements_json(related_entity_id = nil)
+      {
+        measurement_type: {
+          perm_link: 'LMI',
+          measurements: [
+            measurement_json(Time.zone.today, 3, related_entity_id[0], 'DS_asdf'),
+            measurement_json(Time.zone.today, 2, related_entity_id[1], 'DS_asdf')
+          ]
+        }
+      }
+    end
+
+    it 'loads team members gr measurements' do
+      teammate1 = FactoryGirl.create(:person)
+      teammate2 = FactoryGirl.create(:person)
+      team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
+      team_assign2 = FactoryGirl.create(:assignment, person: teammate2, ministry: ministry, role: :leader)
+      stub_measurement_type_gr(meas.person_id, [team_assign1.gr_id, team_assign2.gr_id])
+
+      details.load_team_from_gr
+      subject = details.team
+
+      expect(subject.count).to be 2
+      expect(subject.first[:team_role]).to eq 'leader'
+      expect(subject.first[:total]).to eq 3
+      expect(subject.last[:total]).to eq 2
     end
   end
 end

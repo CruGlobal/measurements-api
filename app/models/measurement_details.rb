@@ -33,13 +33,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     load_local_from_gr
     load_user_from_gr
     load_sub_mins_from_gr
-  end
-
-  def load_measurements_of_type(type, dimension_level = nil, related_id = nil, period = nil)
-    dimension_level ||= type
-    resp = gr_singleton.find(measurement.send("#{type}_id"),
-                             gr_request_params(dimension_level, related_id, period))
-    resp['measurement_type']['measurements']
+    load_team_from_gr
   end
 
   def load_total_from_gr
@@ -79,7 +73,53 @@ class MeasurementDetails < ActiveModelSerializers::Model
     end
   end
 
+  def load_team_from_gr
+    self_assigned, approved_people = load_assignments
+
+    assignment_ids = (self_assigned + approved_people).collect(&:gr_id)
+
+    if assignment_ids.any?
+      params = gr_request_params(:none, assignment_ids, period).merge('filters[dimension:like]': "#{mcc}_")
+      team_data = get_from_gr_with_params(:person, params)
+    end
+
+    @self_assigned = self_assigned.map do |assignment|
+      team_member_hash(assignment, team_data)
+    end
+    @team = ministry.assignments.includes(:person).where(Assignment.approved_condition).map do |assignment|
+      team_member_hash(assignment, team_data)
+    end
+  end
+
   private
+
+  def load_assignments
+    [ministry.assignments.includes(:person).where(role: :self_assigned).to_a,
+     ministry.assignments.includes(:person).where(Assignment.approved_condition).to_a]
+  end
+
+  def load_measurements_of_type(type, dimension_level = nil, related_id = nil, period = nil)
+    dimension_level ||= type
+    params = gr_request_params(dimension_level, related_id, period)
+    get_from_gr_with_params(type, params)
+  end
+
+  def get_from_gr_with_params(type, params)
+    resp = gr_singleton.find(measurement.send("#{type}_id"), params)
+    resp['measurement_type']['measurements']
+  end
+
+  def gr_request_params(dimension_level, related_id = nil, period = nil)
+    related_id ||= ministry_id
+    period ||= period_from
+    {
+      'filters[related_entity_id][]': related_id,
+      'filters[period_from]': period,
+      'filters[period_to]': period,
+      'filters[dimension]': dimension_filter(dimension_level),
+      per_page: 250
+    }
+  end
 
   def build_monthly_hash(gr_resp)
     monthly_hash = {}
@@ -106,6 +146,18 @@ class MeasurementDetails < ActiveModelSerializers::Model
     [breakdown, this_period_sum]
   end
 
+  def team_member_hash(assignment, gr_data)
+    total = gr_data.find { |m| m['related_entity_id'] == assignment.gr_id }.try(:[], 'value').to_f
+    {
+      assignment_id: assignment.gr_id,
+      team_role: assignment.role,
+      first_name: assignment.person.first_name,
+      last_name: assignment.person.last_name,
+      person_id: assignment.person.gr_id,
+      total: total
+    }
+  end
+
   def push_personal_to_gr(new_value)
     push_measurement_to_gr(new_value, Power.current.assignment.gr_id, measurement.person_id)
   end
@@ -120,18 +172,6 @@ class MeasurementDetails < ActiveModelSerializers::Model
       }
     }
     GlobalRegistryClient.client(:measurement).post(measurement_body)
-  end
-
-  def gr_request_params(dimension_level, related_id = nil, period = nil)
-    related_id ||= ministry_id
-    period ||= period_from
-    {
-      'filters[related_entity_id][]': related_id,
-      'filters[period_from]': period,
-      'filters[period_to]': period,
-      'filters[dimension]': dimension_filter(dimension_level),
-      per_page: 250
-    }
   end
 
   def period_from

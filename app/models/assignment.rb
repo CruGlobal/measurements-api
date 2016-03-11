@@ -49,6 +49,10 @@ class Assignment < ActiveRecord::Base
     { role: roles.slice(*LOCAL_LEADER_ROLES).values }
   end
 
+  def self.approved_condition
+    { role: roles.slice(*APPROVED_ROLES).values }
+  end
+
   def inherited_role?
     INHERITED_ROLES.include? role
   end
