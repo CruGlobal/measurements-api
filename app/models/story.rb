@@ -6,4 +6,6 @@ class Story < ActiveRecord::Base
   belongs_to :created_by, class_name: 'Person'
   belongs_to :church
   belongs_to :training
+
+  mount_uploader :image, ImageUploader
 end

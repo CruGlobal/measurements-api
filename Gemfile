@@ -28,7 +28,7 @@ gem 'assignable_values'
 gem 'awesome_nested_set'
 gem 'global_registry', '1.2.0'
 gem 'carrierwave'
-gem 'fog-aws'
+gem 'fog'
 
 group :development, :test do
   gem 'dotenv-rails'
