@@ -31,7 +31,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     @measurement ||= Measurement.find_by(total_id: id)
     load_total_from_gr
     load_local_from_gr
-    load_user_from_gr if Power.current.try(:assignment)
+    load_user_from_gr
     load_sub_mins_from_gr
   end
 
@@ -56,6 +56,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def load_user_from_gr
+    return unless Power.current.try(:assignment)
     gr_resp = load_measurements_of_type(:person, :none, Power.current.assignment.gr_id)
     @my_measurements = build_monthly_hash(gr_resp)
     breakdown, this_period_sum = build_breakdown_hash(gr_resp)
@@ -83,6 +84,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
   def build_monthly_hash(gr_resp)
     monthly_hash = {}
     i_period = period_from
+    gr_resp = gr_resp.select { |m| m['dimension'] == @mcc }
     loop do
       monthly_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
       break if i_period == period
@@ -92,7 +94,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def build_breakdown_hash(gr_resp)
-    measurements = gr_resp.select { |m| m['period'] == @period }
+    measurements = gr_resp.select { |m| m['period'] == @period && m['dimension'].start_with?("#{@mcc}_") }
     this_period_sum = measurements.sum { |m| m['value'].to_f }
     breakdown = measurements.group_by { |m| m['dimension'].sub("#{@mcc}_", '') }
     breakdown = breakdown.each_with_object({}) do |args, hash|
@@ -104,11 +106,27 @@ class MeasurementDetails < ActiveModelSerializers::Model
     [breakdown, this_period_sum]
   end
 
+  def push_personal_to_gr(new_value)
+    push_measurement_to_gr(new_value, Power.current.assignment.gr_id, measurement.person_id)
+  end
+
+  def push_measurement_to_gr(value, related_id, type_id)
+    measurement_body = {
+      measurement: {
+        period: period,
+        value: value,
+        related_entity_id: related_id,
+        measurement_type_id: type_id
+      }
+    }
+    GlobalRegistryClient.client(:measurement).post(measurement_body)
+  end
+
   def gr_request_params(dimension_level, related_id = nil, period = nil)
     related_id ||= ministry_id
     period ||= period_from
     {
-      'filters[related_entity_id]': related_id,
+      'filters[related_entity_id][]': related_id,
       'filters[period_from]': period,
       'filters[period_to]': period,
       'filters[dimension]': dimension_filter(dimension_level),

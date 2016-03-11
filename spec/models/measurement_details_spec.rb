@@ -4,19 +4,21 @@ RSpec.describe MeasurementDetails, type: :model do
   let(:user) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry) }
 
-  def measurement_json(related_entity_id = nil)
+  def measurement_json(period_date, value, related_id, dimension = nil)
+    {
+      id: SecureRandom.uuid, period: period_date.strftime('%Y-%m'),
+      value: value, related_entity_id: related_id, dimension: dimension
+    }
+  end
+
+  def measurements_json(related_entity_id = nil)
     {
       measurement_type: {
         perm_link: 'LMI',
         measurements: [
-          {
-            id: SecureRandom.uuid, period: Time.zone.today.strftime('%Y-%m'),
-            value: '3.0', related_entity_id: related_entity_id, dimension: 'DS_asdf'
-          },
-          {
-            id: SecureRandom.uuid, period: (Time.zone.today - 1.month).strftime('%Y-%m'),
-            value: '1.0', related_entity_id: related_entity_id
-          }
+          measurement_json(Time.zone.today, 3, related_entity_id, 'DS'),
+          measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf'),
+          measurement_json(Time.zone.today - 1.month, 1, related_entity_id)
         ]
       }
     }
@@ -25,7 +27,7 @@ RSpec.describe MeasurementDetails, type: :model do
   def stub_measurement_type_gr(type_id, related_entity_id)
     WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{type_id}")
            .with(query: hash_including)
-           .to_return(body: measurement_json(related_entity_id).to_json)
+           .to_return(body: measurements_json(related_entity_id).to_json)
   end
 
   describe '#new' do
@@ -71,26 +73,59 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(details.local[Time.zone.today.strftime('%Y-%m')]).to eq 3
     end
 
+    it 'loads team'
+    it 'loads self_assigned'
+    it 'loads split_measurements'
+  end
+
+  describe '#load_user_from_gr' do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+    let(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader) }
+
+    def measurements_json(related_entity_id = nil)
+      {
+        measurement_type: {
+          perm_link: 'LMI',
+          measurements: [
+            measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf'),
+            measurement_json(Time.zone.today, 2, related_entity_id, 'DS'),
+            measurement_json(Time.zone.today - 1.month, 5, related_entity_id, 'DS_asdf'),
+            measurement_json(Time.zone.today - 1.month, 1, related_entity_id, 'DS')
+          ]
+        }
+      }
+    end
+
+    before do
+      stub_measurement_type_gr(meas.person_id, assignment.gr_id)
+    end
+
     it 'loads self_breakdown' do
-      FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader)
+      allow(details).to receive(:push_personal_to_gr)
       Power.with_power(Power.new(user, ministry)) do
-        details.load
+        details.load_user_from_gr
       end
       expect(details.self_breakdown).to be_a Hash
       expect(details.self_breakdown['total']).to eq 3
     end
-    it 'loads my_measurements monthly values' do
-      FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader)
+    it 'lets GR know about more accurate person total' do
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
       Power.with_power(Power.new(user, ministry)) do
-        details.load
+        details.load_user_from_gr
+      end
+      expect(gr_update_stub).to have_been_requested
+    end
+
+    it 'loads my_measurements monthly values' do
+      allow(details).to receive(:push_personal_to_gr)
+      Power.with_power(Power.new(user, ministry)) do
+        details.load_user_from_gr
       end
       expect(details.my_measurements).to be_a Hash
       expect(details.my_measurements[Time.zone.today.strftime('%Y-%m')]).to eq 3
+      expect(details.my_measurements[(Time.zone.today - 1.month).strftime('%Y-%m')]).to eq 1
     end
-
-    it 'loads team'
-    it 'loads self_assigned'
-    it 'loads split_measurements'
   end
 
   describe '#load_sub_mins_from_gr' do
@@ -105,7 +140,7 @@ RSpec.describe MeasurementDetails, type: :model do
       details.load_sub_mins_from_gr
       expect(details.sub_ministries.count).to be 2
       expect(details.sub_ministries.first[:name]).to eq child_min1.name
-      expect(details.sub_ministries.first[:total]).to eq 4
+      expect(details.sub_ministries.first[:total]).to eq 7
       expect(details.sub_ministries.last[:total]).to eq 0
     end
   end
