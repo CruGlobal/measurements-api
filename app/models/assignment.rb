@@ -18,7 +18,6 @@ class Assignment < ActiveRecord::Base
   # Alias team_role to role - json model uses team_role
   alias_attribute :team_role, :role
   validates :role, presence: true
-  validates :role, inclusion: { in: VALID_INPUT_ROLES, message: '\'%{value}\' is not a valid Team Role' }
   authorize_values_for :role
 
   after_update :update_gr_relationship, if: 'gr_id.present?'

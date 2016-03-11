@@ -5,6 +5,7 @@ class Assignment
     # Virtual attributes
     attr_accessor :username, :key_guid, :person_gr_id, :ministry_gr_id
 
+    validates :role, inclusion: { in: VALID_INPUT_ROLES, message: '\'%{value}\' is not a valid Team Role' }
     before_validation :lookup_person, on: :create
     before_validation :lookup_ministry, on: :create
 
