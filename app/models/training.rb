@@ -11,4 +11,5 @@ class Training < ActiveRecord::Base
   validates :date, presence: { message: "Could not find required field: 'date'" }
 
   has_many :completions, dependent: :destroy, class_name: 'TrainingCompletion'
+  has_many :stories, dependent: :nullify
 end

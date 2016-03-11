@@ -5,6 +5,7 @@ class Church < ActiveRecord::Base
   belongs_to :created_by, class_name: 'Person'
 
   has_many :church_values
+  has_many :stories, dependent: :nullify
 
   belongs_to :ministry
   authorize_values_for :ministry

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224221904) do
+ActiveRecord::Schema.define(version: 20160310220342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,26 @@ ActiveRecord::Schema.define(version: 20160224221904) do
     t.datetime "updated_at",   null: false
   end
 
+  create_table "stories", force: :cascade do |t|
+    t.string   "title"
+    t.text     "content"
+    t.string   "image"
+    t.string   "mcc",         limit: 3
+    t.integer  "church_id"
+    t.integer  "training_id"
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.string   "language"
+    t.boolean  "privacy",               default: false
+    t.text     "video_url"
+    t.integer  "state"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  add_index "stories", ["church_id"], name: "index_stories_on_church_id", using: :btree
+  add_index "stories", ["training_id"], name: "index_stories_on_training_id", using: :btree
+
   create_table "training_completions", force: :cascade do |t|
     t.integer  "phase"
     t.integer  "number_completed"
@@ -222,6 +242,8 @@ ActiveRecord::Schema.define(version: 20160224221904) do
   add_foreign_key "churches", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
   add_foreign_key "measurement_translations", "measurements", on_update: :cascade, on_delete: :cascade
   add_foreign_key "measurement_translations", "ministries", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "stories", "churches", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "stories", "trainings", on_update: :cascade, on_delete: :nullify
   add_foreign_key "training_completions", "trainings", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "ministries", on_update: :cascade, on_delete: :restrict
   add_foreign_key "trainings", "people", column: "created_by_id", on_update: :cascade, on_delete: :restrict
