@@ -49,6 +49,7 @@ RSpec.describe MeasurementDetails, type: :model do
 
     before do
       stub_measurement_gr_calls
+      allow(details).to receive(:update_total_in_gr)
     end
 
     let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
@@ -72,8 +73,6 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(details.local).to be_a Hash
       expect(details.local[Time.zone.today.strftime('%Y-%m')]).to eq 3
     end
-
-    it 'loads split_measurements'
   end
 
   describe '#load_user_from_gr' do
@@ -100,7 +99,7 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it 'loads self_breakdown' do
-      allow(details).to receive(:push_personal_to_gr)
+      allow(details).to receive(:update_personal_in_gr)
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
@@ -116,7 +115,7 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it 'loads my_measurements monthly values' do
-      allow(details).to receive(:push_personal_to_gr)
+      allow(details).to receive(:update_personal_in_gr)
 
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
@@ -176,6 +175,35 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(subject.first[:team_role]).to eq 'leader'
       expect(subject.first[:total]).to eq 3
       expect(subject.last[:total]).to eq 2
+    end
+  end
+
+  describe '#load_split_measurements' do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+
+    def measurements_json(related_entity_id = nil)
+      {
+        measurement_type: {
+          perm_link: 'LMI',
+          measurements: [
+            measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf')
+          ]
+        }
+      }
+    end
+
+    it 'loads sub measurements gr measurements' do
+      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: 'lmi_total_custom_asdf')
+      child2 = FactoryGirl.create(:measurement, parent: meas)
+      stub_measurement_type_gr(child1.total_id, ministry.gr_id)
+      stub_measurement_type_gr(child2.total_id, ministry.gr_id)
+
+      details.load_split_measurements
+      subject = details.split_measurements
+
+      expect(subject.count).to be 2
+      expect(subject['asdf']).to be 3
     end
   end
 end

@@ -5,7 +5,6 @@ class MeasurementDetails < ActiveModelSerializers::Model
   attr_accessor :id, :ministry_id, :mcc, :period
   attr_reader :measurement,
               :total,
-              :total_breakdown,
               :local,
               :local_breakdown,
               :self_breakdown,
@@ -34,6 +33,9 @@ class MeasurementDetails < ActiveModelSerializers::Model
     load_user_from_gr
     load_sub_mins_from_gr
     load_team_from_gr
+    load_split_measurements
+
+    update_total_in_gr
   end
 
   def load_total_from_gr
@@ -56,7 +58,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     breakdown, this_period_sum = build_breakdown_hash(gr_resp)
     if @my_measurements[period] != this_period_sum
       @my_measurements[period] = this_period_sum
-      push_personal_to_gr(this_period_sum)
+      update_personal_in_gr(this_period_sum)
     end
     @self_breakdown = breakdown
   end
@@ -89,6 +91,27 @@ class MeasurementDetails < ActiveModelSerializers::Model
     @team = ministry.assignments.includes(:person).where(Assignment.approved_condition).map do |assignment|
       team_member_hash(assignment, team_data)
     end
+  end
+
+  def load_split_measurements
+    return if measurement.children.none?
+    @split_measurements = measurement.children.each_with_object({}) do |child, hash|
+      params = gr_request_params(:total, nil, period)
+      resp = gr_singleton.find(child.total_id, params)['measurement_type']['measurements']
+      hash[child.perm_link_stub] = resp.first['value'].to_i if resp.any?
+    end
+  end
+
+  def count_total
+    new_total = @local[period] + @sub_ministries.sum { |sub| sub[:total] } + @team.sum { |sub| sub[:total] }
+    new_total += @my_measurements[period] if @my_measurements
+    new_total + @split_measurements.sum { |_k, v| v.to_i } if @split_measurements
+  end
+
+  def update_total_in_gr
+    new_total = count_total
+    return if @total[period] == new_total
+    push_measurement_to_gr(new_total, ministry.gr_id, measurement.total_id)
   end
 
   private
@@ -158,7 +181,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     }
   end
 
-  def push_personal_to_gr(new_value)
+  def update_personal_in_gr(new_value)
     push_measurement_to_gr(new_value, Power.current.assignment.gr_id, measurement.person_id)
   end
 
