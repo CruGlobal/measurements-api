@@ -32,7 +32,7 @@ class Ministry < ActiveRecord::Base
   validates :name, presence: true
   validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
                           unless: 'default_mcc.blank?'
-  validates :min_code, presence: true, uniqueness: true, on: :create
+  validates :min_code, uniqueness: true, on: :create, if: 'min_code.present?'
   before_validation :generate_min_code, on: :create, if: 'gr_id.blank?'
 
   authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
