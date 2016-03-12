@@ -1,18 +1,9 @@
 class MeasurementDetails < ActiveModelSerializers::Model
-  include ActiveModel::Model
   include ActiveRecord::AttributeAssignment
 
   attr_accessor :id, :ministry_id, :mcc, :period
-  attr_reader :measurement,
-              :total,
-              :local,
-              :local_breakdown,
-              :self_breakdown,
-              :my_measurements,
-              :sub_ministries,
-              :team,
-              :self_assigned,
-              :split_measurements
+  attr_reader :measurement, :total, :local, :local_breakdown, :self_breakdown, :my_measurements,
+              :sub_ministries, :team, :self_assigned, :split_measurements
 
   delegate :perm_link_stub, to: :measurement
 
@@ -39,32 +30,30 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def load_total_from_gr
-    gr_resp = load_measurements_of_type(:total)
+    gr_resp = load_measurements_of_type(:total, :total)
     @total = build_monthly_hash(gr_resp)
   end
 
   def load_local_from_gr
     gr_resp = load_measurements_of_type(:local, :none)
     @local = build_monthly_hash(gr_resp)
-    breakdown, this_period_sum = build_breakdown_hash(gr_resp)
+    @local_breakdown, this_period_sum = build_breakdown_hash(gr_resp)
     @local[period] = this_period_sum
-    @local_breakdown = breakdown
   end
 
   def load_user_from_gr
     return unless Power.current.try(:assignment)
     gr_resp = load_measurements_of_type(:person, :none, Power.current.assignment.gr_id)
     @my_measurements = build_monthly_hash(gr_resp)
-    breakdown, this_period_sum = build_breakdown_hash(gr_resp)
+    @self_breakdown, this_period_sum = build_breakdown_hash(gr_resp)
     if @my_measurements[period] != this_period_sum
       @my_measurements[period] = this_period_sum
       update_personal_in_gr(this_period_sum)
     end
-    @self_breakdown = breakdown
   end
 
   def load_sub_mins_from_gr
-    submin_data = load_measurements_of_type(:total, nil, ministry.children.collect(&:gr_id), period)
+    submin_data = load_measurements_of_type(:total, :total, ministry.children.collect(&:gr_id), period)
     @sub_ministries = ministry.children.map do |child_min|
       measurements_for_child = submin_data.select { |m| m['related_entity_id'] == child_min.gr_id }
       {
@@ -88,7 +77,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     @self_assigned = self_assigned.map do |assignment|
       team_member_hash(assignment, team_data)
     end
-    @team = ministry.assignments.includes(:person).where(Assignment.approved_condition).map do |assignment|
+    @team = approved_people.map do |assignment|
       team_member_hash(assignment, team_data)
     end
   end
@@ -102,15 +91,10 @@ class MeasurementDetails < ActiveModelSerializers::Model
     end
   end
 
-  def count_total
-    new_total = @local[period] + @sub_ministries.sum { |sub| sub[:total] } + @team.sum { |sub| sub[:total] }
-    new_total += @my_measurements[period] if @my_measurements
-    new_total + @split_measurements.sum { |_k, v| v.to_i } if @split_measurements
-  end
-
   def update_total_in_gr
     new_total = count_total
     return if @total[period] == new_total
+    @total[period] = new_total
     push_measurement_to_gr(new_total, ministry.gr_id, measurement.total_id)
   end
 
@@ -122,22 +106,17 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def load_measurements_of_type(type, dimension_level = nil, related_id = nil, period = nil)
-    dimension_level ||= type
-    params = gr_request_params(dimension_level, related_id, period)
-    get_from_gr_with_params(type, params)
+    get_from_gr_with_params(type, gr_request_params(dimension_level, related_id, period))
   end
 
   def get_from_gr_with_params(type, params)
-    resp = gr_singleton.find(measurement.send("#{type}_id"), params)
-    resp['measurement_type']['measurements']
+    gr_singleton.find(measurement.send("#{type}_id"), params)['measurement_type']['measurements']
   end
 
   def gr_request_params(dimension_level, related_id = nil, period = nil)
-    related_id ||= ministry_id
-    period ||= period_from
     {
-      'filters[related_entity_id][]': related_id,
-      'filters[period_from]': period,
+      'filters[related_entity_id][]': related_id || ministry_id,
+      'filters[period_from]': period || period_from,
       'filters[period_to]': period,
       'filters[dimension]': dimension_filter(dimension_level),
       per_page: 250
@@ -186,21 +165,23 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def push_measurement_to_gr(value, related_id, type_id)
-    measurement_body = {
-      measurement: {
-        period: period,
-        value: value,
-        related_entity_id: related_id,
-        measurement_type_id: type_id
-      }
-    }
-    GlobalRegistryClient.client(:measurement).post(measurement_body)
+    GlobalRegistryClient.client(:measurement).post(measurement: {
+                                                     period: period,
+                                                     value: value,
+                                                     related_entity_id: related_id,
+                                                     measurement_type_id: type_id
+                                                   })
+  end
+
+  def count_total
+    new_total = @local[period] + @sub_ministries.sum { |sub| sub[:total] } + @team.sum { |sub| sub[:total] }
+    new_total += @my_measurements[period] if @my_measurements
+    new_total += @split_measurements.sum { |_k, v| v.to_i } if @split_measurements
+    new_total
   end
 
   def period_from
-    return @period_from if @period_from
-    from = Date.parse("#{period}-01") - 5.months
-    @period_from = from.strftime('%Y-%m')
+    @period_from ||= (Date.parse("#{period}-01") - 5.months).strftime('%Y-%m')
   end
 
   def dimension_filter(level)
