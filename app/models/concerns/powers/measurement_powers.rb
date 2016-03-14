@@ -7,6 +7,14 @@ module Powers
       power :historic_measurements do
         inherited_assignment.try(:leader_role?)
       end
+
+      power :measurements do
+        true
+      end
+
+      power :showing_measurement do
+        true if inherited_assignment.try(:leader_role?)
+      end
     end
 
     def measurement_levels

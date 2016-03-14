@@ -1,5 +1,7 @@
 module V5
   class MeasurementsController < V5::BaseUserController
+    power :measurements, map: { show: :showing_measurement }
+
     def index
       load_measurements
       render json: @measurements, each_serializer: V5::MeasurementSerializer

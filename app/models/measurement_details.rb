@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class MeasurementDetails < ActiveModelSerializers::Model
   include ActiveRecord::AttributeAssignment
 
