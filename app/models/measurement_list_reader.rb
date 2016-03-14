@@ -1,4 +1,4 @@
-class MeasurementList
+class MeasurementListReader
   include ActiveModel::Model
   include ActiveRecord::AttributeAssignment
 

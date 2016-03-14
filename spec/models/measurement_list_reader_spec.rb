@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe MeasurementList, type: :model do
+RSpec.describe MeasurementListReader, type: :model do
   let(:user) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry, lmi_hide: ['hidden'], lmi_show: ['shown']) }
 
   describe '#new' do
-    let(:list) { MeasurementList.new }
+    let(:list) { MeasurementListReader.new }
 
     it 'has default values' do
       expect(list.period).to eq Time.zone.today.strftime('%Y-%m')
@@ -51,7 +51,7 @@ RSpec.describe MeasurementList, type: :model do
     end
 
     let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:list) { MeasurementList.new(ministry_id: ministry.gr_id, mcc: 'DS') }
+    let(:list) { MeasurementListReader.new(ministry_id: ministry.gr_id, mcc: 'DS') }
 
     it 'returns Measurements' do
       expect(list.load.first).to be_a Measurement

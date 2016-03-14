@@ -15,12 +15,14 @@ module V5
     end
 
     def create
+      # read json as params['_json']
+      render nothing: true, status: :created
     end
 
     private
 
     def load_measurements
-      @measurements ||= MeasurementList
+      @measurements ||= MeasurementListReader
                         .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
                         .load
     end
