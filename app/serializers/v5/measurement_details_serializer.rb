@@ -15,11 +15,16 @@ module V5
     delegate(*ATTRS, to: :object)
 
     def measurement_type_ids
-      {
-        total: object.measurement.total_id,
-        local: object.measurement.local_id,
-        person: object.measurement.person_id
-      }
+      types = { total: object.measurement.total_id }
+      types[:local] = object.measurement.local_id if object.local.any? { |_k, v| v.to_i > 0 }
+      types[:person] = object.measurement.person_id if any_my_measurements?
+      types
+    end
+
+    private
+
+    def any_my_measurements?
+      object.my_measurements && object.my_measurements.any? { |_k, v| v.to_i > 0 }
     end
   end
 end
