@@ -58,6 +58,15 @@ RSpec.describe 'V5::Measurements', type: :request do
         expect(response).to be_success
         expect(json['local_breakdown']).to be_a Hash
       end
+
+      context 'with invalid id' do
+        it 'response with 404' do
+          get '/v5/measurements/missing_perm_link', { ministry_id: ministry.gr_id, mcc: 'SLM' },
+              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response.code.to_i).to eq 404
+        end
+      end
     end
 
     context 'as self-assigned' do

@@ -31,10 +31,21 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe '#new' do
-    let(:list) { MeasurementDetails.new }
-
     it 'has default values' do
-      expect(list.period).to eq Time.zone.today.strftime('%Y-%m')
+      details = MeasurementDetails.new
+      expect(details.period).to eq Time.zone.today.strftime('%Y-%m')
+    end
+
+    it 'loads measurement by total_id' do
+      meas = FactoryGirl.create(:measurement)
+      details = MeasurementDetails.new(id: meas.total_id)
+      expect(details.measurement.id).to eq meas.id
+    end
+
+    it 'loads measurement by perm_link' do
+      meas = FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown')
+      details = MeasurementDetails.new(id: 'shown')
+      expect(details.measurement.id).to eq meas.id
     end
   end
 

@@ -10,6 +10,8 @@ module V5
     def show
       load_measurement
       render json: @measurement, serializer: V5::MeasurementDetailsSerializer
+    rescue ActiveRecord::RecordNotFound
+      render_not_found
     end
 
     def create

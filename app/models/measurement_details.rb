@@ -13,13 +13,14 @@ class MeasurementDetails < ActiveModelSerializers::Model
 
     # default values
     @period ||= Time.zone.today.strftime('%Y-%m')
-    @measurement = Measurement.find_by(total_id: id) if @id
+    if @id
+      @measurement = Measurement.find_by(total_id: id) || Measurement.find_by_perm_link(id)
+    end
   end
 
   def load
-    raise if id.blank? || ministry_id.blank? || mcc.blank?
+    validate!
 
-    @measurement ||= Measurement.find_by(total_id: id)
     load_total_from_gr
     load_local_from_gr
     load_user_from_gr
@@ -28,6 +29,15 @@ class MeasurementDetails < ActiveModelSerializers::Model
     load_split_measurements
 
     update_total_in_gr
+  end
+
+  def validate!
+    raise if id.blank? || ministry_id.blank? || mcc.blank?
+
+    @measurement ||= Measurement.find_by(total_id: id)
+    @measurement ||= Measurement.find_by_perm_link(id)
+
+    raise ActiveRecord::RecordNotFound unless @measurement.present?
   end
 
   def load_total_from_gr
@@ -186,6 +196,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def dimension_filter(level)
+    return if mcc == 'all'
     if level == :total
       mcc
     elsif level != :none
