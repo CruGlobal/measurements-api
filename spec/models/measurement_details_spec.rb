@@ -151,7 +151,7 @@ RSpec.describe MeasurementDetails, type: :model do
 
       expect(details.sub_ministries.count).to be 2
       expect(details.sub_ministries.first[:name]).to eq child_min1.name
-      expect(details.sub_ministries.first[:total]).to eq 7
+      expect(details.sub_ministries.first[:total]).to eq 3
       expect(details.sub_ministries.last[:total]).to eq 0
     end
   end
@@ -186,6 +186,20 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(subject.first[:team_role]).to eq 'leader'
       expect(subject.first[:total]).to eq 3
       expect(subject.last[:total]).to eq 2
+    end
+
+    it 'does not include self in team' do
+      FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader)
+      teammate1 = FactoryGirl.create(:person)
+      team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
+      stub_measurement_type_gr(meas.person_id, [team_assign1.gr_id])
+
+      Power.with_power(Power.new(user, ministry)) do
+        details.load_team_from_gr
+      end
+      subject = details.team
+
+      expect(subject.count).to be 1
     end
   end
 

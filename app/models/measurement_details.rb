@@ -53,7 +53,10 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def load_user_from_gr
-    return unless Power.current.try(:assignment)
+    unless Power.current.try(:assignment)
+      @my_measurements = build_monthly_hash([])
+      return
+    end
     gr_resp = load_measurements_of_type(:person, :none, Power.current.assignment.gr_id)
     @my_measurements = build_monthly_hash(gr_resp)
     @self_breakdown, this_period_sum = build_breakdown_hash(gr_resp)
@@ -66,31 +69,26 @@ class MeasurementDetails < ActiveModelSerializers::Model
   def load_sub_mins_from_gr
     submin_data = load_measurements_of_type(:total, :total, ministry.children.collect(&:gr_id), period)
     @sub_ministries = ministry.children.map do |child_min|
-      measurements_for_child = submin_data.select { |m| m['related_entity_id'] == child_min.gr_id }
+      measurement_for_child = submin_data.find { |m| m['related_entity_id'] == child_min.gr_id }
       {
         name: child_min.name,
         ministry_id: child_min.gr_id,
-        total: measurements_for_child.sum { |m| m['value'].to_f }
+        total: measurement_for_child.try(:[], 'value').to_f
       }
     end
   end
 
   def load_team_from_gr
-    self_assigned, approved_people = load_assignments
+    @self_assigned, @team = load_assignments
 
-    assignment_ids = (self_assigned + approved_people).collect(&:gr_id)
-
+    assignment_ids = (@self_assigned + @team).collect(&:gr_id)
     if assignment_ids.any?
       params = gr_request_params(:none, assignment_ids, period).merge('filters[dimension:like]': "#{mcc}_")
       team_data = get_from_gr_with_params(:person, params)
     end
 
-    @self_assigned = self_assigned.map do |assignment|
-      team_member_hash(assignment, team_data)
-    end
-    @team = approved_people.map do |assignment|
-      team_member_hash(assignment, team_data)
-    end
+    @self_assigned.map! { |assignment| team_member_hash(assignment, team_data) }
+    @team.map! { |assignment| team_member_hash(assignment, team_data) }
   end
 
   def load_split_measurements
@@ -112,8 +110,11 @@ class MeasurementDetails < ActiveModelSerializers::Model
   private
 
   def load_assignments
-    [ministry.assignments.includes(:person).where(role: :self_assigned).to_a,
-     ministry.assignments.includes(:person).where(Assignment.approved_condition).to_a]
+    approved_teammates = ministry.assignments.includes(:person).where(Assignment.approved_condition)
+    approved_teammates = approved_teammates.where.not(id: Power.current.assignment.id) if Power.current.try(:assignment)
+    self_assigned_teammates = ministry.assignments.includes(:person).where(role: :self_assigned)
+
+    [self_assigned_teammates.to_a, approved_teammates.to_a]
   end
 
   def load_measurements_of_type(type, dimension_level = nil, related_id = nil, period = nil)
@@ -128,7 +129,7 @@ class MeasurementDetails < ActiveModelSerializers::Model
     {
       'filters[related_entity_id][]': related_id || ministry_id,
       'filters[period_from]': period || period_from,
-      'filters[period_to]': period,
+      'filters[period_to]': period || @period,
       'filters[dimension]': dimension_filter(dimension_level),
       per_page: 250
     }
@@ -149,18 +150,16 @@ class MeasurementDetails < ActiveModelSerializers::Model
   def build_breakdown_hash(gr_resp)
     measurements = gr_resp.select { |m| m['period'] == @period && m['dimension'].start_with?("#{@mcc}_") }
     this_period_sum = measurements.sum { |m| m['value'].to_f }
-    breakdown = measurements.group_by { |m| m['dimension'].sub("#{@mcc}_", '') }
-    breakdown = breakdown.each_with_object({}) do |args, hash|
-      dimension = args[0]
-      group = args[1]
-      hash[dimension] = group.sum { |m| m['value'].to_f }
+    breakdown = measurements.each_with_object({}) do |meas, hash|
+      dimension = meas['dimension'].sub("#{@mcc}_", '')
+      hash[dimension] = meas['value'].to_f
     end
     breakdown['total'] = this_period_sum
     [breakdown, this_period_sum]
   end
 
   def team_member_hash(assignment, gr_data)
-    total = gr_data.find { |m| m['related_entity_id'] == assignment.gr_id }.try(:[], 'value').to_f
+    total = gr_data.select { |m| m['related_entity_id'] == assignment.gr_id }.sum { |m| m['value'].to_f }
     {
       assignment_id: assignment.gr_id,
       team_role: assignment.role,
@@ -185,8 +184,8 @@ class MeasurementDetails < ActiveModelSerializers::Model
   end
 
   def count_total
-    new_total = @local[period] + @sub_ministries.sum { |sub| sub[:total] } + @team.sum { |sub| sub[:total] }
-    new_total += @my_measurements[period] if @my_measurements
+    new_total = @local[period] + @my_measurements[period] + @sub_ministries.sum { |min| min[:total] }
+    new_total += @team.sum { |per| per[:total] }
     new_total += @split_measurements.sum { |_k, v| v.to_i } if @split_measurements
     new_total
   end
