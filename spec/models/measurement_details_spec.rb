@@ -231,4 +231,32 @@ RSpec.describe MeasurementDetails, type: :model do
       expect(subject['asdf']).to be 3
     end
   end
+
+  describe '#update_total_in_gr' do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+
+    it 'posts to GR if it has something new' do
+      stub_measurement_type_gr(meas.total_id, ministry.gr_id)
+      stub_measurement_type_gr(meas.local_id, ministry.gr_id)
+      stub_measurement_type_gr(meas.person_id, user.gr_id)
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+
+      details.load_user_from_gr
+      details.load_local_from_gr
+      details.load_total_from_gr
+      details.load_sub_mins_from_gr
+      details.load_team_from_gr
+      details.update_total_in_gr
+
+      expect(gr_update_stub).to_not have_been_requested
+
+      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: 'lmi_total_custom_asdf')
+      stub_measurement_type_gr(child1.total_id, ministry.gr_id)
+
+      details.load_split_measurements
+      details.update_total_in_gr
+      expect(gr_update_stub).to have_been_requested
+    end
+  end
 end
