@@ -16,7 +16,7 @@ module Powers
           Assignment.where(ministry: inherited_assignment.ministry)
         elsif assignment.present?
           # Users can view their assignments
-          Assignment.where(person: user)
+          direct_assignments
         end
       end
 
@@ -32,6 +32,10 @@ module Powers
         # Leaders may update assignments
         Assignment.where.not(person_id: user.id)
                   .where(ministry_id: inherited_assignment.ministry_id) if inherited_assignment.try(:leader_role?)
+      end
+
+      def direct_assignments
+        Assignment.where(person: user)
       end
     end
 

@@ -80,4 +80,23 @@ RSpec.describe 'V5::Measurements', type: :request do
       end
     end
   end
+
+  describe 'POST /v5/measurements' do
+    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+    let(:measurement) { FactoryGirl.create(:measurement) }
+
+    context 'as admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+
+      it 'responds with measurement breakdowns' do
+        measurements_body = [{ measurement_type_id: measurement.local_id, source: 'gma-app', value: 123, ministry_id: ministry.gr_id },
+                             { measurement_type_id: measurement.local_id, source: 'churches', value: 123, ministry_id: ministry.gr_id }]
+
+        post '/v5/measurements/', { _json: measurements_body },
+             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response.code.to_i).to be 201
+      end
+    end
+  end
 end

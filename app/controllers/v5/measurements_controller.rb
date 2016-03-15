@@ -15,8 +15,12 @@ module V5
     end
 
     def create
-      # read json as params['_json']
-      render nothing: true, status: :created
+      list = MeasurementListUpdater.new(params['_json'])
+      if list.commit
+        render nothing: true, status: :created
+      else
+        render_error list.error
+      end
     end
 
     private
