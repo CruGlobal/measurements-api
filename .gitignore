@@ -21,3 +21,6 @@ vendor/ruby
 
 # Environment
 .env.*
+
+# Carrier wave test files
+public/uploads

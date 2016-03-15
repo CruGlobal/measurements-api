@@ -46,4 +46,7 @@ Rails.application.configure do
   HttpLogger.ignore = [/newrelic\.com/]
   HttpLogger.log_request_body  = false
   HttpLogger.log_response_body = false
+
+  # Allow us to turn off HTTP logging with an env var
+  HttpLogger.logger.level = Logger::Severity::UNKNOWN if ENV['NO_HTTP_LOGGER']
 end
