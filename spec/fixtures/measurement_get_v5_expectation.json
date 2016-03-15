@@ -1,0 +1,53 @@
+{
+  "perm_link_stub": "win_exposing",
+  "measurement_type_ids": {
+    "total": "2e95cd30-b138-11e4-8ed5-12c37bb2d521",
+    "local": "6cd7ea30-b13b-11e4-b2e3-12c37bb2d521",
+    "person": "594567f8-d55a-11e3-98ea-12725f8f377c"
+  },
+  "total": {
+    "2015-10": 0,
+    "2015-11": 0,
+    "2015-12": 0,
+    "2016-01": 0,
+    "2016-02": 0,
+    "2016-03": 0
+  },
+  "local_breakdown": {
+    "total": 0.0
+  },
+  "local": {
+    "2015-10": 0,
+    "2015-11": 0,
+    "2015-12": 0,
+    "2016-01": 0,
+    "2016-02": 0,
+    "2016-03": 0
+  },
+  "self_breakdown": {
+    "total": 0.0
+  },
+  "my_measurements": {
+    "2015-10": 0,
+    "2015-11": 0,
+    "2015-12": 0,
+    "2016-01": 0,
+    "2016-02": 0,
+    "2016-03": 0
+  },
+  "sub_ministries": [{
+    "name": "API A",
+    "ministry_id": "029e0426-db13-11e5-8ab6-129bd0521531",
+    "total": 0
+  }],
+  "team": [{
+    "assignment_id": "3746f726-db10-11e5-983a-129bd0521531",
+    "team_role": "admin",
+    "first_name": "Brian",
+    "last_name": "Zoetewey",
+    "person_id": "d36e37b8-edaf-11e3-9c75-12725f8f377c",
+    "total": 0
+  }],
+  "self_assigned": [],
+  "split_measurements": {}
+}

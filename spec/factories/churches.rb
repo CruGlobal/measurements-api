@@ -5,11 +5,11 @@ FactoryGirl.define do
     end_date 1.year.from_now
     latitude do
       # we want our values to be
-      l = rand(-900..900) / 10.0
+      l = rand(-90.0..90.0)
       l == 0.0 ? 0.1 : l
     end
     longitude do
-      l = rand(-1800..1800) / 10.0
+      l = rand(-180.0..180.0)
       l == 0.0 ? 0.1 : l
     end
     size { rand(1..100) }

@@ -17,6 +17,10 @@ class MeasurementList
 
     @measurements = Measurement.where(mcc_filter: [nil, mcc])
     @measurements = filter_by_show_hide
+    # it might be nice to run this each separate threads since they do 3 GR calls each
+    # Spencer suggests waiting until we test how the performs
+    # https://github.com/tra/spawnling might be a good option, or a vanilla thread pool
+    # https://blog.engineyard.com/2014/ruby-thread-pool
     @measurements.each(&method(:load_gr_value))
     split_children
   end
