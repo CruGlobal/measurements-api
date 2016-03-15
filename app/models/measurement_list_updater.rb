@@ -44,7 +44,7 @@ class MeasurementListUpdater
       end
     else
       measurement[:related_entity_id] = measurement.delete(:assignment_id) if measurement[:assignment_id]
-      if Power.current && Power.current.direct_assignments.where(id: measurement[:related_entity_id]).none?
+      if Power.current && Power.current.direct_assignments.where(gr_id: measurement[:related_entity_id]).none?
         @error = 'You can only post personal measurements for yourself.'
         return false
       end
