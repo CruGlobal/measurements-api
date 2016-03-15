@@ -6,18 +6,15 @@ class MeasurementListUpdater
   def commit
     return unless valid?
     # might be nice to do this threaded as-well
-    @json_array.each do |measurement|
-      push_to_gr(measurement)
-    end
+    @json_array.each(&method(:push_measurement))
+    @json_array.each(&method(:update_totals))
   end
 
   def valid?
     @json_array.all?(&method(:valid_measurement?))
   end
 
-  def error
-    @error
-  end
+  attr_reader :error
 
   private
 
@@ -55,7 +52,28 @@ class MeasurementListUpdater
     true
   end
 
-  def push_to_gr(_measurement)
+  def push_measurement(measurement)
+    gr_params = measurement.slice(:period, :value, :related_entity_id, :measurement_type_id)
+    gr_params[:dimension] = measurement[:mcc]
+    gr_params[:dimension] += "_#{measurement[:source]}" if measurement[:source].present?
 
+    GlobalRegistryClient.client(:measurement).post(measurement: gr_params)
+  end
+
+  def update_totals(measurement)
+    mcc = measurement[:mcc]
+    mcc = mcc[0..mcc.index('_')-1] if mcc.include?('_')
+    if measurement[:measurement_type_id] == measurement[:measurement].local_id
+      update_ministry(measurement[:related_entity_id], measurement[:period], measurement[:measurement], mcc)
+    else
+      ministry_id = Assignment.find_by(gr_id: measurement[:related_entity_id]).ministry.gr_id
+      update_ministry(ministry_id, measurement[:period], measurement[:measurement], mcc)
+    end
+  end
+
+  def update_ministry(ministry_gr_id, period, measurement, mcc)
+    Measurement::MeasurementRollup.run(measurement.perm_link, ministry_gr_id, period, mcc)
+
+    # rollup parent here too?
   end
 end
