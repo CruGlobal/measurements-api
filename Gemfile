@@ -55,3 +55,6 @@ group :test do
   gem 'fakeredis', :require => 'fakeredis/rspec'
   gem 'coveralls', require: false
 end
+
+# add this at the end so it plays nice with pry
+gem 'marco-polo'
