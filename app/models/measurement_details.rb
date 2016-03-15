@@ -1,5 +1,4 @@
-# rubocop:disable Metrics/ClassLength
-class MeasurementDetails < ActiveModelSerializers::Model
+class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metrics/ClassLength
   include ActiveRecord::AttributeAssignment
 
   attr_accessor :id, :ministry_id, :mcc, :period
