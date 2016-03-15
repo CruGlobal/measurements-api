@@ -20,8 +20,6 @@ class Church < ActiveRecord::Base
   authorize_values_for :security
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
 
-  validates :name, presence: { message: "Could not find required field: 'name'" }
-  validates :ministry, presence: { message: "Could not find required field: 'ministry_id'" }
   validates :latitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
   validates :longitude, presence: true, exclusion: { in: [0], message: 'can not be %{value}' }
 
