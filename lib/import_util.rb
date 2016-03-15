@@ -1,3 +1,5 @@
+require 'uri'
+
 class ImportUtil
   class << self
     def find_ministry_id(id)
@@ -30,6 +32,17 @@ class ImportUtil
       person.id
     end
 
+    def import_story_image(story, image_url)
+      uri = URI(image_url)
+      io = FilelessIO.new
+      io.original_filename = uri.path.gsub(%r{\A.*/(.+)\Z}, '\1')
+      Net::HTTP.start(uri.host) do |http|
+        resp = http.get(uri.path)
+        io.write(resp.body)
+      end
+      story.image = io
+    end
+
     private
 
     def missing_ministry_by_id(id)
@@ -45,5 +58,9 @@ class ImportUtil
       Rails.logger.info("No ministry found for gr_id: #{gr_id}")
       @missing_ministry_gr_ids[gr_id] = true
     end
+  end
+
+  class FilelessIO < StringIO
+    attr_accessor :original_filename
   end
 end

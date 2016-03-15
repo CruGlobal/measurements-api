@@ -123,6 +123,17 @@ class ImportMappings
       end
     ],
     [
+      Story, :story, {},
+      lambda do |story, row|
+        story.created_by_id = ImportUtil.person_id_by_gr_id(row[:created_by])
+        story.ministry_id = ImportUtil.ministry_id_by_gr_id(row[:ministry_id])
+        if row[:image_url] =~ /singlebestrecord\.blob\.core\.windows\.net/
+          story.image_url = nil
+          ImportUtil.import_story_image(story, row[:image_url])
+        end
+      end
+    ],
+    [
       Assignment, :assignment, { assignment_id: :gr_id },
       lambda do |assignment, row|
         role = row[:team_role]
