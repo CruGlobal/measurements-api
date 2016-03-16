@@ -19,12 +19,12 @@ class Import
 
   def import_model(klass, csv_table, field_mapping, object_tap_proc = nil, rows_map_proc = nil)
     start_count = klass.count
-    Rails.logger.info("\nImporting #{klass.name} from #{csv_table}.csv ...")
+    Sidekiq.logger.info("\nImporting #{klass.name} from #{csv_table}.csv ...")
     csv_rows(csv_table, rows_map_proc).each do |row|
       import_object(klass, row, field_mapping, object_tap_proc)
     end
     num_imported = klass.count - start_count
-    Rails.logger.info("Imported #{num_imported} #{klass.table_name}.")
+    Sidekiq.logger.info("Imported #{num_imported} #{klass.table_name}.")
   end
 
   def import_object(klass, row, field_mapping, object_tap_proc)
@@ -36,7 +36,7 @@ class Import
     nil
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique,
          ActiveRecord::RecordNotFound, ActiveRecord::StatementInvalid => e
-    Rails.logger.info("Error importing row #{row}: #{e}")
+    Sidekiq.logger.info("Error importing row #{row}: #{e}")
   end
 
   def new_with_field_mapping(klass, row, field_mapping)

@@ -22,7 +22,7 @@ class ImportUtil
       entity = Person.find_entity(gr_id, entity_type: 'person')
       unless entity
         @missing_person_gr_ids ||= {}
-        Rails.logger.info("No person entity found for gr_id: #{gr_id}") unless @missing_person_gr_ids[gr_id]
+        Sidekiq.logger.info("No person entity found for gr_id: #{gr_id}") unless @missing_person_gr_ids[gr_id]
         @missing_person_gr_ids[gr_id] = true
         return nil
       end
@@ -48,14 +48,14 @@ class ImportUtil
     def missing_ministry_by_id(id)
       @missing_ministry_ids ||= {}
       return if @missing_ministry_ids[id]
-      Rails.logger.info("No ministry found for id: #{id}")
+      Sidekiq.logger.info("No ministry found for id: #{id}")
       @missing_ministry_ids[id] = true
     end
 
     def missing_ministry_by_gr_id(gr_id)
       @missing_ministry_gr_ids ||= {}
       return if @missing_ministry_gr_ids[gr_id]
-      Rails.logger.info("No ministry found for gr_id: #{gr_id}")
+      Sidekiq.logger.info("No ministry found for gr_id: #{gr_id}")
       @missing_ministry_gr_ids[gr_id] = true
     end
   end

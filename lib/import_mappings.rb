@@ -67,7 +67,7 @@ class ImportMappings
       lambda do |_church_value, row|
         church = Church.find_by(id: row[:church_id])
         unless church
-          Rails.logger.info "Can't find church for id #{row[:church_id]}"
+          Sidekiq.logger.info "Can't find church for id #{row[:church_id]}"
           raise Import::SkipRecord
         end
       end
