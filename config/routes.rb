@@ -20,5 +20,5 @@ Rails.application.routes.draw do
     resources :user_preferences, only: [:index, :create]
   end
 
-  mount Sidekiq::Web => '/sidekiq'
+  mount Sidekiq::Web, at: "/#{ENV.fetch('SIDEKIQ_URL_SECRET')}/sidekiq"
 end
