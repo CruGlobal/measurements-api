@@ -2,23 +2,20 @@ require 'csv'
 require 'tree_order'
 require 'import_mappings'
 
-# For importing from the old SQL Server database that has been dumped to CSV
+# For importing from the old SQL Server database that has been dumped to CSV,
+# and uploaded to S3 in the folder sql_server_csv_dump.
 class Import
-  def initialize(csv_dump_folder)
-    @folder = csv_dump_folder
+  def initialize
     @empty_objects ||= {}
   end
 
   def import
-    Rails.logger.info("Importing from #{@folder}:")
     ImportMappings::MAPPINGS.each do |mapping|
       import_model(*mapping)
     end
   end
 
   private
-
-  attr_reader :folder
 
   def import_model(klass, csv_table, field_mapping, object_tap_proc = nil, rows_map_proc = nil)
     start_count = klass.count
@@ -86,10 +83,21 @@ class Import
   end
 
   def csv_rows(table, rows_map_proc = nil)
-    rows = CSV.foreach("#{folder}/#{table}.csv", headers: true,
-                                                 header_converters: :symbol)
+    rows = CSV.parse(csv_text(table), headers: true, header_converters: :symbol)
     return rows if rows_map_proc.blank?
     rows_map_proc.call(rows)
+  end
+
+  def csv_text(table)
+    fog.get_object(ENV.fetch('AWS_BUCKET'), "sql_server_csv_dump/#{table}.csv").body
+  end
+
+  def fog
+    @fog ||=
+      Fog::Storage.new(
+        provider: 'AWS',
+        aws_access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY'))
   end
 
   class SkipRecord < StandardError
