@@ -40,3 +40,6 @@ GuardClause:
 Style/Lambda:
   Exclude:
     - config/**/*
+
+Style/AsciiComments:
+  Enabled: false
