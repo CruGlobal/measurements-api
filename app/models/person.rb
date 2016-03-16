@@ -8,7 +8,7 @@ class Person < ActiveRecord::Base
 
   has_many :assignments, dependent: :destroy, inverse_of: :person
   has_many :ministries, through: :assignments
-  has_many :stories, dependent: :destroy
+  has_many :stories, foreign_key: :created_by_id, dependent: :destroy
 
   # Map GR key_username to cas_username
   alias_attribute :key_username, :cas_username

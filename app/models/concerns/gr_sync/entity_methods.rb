@@ -60,8 +60,10 @@ module GrSync
         %i(id client_integration_id)
       end
 
-      def create_from_entity(_params = {})
-        # TODO: implement
+      def create_or_update_from_entity!(entity)
+        record = find_or_initialize_by(gr_id: entity.values.first['id'])
+        record.from_entity(entity)
+        record.save!
       end
 
       def find_entity(id, params = {})
