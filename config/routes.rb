@@ -20,8 +20,5 @@ Rails.application.routes.draw do
     resources :user_preferences, only: [:index, :create]
   end
 
-  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    username == ENV.fetch('SIDEKIQ_USERNAME') && password == ENV.fetch('SIDEKIQ_PASSWORD')
-  end unless Rails.env.development?
-  mount Sidekiq::Web, at: '/sidekiq'
+  mount Sidekiq::Web, at: "/#{ENV.fetch('SIDEKIQ_URL_SECRET')}/sidekiq"
 end
