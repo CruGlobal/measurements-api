@@ -52,6 +52,22 @@ RSpec.describe MeasurementListUpdater, type: :model do
         end
       end
     end
+
+    it 'requires source' do
+      json = [{ 'measurement_type_id': measurement_type.local_id, 'related_entity_id': ministry.gr_id,
+                'period': '2014-11', 'mcc': 'slm' }]
+      expect(MeasurementListUpdater.new(json)).to_not be_valid
+
+      json = [{ 'measurement_type_id': measurement_type.local_id, 'related_entity_id': ministry.gr_id,
+                'period': '2014-11', 'mcc': 'slm_churches' }]
+      expect(MeasurementListUpdater.new(json)).to be_valid
+    end
+
+    it 'requires valid measurement_id' do
+      json = [{ 'measurement_type_id': measurement_type.total_id, 'related_entity_id': ministry.gr_id,
+                'period': '2014-11', 'mcc': 'slm_churches' }]
+      expect(MeasurementListUpdater.new(json)).to_not be_valid
+    end
   end
 
   describe '#commit' do

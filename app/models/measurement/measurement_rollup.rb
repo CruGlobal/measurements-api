@@ -1,6 +1,6 @@
 class Measurement
   class MeasurementRollup
-    def self.run(*args)
+    def self.run(*)
     end
   end
 end
