@@ -1,6 +1,14 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
+
 Rails.application.routes.draw do
   get 'monitors/lb'
+
+  namespace :gr_sync do
+    post "/#{ENV.fetch('GR_NOTIFICATION_URL_SECRET')}/notifications",
+         to: 'notifications#create', as: :notifications
+  end
+
   api_version(module: 'V5', path: { value: 'v5' }) do
     resources :token, only: :index
     delete '/token', to: 'token#destroy'

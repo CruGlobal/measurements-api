@@ -1,5 +1,5 @@
 class Person < ActiveRecord::Base
-  include GlobalRegistry::EntityMethods
+  include GrSync::EntityMethods
 
   has_many :user_content_locales, dependent: :destroy
   has_many :user_map_views, dependent: :destroy

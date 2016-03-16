@@ -9,8 +9,8 @@ class Ministry < ActiveRecord::Base
   # WHQ Scopes
   SCOPES = %w(National Area Global National\ Region).freeze
 
-  include GlobalRegistry::EntityMethods
-  include GlobalRegistry::Ministry
+  include GrSync::EntityMethods
+  include GrSync::Ministry
 
   acts_as_nested_set dependent: :nullify
 

@@ -40,12 +40,17 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   config.active_record.raise_in_transactional_callbacks = true
 
+  # SITE_HOST in development can be helpful for testing webhooks with ngrok
+  Rails.application.routes.default_url_options[:host] = ENV['SITE_HOST'] || 'localhost:3000'
+
   HttpLogger.log_headers = true
   HttpLogger.logger = Logger.new(STDOUT)
   HttpLogger.collapse_body_limit = 10_000
   HttpLogger.ignore = [/newrelic\.com/]
-  HttpLogger.log_request_body  = false
-  HttpLogger.log_response_body = false
+
+  # Allows us to turn on logging of body and resopnse when wanted
+  HttpLogger.log_request_body  = ENV['LOG_REQUEST_BODY'].present?
+  HttpLogger.log_response_body = ENV['LOG_RESPONSE_BODY'].present?
 
   # Allow us to turn off HTTP logging with an env var
   HttpLogger.logger.level = Logger::Severity::UNKNOWN if ENV['NO_HTTP_LOGGER']
