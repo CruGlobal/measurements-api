@@ -94,6 +94,7 @@ RSpec.describe 'V5::Measurements', type: :request do
                              { measurement_type_id: measurement.local_id, source: 'churches',
                                value: 123, ministry_id: ministry.gr_id, mcc: 'gcm' }]
         post_gr_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+        allow_any_instance_of(Measurement::MeasurementRollup).to receive(:run)
 
         post '/v5/measurements/', { _json: measurements_body },
              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
