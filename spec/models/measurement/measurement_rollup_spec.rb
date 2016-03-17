@@ -35,18 +35,6 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
       expect(gr_update_stub).to have_been_requested.times(1)
     end
 
-    it 'rolls up parent ministry' do
-      child_ministry = FactoryGirl.create(:ministry, parent: ministry)
-
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
-             .with(query: hash_including)
-             .to_return(body: measurements_json(ministry.gr_id).to_json)
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
-
-      Measurement::MeasurementRollup.new.run(measurement.perm_link, child_ministry.gr_id, '03-2016', 'SLM')
-      expect(gr_update_stub).to have_been_requested.times(2)
-    end
-
     it 'rolls up parent measurements' do
       child_measurement = FactoryGirl.create(:measurement, parent: measurement, perm_link: 'lmi_total_unique')
 

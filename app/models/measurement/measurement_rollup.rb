@@ -1,6 +1,6 @@
 class Measurement
   class MeasurementRollup
-    def run(perm_link, ministry_gr_id, period, mcc, rollup_parent_min = true)
+    def run(perm_link, ministry_gr_id, period, mcc)
       @perm_link = perm_link
       @ministry_gr_id = ministry_gr_id
       @period = period
@@ -18,14 +18,14 @@ class Measurement
       process_split_measurements
       process_total_measurements
 
-      recurse_up(rollup_parent_min)
+      recurse_up
     end
 
     private
 
     def process_local_measurements
       local_measurement_params = { 'filters[perm_link]': @perm_link.sub('lmi_total_', 'lmi_local_'),
-                                   'filters[dimension:like]': @mcc }
+                                   'filters[dimension:like]': "#{@mcc}_" }
       local_measurements = load_measurements(@ministry_gr_id, @period, local_measurement_params)
       return if local_measurements.blank?
       @running_total += local_measurements.first['measurements'].sum { |m| m['value'].to_f }
@@ -66,10 +66,7 @@ class Measurement
 
     # process methods up there ☝
 
-    def recurse_up(parent)
-      if parent && @ministry.parent_id.present?
-        self.class.new.run(@perm_link, @ministry.parent.gr_id, @period, @mcc, false)
-      end
+    def recurse_up
       self.class.new.run(@measurement.parent.perm_link, @ministry_gr_id, @period, @mcc) if @measurement.parent
     end
 
@@ -107,12 +104,12 @@ class Measurement
                                 period: @period,
                                 value: value,
                                 related_entity_id: related_id,
-                                measurement_type_id: type_id
+                                measurement_type_id: type_id,
+                                dimension: @mcc
                               })
     end
 
     def mcc_filter
-      return {} if @mcc.blank? || @mcc == 'all'
       { 'filters[dimension]': @mcc }
     end
   end
