@@ -1,13 +1,13 @@
 class Measurement
   class MeasurementRollup
-    def run(perm_link, ministry_gr_id, period, mcc)
-      @perm_link = perm_link
+    def run(measurement, ministry_gr_id, period, mcc)
+      @measurement = measurement
+      @perm_link = measurement.perm_link
       @ministry_gr_id = ministry_gr_id
       @period = period
       @mcc = mcc
 
       @gr_client = GlobalRegistry::MeasurementType.new
-      @measurement = Measurement.find_by_perm_link(perm_link)
       @ministry = Ministry.ministry(ministry_gr_id)
       @running_total = 0
 
@@ -66,7 +66,7 @@ class Measurement
     # process methods up there ☝
 
     def recurse_up
-      self.class.new.run(@measurement.parent.perm_link, @ministry_gr_id, @period, @mcc) if @measurement.parent
+      self.class.new.run(@measurement.parent, @ministry_gr_id, @period, @mcc) if @measurement.parent
     end
 
     def load_measurements_of_type(type, related_id = nil, period = nil, dimension = nil)

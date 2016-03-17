@@ -89,6 +89,6 @@ class MeasurementListUpdater
   end
 
   def update_ministry(ministry_gr_id, period, measurement, mcc)
-    Measurement::MeasurementRollup.new.run(measurement.perm_link, ministry_gr_id, period, mcc)
+    Measurement::MeasurementRollup.new.run(measurement, ministry_gr_id, period, mcc)
   end
 end
