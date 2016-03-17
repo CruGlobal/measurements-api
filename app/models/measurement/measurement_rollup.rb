@@ -6,8 +6,7 @@ class Measurement
       @period = period
       @mcc = mcc
 
-      @sbr_gr_client = GlobalRegistry::MeasurementType.new
-      @non_sbr_gr_client = GlobalRegistry::Measurement.new(base_url: ENV['GLOBAL_REGISTRY_URL_WITHOUT_SBR'])
+      @gr_client = GlobalRegistry::MeasurementType.new
       @measurement = Measurement.find_by_perm_link(perm_link)
       @ministry = Ministry.ministry(ministry_gr_id)
       @running_total = 0
@@ -83,11 +82,11 @@ class Measurement
     end
 
     def find_from_gr_with_params(type_id, params)
-      @sbr_gr_client.find(type_id, params)['measurement_type']['measurements']
+      @gr_client.find(type_id, params)['measurement_type']['measurements']
     end
 
     def get_from_gr_with_params(params)
-      @sbr_gr_client.get(params)['measurement_types']
+      @gr_client.get(params)['measurement_types']
     end
 
     def gr_request_params(related_id, period)
@@ -100,13 +99,13 @@ class Measurement
     end
 
     def push_measurement_to_gr(value, related_id, type_id)
-      @non_sbr_gr_client.post(measurement: {
-                                period: @period,
-                                value: value,
-                                related_entity_id: related_id,
-                                measurement_type_id: type_id,
-                                dimension: @mcc
-                              })
+      GlobalRegistry::Measurement.new.post(measurement: {
+                                             period: @period,
+                                             value: value,
+                                             related_entity_id: related_id,
+                                             measurement_type_id: type_id,
+                                             dimension: @mcc
+                                           })
     end
 
     def mcc_filter
