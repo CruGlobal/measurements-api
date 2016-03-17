@@ -11,22 +11,24 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
 
     def measurements_json(related_entity_id = nil)
       {
-        measurement_types: [{
+        measurement_type: {
           perm_link: 'LMI',
           measurements: [
             measurement_json(3, related_entity_id, 'DS'),
             measurement_json(3, related_entity_id, 'DS_asdf'),
             measurement_json(1, related_entity_id)
           ]
-        }]
+        }
       }
     end
 
     let(:measurement) { FactoryGirl.create(:measurement) }
     let(:ministry) { FactoryGirl.create(:ministry) }
     it 'calls the GR' do
-      WebMock.stub_request(:get, /#{ENV['GLOBAL_REGISTRY_URL']}measurement_types\S+$/)
-             .to_return(body: measurements_json(ministry.gr_id).to_json)
+      [:total, :local, :person].each do |mt|
+        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{measurement.send("#{mt}_id")}})
+               .to_return(body: measurements_json(ministry.gr_id).to_json)
+      end
       gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
 
       Measurement::MeasurementRollup.new.run(measurement, ministry.gr_id, '03-2016', 'SLM')
@@ -37,19 +39,19 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
     it 'rolls up parent measurements' do
       child_measurement = FactoryGirl.create(:measurement, parent: measurement, perm_link: 'lmi_total_unique')
 
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
-             .with(query: hash_including)
-             .to_return(body: measurements_json(ministry.gr_id).to_json)
-      child_measurement_type_json = measurements_json(ministry.gr_id)[:measurement_types].first
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{child_measurement.total_id}")
-             .with(query: hash_including)
-             .to_return(body: { measurement_type: child_measurement_type_json }.to_json)
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{measurement.total_id}")
-             .with(query: hash_including)
-             .to_return(body: { measurement_type: child_measurement_type_json }.to_json)
+      [:total, :local, :person].each do |mt|
+        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{measurement.send("#{mt}_id")}})
+               .to_return(body: measurements_json(ministry.gr_id).to_json)
+      end
+      [:total, :local, :person].each do |mt|
+        url_regex = %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{child_measurement.send("#{mt}_id")}}
+        WebMock.stub_request(:get, url_regex)
+               .to_return(body: measurements_json(ministry.gr_id).to_json)
+      end
       gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
 
       Measurement::MeasurementRollup.new.run(child_measurement, ministry.gr_id, '03-2016', 'SLM')
+
       expect(gr_update_stub).to have_been_requested.times(2)
     end
   end
