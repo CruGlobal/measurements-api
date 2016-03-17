@@ -59,10 +59,7 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     gr_resp = load_measurements_of_type(:person, :none, Power.current.assignment.gr_id)
     @my_measurements = build_monthly_hash(gr_resp)
     @self_breakdown, this_period_sum = build_breakdown_hash(gr_resp)
-    if @my_measurements[period] != this_period_sum
-      @my_measurements[period] = this_period_sum
-      update_personal_in_gr(this_period_sum)
-    end
+    @my_measurements[period] = this_period_sum
   end
 
   def load_sub_mins_from_gr
@@ -169,16 +166,13 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     }
   end
 
-  def update_personal_in_gr(new_value)
-    push_measurement_to_gr(new_value, Power.current.assignment.gr_id, measurement.person_id)
-  end
-
   def push_measurement_to_gr(value, related_id, type_id)
     GlobalRegistryClient.client(:measurement).post(measurement: {
                                                      period: period,
                                                      value: value,
                                                      related_entity_id: related_id,
-                                                     measurement_type_id: type_id
+                                                     measurement_type_id: type_id,
+                                                     dimension: @mcc
                                                    })
   end
 
@@ -194,7 +188,6 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def dimension_filter(level)
-    return if mcc == 'all'
     if level == :total
       mcc
     elsif level != :none

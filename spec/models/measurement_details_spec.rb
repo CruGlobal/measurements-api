@@ -50,16 +50,11 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe '#load' do
-    def stub_measurement_gr_calls(measurement = nil)
-      measurement ||= meas
-
-      stub_measurement_type_gr(measurement.total_id, ministry.gr_id)
-      stub_measurement_type_gr(measurement.local_id, ministry.gr_id)
-      stub_measurement_type_gr(measurement.person_id, user.gr_id)
-    end
-
     before do
-      stub_measurement_gr_calls
+      stub_measurement_type_gr(meas.total_id, ministry.gr_id)
+      stub_measurement_type_gr(meas.local_id, ministry.gr_id)
+      stub_measurement_type_gr(meas.person_id, user.gr_id)
+
       allow(details).to receive(:update_total_in_gr)
     end
 
@@ -110,24 +105,14 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it 'loads self_breakdown' do
-      allow(details).to receive(:update_personal_in_gr)
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
       expect(details.self_breakdown).to be_a Hash
       expect(details.self_breakdown['total']).to eq 3
     end
-    it 'lets GR know about more accurate person total' do
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
-      Power.with_power(Power.new(user, ministry)) do
-        details.load_user_from_gr
-      end
-      expect(gr_update_stub).to have_been_requested
-    end
 
     it 'loads my_measurements monthly values' do
-      allow(details).to receive(:update_personal_in_gr)
-
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
