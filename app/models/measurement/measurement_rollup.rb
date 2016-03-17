@@ -6,9 +6,9 @@ class Measurement
       @period = period
       @mcc = mcc
 
-      @sbr_gr_client = GlobalRegistryClient.client(:measurement_type)
-      @non_sbr_gr_client = GlobalRegistryClient.client(:measurement)
-      @measurement = Measurement.find_by(perm_link: perm_link)
+      @sbr_gr_client = GlobalRegistry::MeasurementType.new
+      @non_sbr_gr_client = GlobalRegistry::Measurement.new(base_url: ENV['GLOBAL_REGISTRY_URL_WITHOUT_SBR'])
+      @measurement = Measurement.find_by_perm_link(perm_link)
       @ministry = Ministry.ministry(ministry_gr_id)
       @running_total = 0
 

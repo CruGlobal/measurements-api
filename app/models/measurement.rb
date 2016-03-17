@@ -45,6 +45,7 @@ class Measurement < ActiveRecord::Base
   end
 
   def self.find_by_perm_link(perm_link)
+    perm_link = perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
     find_by(perm_link: ["lmi_total_#{perm_link}", "lmi_total_custom_#{perm_link}"])
   end
 end
