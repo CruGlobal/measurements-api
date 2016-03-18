@@ -27,6 +27,9 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  # This adds automatic meta-data for specs by location (e.g. for controllers)
+  config.infer_spec_type_from_file_location!
+
   config.include AuthenticationHelpers
   config.include CASHelpers
   config.include GlobalRegistryHelpers

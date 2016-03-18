@@ -1,4 +1,4 @@
-module GlobalRegistry
+module GrSync
   module EntityMethods
     extend ActiveSupport::Concern
 

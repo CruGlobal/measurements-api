@@ -21,5 +21,6 @@ end
 Sidekiq.default_worker_options = {
   backtrace: true,
   unique_expiration: 22.days,
-  log_duplicate_payload: true
+  log_duplicate_payload: true,
+  unique: :until_and_while_executing
 }
