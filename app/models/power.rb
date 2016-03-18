@@ -21,9 +21,7 @@ class Power
   include Powers::MeasurementPowers
   include Powers::StoryPowers
 
-  attr_reader :user, :ministry, :assignment, :inherited_assignment
-
-  protected
+  attr_reader :user, :ministry
 
   # Direct Assignment at this ministry
   def assignment
