@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :measurements, only: [:index, :show, :create]
     resources :ministries, only: [:index, :show, :create, :update]
     resources :sys_ministries, only: [:index, :show, :create, :update], controller: 'systems_ministries'
+    resources :stories, only: [:index, :show, :create, :update]
     resources :target_cities, only: [:index, :show, :create, :update]
     resources :training_completions, only: [:create, :update, :destroy], path: 'training_completion'
     resources :trainings, only: [:index, :create, :update, :destroy], path: 'training'

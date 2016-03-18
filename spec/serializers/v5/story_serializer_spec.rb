@@ -15,7 +15,9 @@ describe V5::StorySerializer do
       story.reload
       expect(json[:story_id]).to_not be_nil
       expect(json[:created_by]).to be_uuid.and(eq person.gr_id)
+      expect(json[:created_name]).to be_a(String).and(eq person.full_name)
       expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
+      expect(json[:ministry_name]).to be_a(String).and(eq ministry.name)
       expect(json[:title]).to eq story.title
       expect(json[:content]).to eq story.content
       expect(json[:mcc]).to eq story.mcc
@@ -32,6 +34,7 @@ describe V5::StorySerializer do
       it 'has related training_id' do
         story.training = training
         expect(json[:training_id]).to be_an(Integer).and(eq training.id)
+        expect(json[:training_name]).to be_a(String).and(eq training.name)
       end
     end
 
@@ -40,16 +43,17 @@ describe V5::StorySerializer do
       it 'has related training_id' do
         story.church = church
         expect(json[:church_id]).to be_an(Integer).and(eq church.id)
+        expect(json[:church_name]).to be_a(String).and(eq church.name)
       end
     end
 
     context 'with image_url and video_url' do
       let!(:urls) do
-        story.image_url = 'https://example.com/story.jpg'
+        story.user_image_url = 'https://example.com/story.jpg'
         story.video_url = 'https://example.com/video.mp4'
       end
       it 'includes image/video urls' do
-        expect(json[:image_url]).to eq story.image_url
+        expect(json[:image_url]).to eq story.user_image_url
         expect(json[:video_url]).to eq story.video_url
       end
 
@@ -61,7 +65,7 @@ describe V5::StorySerializer do
           story.image = Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'support', 'images', 'image.jpg'))
         end
         it 'has uploaded image url' do
-          expect(json[:image_url]).to eq story.image.url
+          expect(json[:image_url]).to eq story.image_url
         end
       end
     end

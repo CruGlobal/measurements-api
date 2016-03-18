@@ -9,8 +9,8 @@ FactoryGirl.define do
             'biltong pancetta'
     mcc { Ministry::MCCS.sample }
     language { %w(en-US en-GB fr-FR nl-NL hi-IN pt-BR es-CR).sample }
-    privacy { %i(everyone team_only).sample }
-    state { %i(draft published removed).sample }
+    privacy :everyone
+    state :published
     created_by_id nil
     ministry_id nil
     training_id nil

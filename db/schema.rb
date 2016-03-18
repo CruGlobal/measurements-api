@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160311183830) do
+ActiveRecord::Schema.define(version: 20160316192751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,20 +146,20 @@ ActiveRecord::Schema.define(version: 20160311183830) do
     t.string   "title"
     t.text     "content"
     t.string   "image"
-    t.string   "mcc",           limit: 3
+    t.string   "mcc",            limit: 3
     t.integer  "church_id"
     t.integer  "training_id"
     t.decimal  "latitude"
     t.decimal  "longitude"
     t.string   "language"
     t.string   "video_url"
-    t.integer  "state",                   default: 0
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.integer  "privacy",                 default: 0
+    t.integer  "state",                    default: 0
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.integer  "privacy",                  default: 0
     t.integer  "created_by_id"
     t.integer  "ministry_id"
-    t.string   "image_url"
+    t.string   "user_image_url"
   end
 
   add_index "stories", ["church_id"], name: "index_stories_on_church_id", using: :btree
