@@ -1,5 +1,6 @@
 class Assignment < ActiveRecord::Base
   APPROVED_ROLES = %w(leader inherited_leader admin inherited_admin member).freeze
+  LOCAL_APPROVED_ROLES = %w(leader admin member).freeze
   LOCAL_LEADER_ROLES = %w(leader admin).freeze
   VALID_INPUT_ROLES = %w(leader admin member self_assigned blocked former_member).freeze
   LEADER_ROLES = %w(leader admin inherited_leader inherited_admin).freeze
@@ -25,6 +26,7 @@ class Assignment < ActiveRecord::Base
 
   scope :leaders, -> { where(leader_condition) }
   scope :local_leaders, -> { where(local_leader_condition) }
+  scope :local_approved, -> { where(local_approved_condition) }
 
   scope :ancestor_assignments, lambda { |ministry|
     joins(ministries_join)
@@ -51,6 +53,10 @@ class Assignment < ActiveRecord::Base
 
   def self.approved_condition
     { role: roles.slice(*APPROVED_ROLES).values }
+  end
+
+  def self.local_approved_condition
+    { role: roles.slice(*LOCAL_APPROVED_ROLES).values }
   end
 
   def inherited_role?

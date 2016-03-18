@@ -15,12 +15,18 @@ module V5
     end
 
     def create
+      list = MeasurementListUpdater.new(params['_json'])
+      if list.commit
+        render nothing: true, status: :created
+      else
+        render_error list.error
+      end
     end
 
     private
 
     def load_measurements
-      @measurements ||= MeasurementList
+      @measurements ||= MeasurementListReader
                         .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
                         .load
     end
