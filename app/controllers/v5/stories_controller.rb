@@ -25,7 +25,7 @@ module V5
     end
 
     def update
-      load_story or render_error('Invalid story id') && return
+      render_error('Invalid story id') and return unless load_story
       if build_story
         render_story
       else
@@ -68,11 +68,10 @@ module V5
     def story_params
       permitted_params = post_params.permit(:title, :content, :ministry_id, :image_url, :mcc, :church_id, :training_id,
                                             :location, :language, :privacy, :video_url, :state, :created_by)
-      permitted_params[:privacy] = :everyone if permitted_params.key?(:privacy) &&
-                                                permitted_params[:privacy] == 'public'
+      permitted_params[:privacy] = :everyone if permitted_params[:privacy] == 'public'
       # Rename and delete uuid params
       { created_by: :person_gr_id, ministry_id: :ministry_gr_id }.each do |k, v|
-        permitted_params[v] = permitted_params[k] if permitted_params.key?(k) && Uuid.uuid?(permitted_params[k])
+        permitted_params[v] = permitted_params[k] if Uuid.uuid?(permitted_params[k])
         permitted_params.delete(k)
       end
       permitted_params[:created_by_id] = current_user.id unless permitted_params.key?(:person_gr_id)
