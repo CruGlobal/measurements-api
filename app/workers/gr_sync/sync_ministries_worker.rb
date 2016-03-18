@@ -1,4 +1,4 @@
-module GlobalRegistry
+module GrSync
   class SyncMinistriesWorker < BaseWorker
     sidekiq_options unique: :until_and_while_executing, retry: false
 

@@ -26,7 +26,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
           get '/v5/sys_ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
           expect(response).to be_success
           expect(response).to have_http_status(202)
-        end.to change(GlobalRegistry::SyncMinistriesWorker.jobs, :size).by(1)
+        end.to change(GrSync::SyncMinistriesWorker.jobs, :size).by(1)
       end
     end
   end
