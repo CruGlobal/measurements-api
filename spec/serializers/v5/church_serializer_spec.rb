@@ -13,7 +13,7 @@ describe V5::ChurchSerializer do
       c
     end
     let(:serializer) { V5::ChurchSerializer.new(resource) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
 
     it 'has attributes' do

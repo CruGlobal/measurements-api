@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/rails-api/active_model_serializers.git
-  revision: 72c2c9f0d7c665ce1b32dbbd4ca5687b1afd320e
+  revision: db87f8d85e7a46ef195a555cb7e2509f1affc622
   specs:
     active_model_serializers (0.10.0.rc4)
       actionpack (>= 4.0)
@@ -326,7 +326,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rainbow (2.1.0)
-    rake (10.5.0)
+    rake (11.1.1)
     rb-fsevent (0.9.7)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -435,6 +435,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    will_paginate (3.1.0)
     xml-simple (1.1.5)
     yard (0.8.7.6)
 
@@ -489,6 +490,7 @@ DEPENDENCIES
   syslog-logger
   versionist
   webmock
+  will_paginate
   xml-simple
 
 BUNDLED WITH

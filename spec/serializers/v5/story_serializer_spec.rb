@@ -8,7 +8,7 @@ describe V5::StorySerializer do
       FactoryGirl.create(:story, created_by: person, ministry: ministry, privacy: :everyone, state: :published)
     end
     let(:serializer) { V5::StorySerializer.new(story) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     it 'has attributes' do

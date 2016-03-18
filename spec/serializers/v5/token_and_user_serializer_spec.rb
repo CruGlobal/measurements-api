@@ -18,7 +18,7 @@ describe V5::TokenAndUserSerializer do
       ))
     end
     let(:serializer) { V5::TokenAndUserSerializer.new(resource) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
 
     it 'has attributes' do

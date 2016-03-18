@@ -30,7 +30,7 @@ module V5
     def sub_ministries
       object.ministry.children.collect do |ministry|
         serializer = V5::AssignmentSerializer.new(object.as_inherited_assignment(ministry.id))
-        ActiveModel::Serializer::Adapter.create(serializer).as_json
+        ::ActiveModelSerializers::Adapter.create(serializer).as_json
       end.compact if object.leader_role?
     end
   end

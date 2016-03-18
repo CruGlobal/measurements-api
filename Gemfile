@@ -29,6 +29,7 @@ gem 'awesome_nested_set'
 gem 'global_registry', '1.2.0'
 gem 'carrierwave'
 gem 'fog'
+gem 'will_paginate'
 
 group :development, :test do
   gem 'dotenv-rails'
