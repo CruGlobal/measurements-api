@@ -5,7 +5,7 @@ RSpec.describe V5::TeamMemberSerializer do
     let(:ministry) { FactoryGirl.create(:ministry) }
     let(:assignment) { FactoryGirl.create(:assignment, ministry: ministry, person: person) }
     let(:serializer) { V5::TeamMemberSerializer.new(assignment) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     describe 'a team member' do

@@ -4,7 +4,7 @@ RSpec.describe V5::MinistryPublicSerializer do
   describe 'a ministry' do
     let(:ministry) { FactoryGirl.create(:ministry) }
     let(:serializer) { V5::MinistryPublicSerializer.new(ministry) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     it 'has exactly ministry_id and name' do

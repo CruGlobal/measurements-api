@@ -19,6 +19,7 @@ class Power
   include Powers::TrainingPowers
   include Powers::MinistryPowers
   include Powers::MeasurementPowers
+  include Powers::StoryPowers
 
   attr_reader :user, :ministry
 

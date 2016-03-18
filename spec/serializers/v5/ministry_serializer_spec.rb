@@ -23,7 +23,7 @@ RSpec.describe V5::MinistrySerializer do
       end
     end
     let(:serializer) { V5::MinistrySerializer.new(ministry) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     it 'has attributes' do

@@ -5,7 +5,7 @@ RSpec.describe V5::ApiErrorSerializer do
     let(:api_error) { ApiError.new(message: 'Sample Message') }
 
     let(:serializer) { V5::ApiErrorSerializer.new(api_error) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
 
     subject do
       JSON.parse(serialization.to_json)

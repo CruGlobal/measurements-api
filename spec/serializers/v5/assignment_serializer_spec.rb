@@ -13,7 +13,7 @@ RSpec.describe V5::AssignmentSerializer do
   describe 'an assignment' do
     let(:person) { FactoryGirl.create(:person) }
     let(:serializer) { V5::AssignmentSerializer.new(assignment) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     context 'leader assignment' do

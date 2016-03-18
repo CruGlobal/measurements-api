@@ -6,10 +6,15 @@ module V5
                :image_url,
                :video_url,
                :created_by,
+               :created_name,
                :ministry_id,
+               :ministry_name,
                :church_id,
+               :church_name,
                :training_id,
+               :training_name,
                :mcc,
+               :language,
                :location,
                :privacy,
                :state,
@@ -26,18 +31,35 @@ module V5
     end
 
     def image_url
-      object.image.file.try(:exists?) ? object.image.url : object.image_url
+      object.image.file.try(:exists?) ? object.image_url : object.user_image_url
     end
 
     def created_by
       object.created_by.try(:gr_id)
     end
 
+    def created_name
+      object.created_by.try(:full_name)
+    end
+
     def ministry_id
       object.ministry.try(:gr_id)
     end
 
+    def ministry_name
+      object.ministry.try(:name)
+    end
+
+    def church_name
+      object.church.try(:name)
+    end
+
+    def training_name
+      object.training.try(:name)
+    end
+
     def location
+      return nil unless object.latitude.present? && object.longitude.present?
       { latitude: object.latitude, longitude: object.longitude }
     end
 

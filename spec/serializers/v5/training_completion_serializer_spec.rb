@@ -8,7 +8,7 @@ describe V5::TrainingSerializer do
       FactoryGirl.build_stubbed(:training_completion, training: t, phase: 1, number_completed: 20, date: t.date)
     end
     let(:serializer) { V5::TrainingCompletionSerializer.new(resource) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
 
     it 'has attributes' do
