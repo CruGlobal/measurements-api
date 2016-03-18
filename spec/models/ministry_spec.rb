@@ -159,4 +159,31 @@ describe Ministry, type: :model do
       end
     end
   end
+
+  context '.create_or_update_from_entity!' do
+    it 'updates an existing ministry based on the entity' do
+      ministry = create(:ministry)
+      entity = {
+        'ministry' => { 'id' => ministry.gr_id, 'name' => 'new name' }
+      }
+
+      Ministry.create_or_update_from_entity!(entity)
+
+      expect(ministry.reload.name).to eq 'new name'
+    end
+
+    it 'creates a new ministry if none exists for entity id' do
+      gr_id = SecureRandom.uuid
+      entity = {
+        'ministry' => { 'id' => gr_id, 'name' => 'name' }
+      }
+
+      expect do
+        Ministry.create_or_update_from_entity!(entity)
+      end.to change(Ministry, :count).by(1)
+
+      expect(Ministry.last.name).to eq 'name'
+      expect(Ministry.last.gr_id).to eq gr_id
+    end
+  end
 end
