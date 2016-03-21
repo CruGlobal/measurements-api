@@ -24,7 +24,14 @@ class Import
       import_object(klass, row, field_mapping, object_tap_proc)
     end
     num_imported = klass.count - start_count
+    update_id_sequence(klass)
     Sidekiq.logger.info("Imported #{num_imported} #{klass.table_name}.")
+  end
+
+  def update_id_sequence(klass)
+    table = klass.table_name
+    max_id = klass.order(id: :desc).pluck(:id).first
+    klass.connection.execute("ALTER SEQUENCE #{table}_id_seq RESTART WITH #{max_id + 1}")
   end
 
   def import_object(klass, row, field_mapping, object_tap_proc)
