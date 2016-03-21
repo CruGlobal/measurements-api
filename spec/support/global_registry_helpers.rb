@@ -63,6 +63,7 @@ module GlobalRegistryHelpers
   def gr_update_assignment_request(assignment)
     WebMock
       .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{assignment.gr_id}")
+      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .to_return(status: 200, body: { entity: {} }.to_json, headers: {})
   end
 end

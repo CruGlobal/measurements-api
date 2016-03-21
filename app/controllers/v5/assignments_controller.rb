@@ -51,7 +51,13 @@ module V5
     end
 
     def load_assignment
-      @assignment ||= assignment_scope.find_by(gr_id: params[:id])
+      @assignment ||= find_and_decorate_assignment
+    end
+
+    def find_and_decorate_assignment
+      found_assignment = assignment_scope.find_by(gr_id: params[:id])
+      return nil unless found_assignment.present?
+      ::Assignment::UserUpdatedAssignment.new(found_assignment)
     end
 
     def build_assignment
