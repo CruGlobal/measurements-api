@@ -21,7 +21,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     it 'caches authentication' do
       token = CruLib::AccessToken.new.token
 
-      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
+      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + '/systems?limit=1')
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
                           .to_return(status: 200, body: { access: 'granted' }.to_json)
 
@@ -35,7 +35,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     it 'reauthenticates authentication after expire' do
       token = CruLib::AccessToken.new.token
 
-      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
+      gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + '/systems?limit=1')
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
                           .to_return(status: 200, body: { access: 'granted' }.to_json)
 
@@ -54,7 +54,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
       end
 
       it 'fails when no token is sent' do
-        WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + 'systems?limit=1')
+        WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + '/systems?limit=1')
                .to_return(status: 400)
 
         random_token = SecureRandom.uuid
@@ -109,7 +109,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     let(:token) { authenticate_api }
 
     before do
-      @gr_meas_type_request = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
+      @gr_meas_type_request = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types")
                                      .with(headers: { 'Authorization': "Bearer #{token}" })
                                      .to_return(body: { measurement_type: { id: SecureRandom.uuid } }.to_json)
     end

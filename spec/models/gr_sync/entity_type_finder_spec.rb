@@ -3,7 +3,7 @@ require 'rails_helper'
 describe GrSync::EntityTypeFinder do
   context '.entity_type_ids' do
     it 'retrieves the entity type ids filtered by name' do
-      url = "#{ENV['GLOBAL_REGISTRY_URL']}entity_types?"\
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entity_types?"\
         'filters[name][]=ministry&filters[name][]=person'
       stub_request(:get, url)
         .with(query: 'filters[name][]=ministry&filters[name][]=person')

@@ -58,7 +58,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
     end
 
     before do
-      WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types")
+      WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types")
              .to_return(status: 200, body: { measurement_type: { id: SecureRandom.uuid } }.to_json, headers: {})
     end
 

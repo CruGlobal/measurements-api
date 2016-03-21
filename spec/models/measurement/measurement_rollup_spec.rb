@@ -26,10 +26,10 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
     let(:ministry) { FactoryGirl.create(:ministry) }
     it 'calls the GR' do
       [:total, :local, :person].each do |mt|
-        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{measurement.send("#{mt}_id")}})
+        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{measurement.send("#{mt}_id")}})
                .to_return(body: measurements_json(ministry.gr_id).to_json)
       end
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
 
       Measurement::MeasurementRollup.new.run(measurement, ministry.gr_id, '03-2016', 'SLM')
 
@@ -40,15 +40,15 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
       child_measurement = FactoryGirl.create(:measurement, parent: measurement, perm_link: 'lmi_total_unique')
 
       [:total, :local, :person].each do |mt|
-        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{measurement.send("#{mt}_id")}})
+        WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{measurement.send("#{mt}_id")}})
                .to_return(body: measurements_json(ministry.gr_id).to_json)
       end
       [:total, :local, :person].each do |mt|
-        url_regex = %r{#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{child_measurement.send("#{mt}_id")}}
+        url_regex = %r{#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{child_measurement.send("#{mt}_id")}}
         WebMock.stub_request(:get, url_regex)
                .to_return(body: measurements_json(ministry.gr_id).to_json)
       end
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
 
       Measurement::MeasurementRollup.new.run(child_measurement, ministry.gr_id, '03-2016', 'SLM')
 

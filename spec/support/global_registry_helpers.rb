@@ -5,7 +5,7 @@ module GlobalRegistryHelpers
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .with(query: { entity_type: 'person',
                      fields: 'first_name,last_name,key_username,authentication.key_guid',
                      'filters[key_username]': person.cas_username })
@@ -18,7 +18,7 @@ module GlobalRegistryHelpers
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .with(query: { entity_type: 'person',
                      fields: 'first_name,last_name,key_username,authentication.key_guid',
                      'filters[authentication][key_guid]': person.cas_guid })
@@ -29,7 +29,7 @@ module GlobalRegistryHelpers
     ministry ||= FactoryGirl.build(:ministry)
     response = { error: 'We couldn\'t find the record you were looking for.' }
     WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{ministry.gr_id}")
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry.gr_id}")
       .to_return(status: 404, body: response.to_json, headers: {})
   end
 
@@ -37,7 +37,7 @@ module GlobalRegistryHelpers
     ministry ||= FactoryGirl.create(:ministry)
     response = { ministry: { id: ministry.gr_id, client_integration_id: ministry.min_code } }
     WebMock
-      .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}entities")
+      .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .to_return(status: 201, body: { entity: response }.to_json, headers: {})
   end
 
@@ -50,14 +50,14 @@ module GlobalRegistryHelpers
                                     team_role: assignment.role
                                   }] } }
     WebMock
-      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{assignment.person.gr_id}")
+      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{assignment.person.gr_id}")
       .with(query: { fields: 'ministry:relationship', full_response: 'true' })
       .to_return(status: 200, body: { entity: response }.to_json, headers: {})
   end
 
   def gr_update_assignment_request(assignment)
     WebMock
-      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}entities/#{assignment.gr_id}")
+      .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{assignment.gr_id}")
       .to_return(status: 200, body: { entity: {} }.to_json, headers: {})
   end
 end

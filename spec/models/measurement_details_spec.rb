@@ -25,7 +25,7 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   def stub_measurement_type_gr(type_id, related_entity_id)
-    WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{type_id}")
+    WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{type_id}")
            .with(query: hash_including)
            .to_return(body: measurements_json(related_entity_id).to_json)
   end
@@ -225,7 +225,7 @@ RSpec.describe MeasurementDetails, type: :model do
       stub_measurement_type_gr(meas.total_id, ministry.gr_id)
       stub_measurement_type_gr(meas.local_id, ministry.gr_id)
       stub_measurement_type_gr(meas.person_id, user.gr_id)
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
 
       details.load_user_from_gr
       details.load_local_from_gr
