@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe V5::TrainingSerializer do
-  describe 'single training' do
+describe V5::AuditSerializer do
+  describe 'single audit' do
     let(:ministry) { FactoryGirl.build(:ministry) }
     let(:person) { FactoryGirl.build(:person) }
     let(:resource) do
@@ -9,7 +9,7 @@ describe V5::TrainingSerializer do
                                         created_at: Time.zone.parse('00:00 06/08/2015'))
     end
     let(:serializer) { V5::AuditSerializer.new(resource) }
-    let(:serialization) { ActiveModel::Serializer::Adapter.create(serializer) }
+    let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
 
     it 'has attributes' do

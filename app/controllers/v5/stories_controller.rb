@@ -56,7 +56,7 @@ module V5
 
     def render_stories
       render json: @story_filter.filtered,
-             serializer: StoriesSerializer,
+             serializer: StoryArraySerializer,
              page: @story_filter.page,
              per_page: @story_filter.per_page
     end

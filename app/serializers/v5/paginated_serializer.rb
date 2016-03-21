@@ -1,10 +1,6 @@
 module V5
-  class StoriesSerializer < ActiveModel::Serializer
+  class PaginatedSerializer < ActiveModel::Serializer
     attributes :meta
-
-    has_many :stories, serializer: V5::StorySerializer do
-      object
-    end
 
     def meta
       {

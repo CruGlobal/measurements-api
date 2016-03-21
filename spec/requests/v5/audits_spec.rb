@@ -24,6 +24,15 @@ RSpec.describe 'V5::Audits', type: :request do
         expect(json.first['timestamp']).to eq Time.zone.now.strftime('%Y-%m-%d')
         expect(json.last['timestamp']).to eq 1.month.ago.strftime('%Y-%m-%d')
       end
+      it 'responds with paged audits' do
+        get '/v5/audit', { ministry_id: ministry.gr_id, per_page: 2, page: 1 },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to be_success
+        expect(json['entries'].count).to be 2
+        expect(json['meta']['total_pages']).to be 2
+        expect(json['meta']['total']).to be 3
+      end
     end
 
     context 'as self-assigned' do
