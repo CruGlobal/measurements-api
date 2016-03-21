@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     resources :training_completions, only: [:create, :update, :destroy], path: 'training_completion'
     resources :trainings, only: [:index, :create, :update, :destroy], path: 'training'
     resources :user_preferences, only: [:index, :create]
+    resources :audit, only: :index
   end
 
   mount Sidekiq::Web, at: "/#{ENV.fetch('SIDEKIQ_URL_SECRET')}/sidekiq"

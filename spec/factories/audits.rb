@@ -3,7 +3,7 @@ FactoryGirl.define do
     person_id ''
     ministry_id ''
     message 'MyString'
-    type 1
+    audit_type :new_story
     ministry_name 'MyString'
   end
 end
