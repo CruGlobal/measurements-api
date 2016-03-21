@@ -1,8 +1,13 @@
 SIDEKIQ_CRON_HASH = {
   'Setup global registry subscriptions' => {
-    'class' => 'GrSync::SetupSubscriptionsWorker',
     'cron'  => '0 3 * * *',
+    'class' => 'GrSync::SetupSubscriptionsWorker',
     'args'  => []
+  },
+  'Sync ministries' => {
+    'cron' => '0 4 * * *',
+    'class' => 'GrSync::WithGrWorker',
+    'args' => [{}, 'GrSync::MinistriesSync', 'sync_all']
   }
 }.freeze
 

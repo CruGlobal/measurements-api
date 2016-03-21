@@ -52,7 +52,10 @@ module V5
 
     def refresh_ministries
       if params.key?(:refresh) && params[:refresh] == 'true'
-        GrSync::SyncMinistriesWorker.perform_async(GlobalRegistryClient.parameters)
+        # Always sync the ministries using the root global registry key so that
+        # a the /v5/sys_ministries endpoint wiht a refresh won't make our logal
+        # ministries list be different.
+        GrSync::WithGrWorker.queue_call_with_root(GrSync::MinistriesSync, :sync_all)
         render status: :accepted, plain: 'Accepted'
         return true
       end

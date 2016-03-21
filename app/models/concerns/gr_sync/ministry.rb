@@ -105,44 +105,6 @@ module GrSync
         [:name, :parent_id, :min_code, :location, :location_zoom, :lmi_hide, :lmi_show,
          :hide_reports_tab, :has_slm, :has_llm, :has_gcm, :has_ds].concat(super)
       end
-
-      def all_gr_ministries
-        raise 'block required' unless block_given?
-        all_active_ministries do |entity|
-          yield entity
-        end
-        all_ministries_missing_active do |entity|
-          yield entity
-        end
-      end
-
-      # Find id, name for all active ministries
-      def all_active_ministries
-        raise 'block required' unless block_given?
-        find_entities_each(
-          entity_type: 'ministry',
-          levels: 0,
-          fields: 'name',
-          'filters[parent_id:exists]': true,
-          'filters[is_active]': true
-        ) do |entity|
-          yield entity
-        end
-      end
-
-      # Find id, name for all ministries missing the active property
-      def all_ministries_missing_active
-        raise 'block required' unless block_given?
-        find_entities_each(
-          entity_type: 'ministry',
-          levels: 0,
-          fields: 'name',
-          'filters[parent_id:exists]': true,
-          'filters[is_active:not_exists]': true
-        ) do |entity|
-          yield entity
-        end
-      end
     end
   end
 end
