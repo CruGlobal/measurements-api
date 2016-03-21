@@ -49,9 +49,14 @@ module GlobalRegistryHelpers
                                     client_integration_id: "_#{assignment.person.gr_id}_#{assignment.ministry.gr_id}",
                                     team_role: assignment.role
                                   }] } }
+
+    # We need to always create assignments using the root GLOBAL_REGISTRY_TOKEN
+    # keey and not a system key to prevent a system from gaining
+    # higher-than-planned access to the measurements api data.
     WebMock
       .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{assignment.person.gr_id}")
-      .with(query: { fields: 'ministry:relationship', full_response: 'true' })
+      .with(query: { fields: 'ministry:relationship', full_response: 'true' },
+            headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .to_return(status: 200, body: { entity: response }.to_json, headers: {})
   end
 
