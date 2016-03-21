@@ -17,7 +17,7 @@ module V5
     end
 
     def development
-      if scope && scope[:period]
+      if scope && scope[:period] && scope[:period] != Time.zone.today.strftime('%Y-%m')
         object.value_at(scope[:period])[:development]
       else
         object[:development]
@@ -29,11 +29,12 @@ module V5
     end
 
     def parents
-      [object.parent_cluster_id || object.parent.try(:id)]
+      p_id = object.parent_cluster_id || object.parent.try(:id)
+      p_id ? [p_id] : []
     end
 
     def ministry_id
-      object.ministry.gr_id
+      object.ministry.try(:gr_id)
     end
   end
 end

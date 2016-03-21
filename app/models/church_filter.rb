@@ -53,7 +53,7 @@ class ChurchFilter
     rescue ArgumentError
       period_date = Date.parse("#{@filters[:period]}-01")
     end
-    churches.where('start_date <= ?', period_date.end_of_month).where('end_date > ?', period_date)
+    churches.where('start_date <= ?', period_date.end_of_month).where('end_date > ? OR end_date IS NULL', period_date)
   end
 
   private
