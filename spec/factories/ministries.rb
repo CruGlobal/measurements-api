@@ -3,7 +3,6 @@ FactoryGirl.define do
     gr_id { SecureRandom.uuid }
     sequence(:name) { |n| "Test Ministry (#{n})" }
     min_code { ('A'..'Z').to_a.sample(3).join }
-    area_code { Constants::AREAS.keys.sample }
     mccs { Ministry::MCCS.sample(rand(5)) }
     default_mcc nil
     latitude { rand(-90.0..90.0) }

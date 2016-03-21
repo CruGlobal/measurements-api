@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321191819) do
+ActiveRecord::Schema.define(version: 20160321201440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(version: 20160321191819) do
     t.uuid     "gr_id"
     t.string   "name"
     t.string   "min_code"
-    t.string   "area_code"
     t.string   "mccs",             default: [],              array: true
     t.string   "default_mcc"
     t.float    "latitude"
@@ -136,20 +135,11 @@ ActiveRecord::Schema.define(version: 20160321191819) do
     t.integer  "lft",                           null: false
     t.integer  "rgt",                           null: false
     t.integer  "depth",            default: 0,  null: false
+    t.integer  "area_id"
   end
 
   add_index "ministries", ["gr_id"], name: "index_ministries_on_gr_id", unique: true, using: :btree
   add_index "ministries", ["min_code"], name: "index_ministries_on_min_code", unique: true, using: :btree
-
-  create_table "ministry_areas", force: :cascade do |t|
-    t.integer  "ministry_id",   null: false
-    t.integer  "area_id",       null: false
-    t.uuid     "gr_id"
-    t.integer  "created_by_id"
-    t.boolean  "user_entered"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
 
   create_table "people", force: :cascade do |t|
     t.uuid     "gr_id"
