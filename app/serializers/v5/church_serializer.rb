@@ -13,7 +13,7 @@ module V5
     end
 
     def child_count
-      object.children.count
+      object.children_count
     end
 
     def development
