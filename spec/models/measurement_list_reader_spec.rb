@@ -41,7 +41,7 @@ RSpec.describe MeasurementListReader, type: :model do
     end
 
     def stub_measurement_type_gr(type_id, related_entity_id)
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{type_id}?")
+      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{type_id}?")
              .with(query: hash_including)
              .to_return(body: measurement_json(related_entity_id).to_json)
     end

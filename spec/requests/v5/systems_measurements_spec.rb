@@ -22,7 +22,7 @@ RSpec.describe 'V5::Measurements', type: :request do
 
   def stub_gr_measurement_calls(meas)
     %w(total_id local_id person_id).each do |key|
-      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}measurement_types/#{meas.send(key)}")
+      WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{meas.send(key)}")
              .with(query: hash_including)
              .to_return(body: measurement_json.to_json)
     end
@@ -39,7 +39,7 @@ RSpec.describe 'V5::Measurements', type: :request do
                              value: 123, ministry_id: ministry.gr_id, mcc: 'gcm' },
                            { measurement_type_id: measurement.person_id, source: 'churches',
                              value: 123, assignment_id: assignment.gr_id, mcc: 'gcm' }]
-      post_gr_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}measurements")
+      post_gr_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
       allow_any_instance_of(Measurement::MeasurementRollup).to receive(:run)
 
       post '/v5/sys_measurements/', { _json: measurements_body },
