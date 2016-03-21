@@ -36,5 +36,9 @@ module V5
     def ministry_id
       object.ministry.try(:gr_id)
     end
+
+    def created_by
+      object.created_by.try(:gr_id)
+    end
   end
 end
