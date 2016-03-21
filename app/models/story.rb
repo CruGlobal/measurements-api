@@ -9,7 +9,7 @@ class Story < ActiveRecord::Base
 
   mount_uploader :image, ImageUploader
 
-  validates :title, :content, presence: true
+  validates :content, presence: true
   validates :mcc, inclusion: { in: Ministry::MCCS, message: '\'%{value}\' is not a valid MCC' }, unless: 'mcc.blank?'
   validates :church, presence: true, unless: 'church_id.blank?'
   validates :training, presence: true, unless: 'training_id.blank?'
