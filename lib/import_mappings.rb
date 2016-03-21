@@ -128,8 +128,9 @@ class ImportMappings
         story.created_by_id = ImportUtil.person_id_by_gr_id(row[:created_by])
         story.ministry_id = ImportUtil.ministry_id_by_gr_id(row[:ministry_id])
         if row[:image_url] =~ /(singlebestrecord|expidev)\.blob\.core\.windows\.net/
-          story.image_url = nil
           ImportUtil.import_story_image(story, row[:image_url])
+        else
+          story.user_image_url = row[:image_url]
         end
       end
     ],
