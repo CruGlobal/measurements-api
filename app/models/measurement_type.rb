@@ -9,9 +9,7 @@ class MeasurementType < ActiveModelSerializers::Model
                 :localized_name, :localized_description, :ministry_id, :locale, :measurement, :is_core].freeze
   attr_accessor(*ATTRIBUTES)
 
-  validates :english, presence: { message: "Could not find required field: 'english'" }
-  validates :perm_link_stub, presence: { message: "Could not find required field: 'perm_link_stub'" }
-  validate :check_perm_link_start, :check_perm_link_unique, :check_parent_id_valid
+  validate :check_parent_id_valid
 
   MINISTRY_TYPE_ID = 'a5499c9a-d556-11e3-af5a-12725f8f377c'.freeze
   ASSIGNMENT_TYPE_ID = 'b4c69f8e-db86-11e3-acf9-12725f8f377c'.freeze
@@ -44,7 +42,9 @@ class MeasurementType < ActiveModelSerializers::Model
 
   def self.all_localized_with(args)
     Measurement.all.map do |measurement|
-      new(args.merge(measurement: measurement))
+      mt = new(args.merge(measurement: measurement))
+      mt.load_parent_translation
+      mt
     end
   end
 
@@ -62,6 +62,18 @@ class MeasurementType < ActiveModelSerializers::Model
     gr_singleton.delete(measurement.person_id)
 
     measurement.destroy
+  end
+
+  def load_parent_translation
+    return unless @measurement && @ministry_id && @locale
+    @translation = @measurement.translation_for(@locale, @ministry_id)
+    if @translation
+      @localized_name = @translation.name
+      @localized_description = @translation.description
+    else
+      @localized_name = @measurement.english
+      @localized_description = @measurement.description
+    end
   end
 
   private
@@ -115,21 +127,6 @@ class MeasurementType < ActiveModelSerializers::Model
       language: locale,
       ministry_id: ministry_id
     }.compact
-  end
-
-  def check_perm_link_start
-    %w(local_ total_ custom_).each do |start|
-      if perm_link_stub.downcase.start_with?(start)
-        errors.add(:perm_link_stub, " is invalid. It cannot start with: '#{start}'")
-      end
-    end
-  end
-
-  def check_perm_link_unique
-    matching_measurement = Measurement.find_by_perm_link(perm_link_stub)
-    return unless matching_measurement && matching_measurement.id != measurement.id
-
-    errors.add(:perm_link_stub, 'perm_link_stub is being used by another measurement_type. It must be unique.')
   end
 
   def check_parent_id_valid

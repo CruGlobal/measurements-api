@@ -29,6 +29,8 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
 
       expect(response).to be_success
       expect(json['id']).to be measurement.id
+      expect(json['english']).to_not be_nil
+      expect(json['english']).to eq measurement.english
     end
 
     it 'finds measurement based on perm_link' do
