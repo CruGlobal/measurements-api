@@ -24,6 +24,7 @@ class Ministry < ActiveRecord::Base
 
   has_many :assignments, dependent: :destroy, inverse_of: :ministry
   has_many :people, through: :assignments
+  has_many :measurement_translations
 
   has_many :user_content_locales, dependent: :destroy
   has_many :stories, dependent: :destroy

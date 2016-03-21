@@ -32,7 +32,7 @@ module V5
     end
 
     def build_measurement_type
-      @measurement_type ||= MeasurementType.new
+      @measurement_type ||= MeasurementType::UserCreatedMeasurementType.new
       @measurement_type.attributes = measurement_type_params
     end
 
