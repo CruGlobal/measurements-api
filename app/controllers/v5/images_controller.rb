@@ -28,8 +28,7 @@ module V5
     end
 
     def request_power
-      ministry_id = case params[:action].to_sym
-                    when :create
+      ministry_id = if params[:action].to_sym == :create
                       Story.find_by(id: params[:story_id]).try(:ministry).try(:gr_id)
                     end
       Power.new(current_user, ministry_id)
