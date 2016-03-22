@@ -11,11 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160316192751) do
+ActiveRecord::Schema.define(version: 20160321201440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "areas", force: :cascade do |t|
+    t.uuid     "gr_id"
+    t.string   "code"
+    t.string   "name"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "assignments", force: :cascade do |t|
     t.uuid     "gr_id"
@@ -108,7 +117,6 @@ ActiveRecord::Schema.define(version: 20160316192751) do
     t.uuid     "gr_id"
     t.string   "name"
     t.string   "min_code"
-    t.string   "area_code"
     t.string   "mccs",             default: [],              array: true
     t.string   "default_mcc"
     t.float    "latitude"
@@ -127,6 +135,7 @@ ActiveRecord::Schema.define(version: 20160316192751) do
     t.integer  "lft",                           null: false
     t.integer  "rgt",                           null: false
     t.integer  "depth",            default: 0,  null: false
+    t.integer  "area_id"
   end
 
   add_index "ministries", ["gr_id"], name: "index_ministries_on_gr_id", unique: true, using: :btree
