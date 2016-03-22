@@ -26,6 +26,7 @@ class ImportMappings
         currency_sybmol: :currency_symbol
       },
       lambda do |ministry, row|
+        ministry.area_id = Area.for_code(row[:area_code]).id
         ministry.min_code = nil if ministry.min_code.blank?
         ministry.mccs << Ministry::MCC_SLM if row[:slm]
         ministry.mccs << Ministry::MCC_LLM if row[:llm]
