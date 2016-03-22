@@ -3,17 +3,15 @@ module GrSync
   class AssignmentSync
     def initialize(ministry, person_relationship)
       @ministry = ministry
-      @person_relationship = person_relationship
+      @relationship = person_relationship
     end
 
     def sync
-    end
-
-    private
-
-    def gr_client
-      # Always use the root global registry key for syncing assignments
-      @gr_client ||= GlobalRegistryClient.new
+      assignment_gr_id = @relationship['relationship_entity_id']
+      assignment = Assignment.find_or_initialize_by(gr_id: assignment_gr_id)
+      assignment.update!(
+        ministry: @ministry, role: @relationship['team_role'],
+        person: Person.person_for_gr_id(@relationship['person']))
     end
   end
 end
