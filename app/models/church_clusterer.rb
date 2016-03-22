@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ChurchClusterer
   MAP_WIDTH = 848.0
   MAP_HEIGHT = 600.0
@@ -38,7 +39,7 @@ class ChurchClusterer
     church_group.drop(1).each do |c|
       @churches.each do |orginal_church|
         # find things that have c.id as their parent_id
-        next unless orginal_church.parent_id = c.id
+        next unless orginal_church.parent_id == c.id
         # then set their parent_cluster_id to church_group.first.id
         # we can set these inside of the @churches array because the models are shared by reference
         orginal_church.parent_cluster_id = church_group.first.id

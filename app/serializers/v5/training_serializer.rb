@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class TrainingSerializer < ActiveModel::Serializer
     attributes :id, :ministry_id, :name, :date, :type, :mcc, :latitude, :longitude

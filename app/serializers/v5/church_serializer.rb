@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class ChurchSerializer < ActiveModel::Serializer
     attributes :name, :latitude, :longitude, :jf_contrib, :cluster_count, :id, :gr_id, :development,
@@ -13,12 +14,12 @@ module V5
     end
 
     def child_count
-      object.children.count
+      object.children_count
     end
 
     def development
       if scope && scope[:period] && scope[:period] != Time.zone.today.strftime('%Y-%m')
-        object.value_at(scope[:period])[:development]
+        object.value_at(scope[:period], scope[:values])[:development]
       else
         object[:development]
       end
@@ -35,6 +36,10 @@ module V5
 
     def ministry_id
       object.ministry.try(:gr_id)
+    end
+
+    def created_by
+      object.created_by.try(:gr_id)
     end
   end
 end

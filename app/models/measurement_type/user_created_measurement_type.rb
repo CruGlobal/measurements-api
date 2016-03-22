@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MeasurementType
   class UserCreatedMeasurementType < ::MeasurementType
     validates :english, presence: { message: "Could not find required field: 'english'" }

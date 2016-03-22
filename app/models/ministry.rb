@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 class Ministry < ActiveRecord::Base
   # Valid MCCs (Mission Critical Components)
-  MCC_SLM = 'slm'.freeze
-  MCC_LLM = 'llm'.freeze
-  MCC_GCM = 'gcm'.freeze
-  MCC_DS = 'ds'.freeze
+  MCC_SLM = 'slm'
+  MCC_LLM = 'llm'
+  MCC_GCM = 'gcm'
+  MCC_DS = 'ds'
   MCCS = [MCC_SLM, MCC_LLM, MCC_GCM, MCC_DS].freeze
 
   # WHQ Scopes
@@ -81,6 +82,13 @@ class Ministry < ActiveRecord::Base
     self.min_code = min_code.downcase.gsub(/\s+/, '_')
     ministry = parent_whq_ministry
     self.min_code = [ministry.min_code, min_code].join('_') unless ministry.nil?
+  end
+
+  def from_entity(entity = {})
+    entity = super(entity)
+    area_gr_id = entity&.dig('area:relationship', 'area')
+    self.area = Area.for_gr_id(area_gr_id) if area_gr_id
+    entity
   end
 
   class << self

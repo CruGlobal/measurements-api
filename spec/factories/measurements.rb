@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :measurement do
     perm_link 'lmi_total_custom_my_string'

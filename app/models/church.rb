@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 class Church < ActiveRecord::Base
   has_many :children, class_name: 'Church', foreign_key: :parent_id
-  belongs_to :parent, class_name: 'Church'
+  belongs_to :parent, class_name: 'Church', counter_cache: :children_count
 
   belongs_to :created_by, class_name: 'Person'
 
@@ -27,15 +28,15 @@ class Church < ActiveRecord::Base
     created_by.try(:cas_username)
   end
 
-  def value_at(period)
-    return {} unless period
+  def value_at(period, values)
+    return {} unless period && values
     begin
       period_date = Date.parse period
     rescue ArgumentError
       period_date = Date.parse("#{period}-01")
     end
     return {} if period_date < start_date || (end_date.present? && period_date > end_date)
-    value = church_values.where('period <= ?', period).order(period: :desc).first.try(:attributes)
+    value = values[id].try(:first).try(:attributes)
     value ||= attributes
     value.with_indifferent_access.slice(:size, :development)
   end

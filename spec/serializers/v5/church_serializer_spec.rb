@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 describe V5::ChurchSerializer do
@@ -42,11 +43,13 @@ describe V5::ChurchSerializer do
     end
 
     describe 'when using period' do
-      let(:serializer) { V5::ChurchSerializer.new(resource, scope: { period: '2012-08' }) }
       let!(:church_value) do
         resource.church_values.create(period: '2013-01', size: 10,
                                       development: resource[:development] + 1)
       end
+      let(:period) { '2012-08' }
+      let(:church_values) { ChurchValue.values_for([resource.id], period) }
+      let(:serializer) { V5::ChurchSerializer.new(resource, scope: { period: period, values: church_values }) }
       context 'has no past values' do
         it 'returns normal value' do
           expect(hash[:development]).to be resource[:development]

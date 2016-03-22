@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Audit < ActiveRecord::Base
   belongs_to :ministry
   belongs_to :person

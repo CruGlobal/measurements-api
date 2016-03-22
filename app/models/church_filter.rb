@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ChurchFilter
   def initialize(filters)
     # strip extra spaces from filters

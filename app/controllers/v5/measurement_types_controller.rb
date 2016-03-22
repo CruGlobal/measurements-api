@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class MeasurementTypesController < V5::BaseUserController
     def index

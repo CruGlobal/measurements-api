@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GrSync
   class PageHelper
     def initialize(gr_client)

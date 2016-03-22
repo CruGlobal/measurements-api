@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Measurement < ActiveRecord::Base
   belongs_to :parent, class_name: 'Measurement'
   has_many :children, class_name: 'Measurement', foreign_key: :parent_id

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class SystemsMeasurementTypesController < V5::MeasurementTypesController
     include V5::BaseSystemsController

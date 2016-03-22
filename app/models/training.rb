@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Training < ActiveRecord::Base
   self.inheritance_column = nil
   belongs_to :ministry

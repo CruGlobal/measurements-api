@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class MeasurementDetailsSerializer < ActiveModel::Serializer
     ATTRS = [:perm_link_stub,

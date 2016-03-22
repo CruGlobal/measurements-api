@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321201440) do
+ActiveRecord::Schema.define(version: 20160321203255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,12 +70,13 @@ ActiveRecord::Schema.define(version: 20160321201440) do
     t.integer  "development"
     t.integer  "size"
     t.integer  "security"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.uuid     "gr_id"
     t.integer  "ministry_id"
     t.integer  "created_by_id"
     t.integer  "vc_id"
+    t.integer  "children_count", default: 0, null: false
   end
 
   add_index "churches", ["gr_id"], name: "index_churches_on_gr_id", unique: true, using: :btree
