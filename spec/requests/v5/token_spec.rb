@@ -38,6 +38,15 @@ RSpec.describe 'V5::Tokens', type: :request do
           expect(response).to be_success
           expect(json['session_ticket']).to_not be_nil
         end
+
+        it 'includes default_map_views' do
+          user.user_map_views.create(ministry: create(:ministry), zoom: 11)
+
+          get '/v5/token', st: 'asdf'
+          json = JSON.parse(response.body)
+
+          expect(json['user_preferences']['default_map_views']).to_not be_nil
+        end
       end
     end
 

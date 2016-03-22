@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 module V5
   class UserPreferencesSerializer < ActiveModel::Serializer
-    has_many :default_map_views
-    has_many :default_measurement_states
-    attribute :content_locales
+    attributes :default_map_views, :default_measurement_states, :content_locales
 
     def attributes(args)
       # convert preferences to a hash

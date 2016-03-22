@@ -17,8 +17,8 @@ describe V5::UserPreferencesSerializer do
     it 'has attributes' do
       expect(hash['fake-pref']).to eq 'mock'
       expect(hash[:default_map_views]).to be_an Array
-      expect(hash[:default_map_views][0]['location']['longitude']).to eq 9001
-      expect(hash[:default_map_views][0]['location_zoom']).to eq 7000
+      expect(hash[:default_map_views][0][:location][:longitude]).to eq 9001
+      expect(hash[:default_map_views][0][:location_zoom]).to eq 7000
     end
   end
 end
