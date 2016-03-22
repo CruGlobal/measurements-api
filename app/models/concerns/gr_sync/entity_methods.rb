@@ -48,9 +48,9 @@ module GrSync
     end
 
     module ClassMethods
-      # GR Entity client with either server or system access token / x-forwarded-for parameters
       def client
-        GlobalRegistryClient.client
+        # By default use the root key for interactions with global registry
+        GlobalRegistryClient.new.entities
       end
 
       def entity_type
