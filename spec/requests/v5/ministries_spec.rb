@@ -3,11 +3,13 @@ require 'rails_helper'
 RSpec.describe 'V5::Ministries', type: :request do
   describe 'GET /v5/ministries' do
     let!(:ministries) do
+      area = FactoryGirl.create(:area, name: 'Test Area', code: 'TEST')
       ministries = []
-      ministries << FactoryGirl.create(:ministry)
-      ministries << FactoryGirl.create(:ministry)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id)
+      ministries << FactoryGirl.create(:ministry, ministry_scope: 'National', area: area)
+      ministries << FactoryGirl.create(:ministry, ministry_scope: nil)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id, ministry_scope: 'National Region',
+                                                  area: area)
+      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id, ministry_scope: nil)
       ministries
     end
 
@@ -26,6 +28,16 @@ RSpec.describe 'V5::Ministries', type: :request do
           expect(response).to be_success
           expect(response).to have_http_status(202)
         end.to change(GrSync::WithGrWorker.jobs, :size).by(1)
+      end
+    end
+
+    context 'with whq_only=true' do
+      it 'responds with whq ministries' do
+        get '/v5/ministries', { whq_only: 1 }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        expect(response).to be_success
+        json = JSON.parse(response.body)
+        expect(json.length).to be 2
+        expect(json[0].keys).to contain_exactly('ministry_id', 'name', 'min_code', 'area_code', 'area_name')
       end
     end
   end

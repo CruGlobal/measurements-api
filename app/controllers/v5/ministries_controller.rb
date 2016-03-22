@@ -37,6 +37,10 @@ module V5
 
     def load_ministries
       @ministries ||= ministry_scope
+      # Filter ministries if whq_only
+      if bool_value(params[:whq_only])
+        @ministries = @ministries.where(ministry_scope: ::Ministry::SCOPES).includes(:area)
+      end
     end
 
     def load_ministry
@@ -63,7 +67,11 @@ module V5
     end
 
     def render_ministries
-      render json: @ministries, each_serializer: MinistryPublicSerializer
+      if bool_value(params[:whq_only])
+        render json: @ministries, each_serializer: WHQMinistrySerializer
+      else
+        render json: @ministries, each_serializer: MinistryPublicSerializer
+      end
     end
 
     def render_ministry(status = nil)
@@ -82,6 +90,12 @@ module V5
       permitted_params[:parent_id] =
         Ministry.ministry(permitted_params[:parent_id]).try(:id) if permitted_params.key? :parent_id
       permitted_params
+    end
+
+    # convert stings like '1' to booleans
+    def bool_value(value)
+      value = @filters[value] if value.is_a? Symbol
+      ActiveRecord::Type::Boolean.new.type_cast_from_user(value)
     end
 
     protected
