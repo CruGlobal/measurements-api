@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :sys_assignments, only: [:create, :update], controller: 'systems_assignments'
     resources :churches, only: [:index, :create, :update]
     resources :images, only: [:create]
+    resources :languages, only: [:index]
     resources :measurement_types, only: [:index, :show, :create, :update]
     get '/measurement_type/:id', to: 'measurement_types#show'
     resources :sys_measurement_types, only: [:index, :show, :create, :update], controller: 'systems_measurement_types'

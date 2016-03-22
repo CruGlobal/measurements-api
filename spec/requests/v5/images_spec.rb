@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'V5::Stories', type: :request do
+RSpec.describe 'V5::Images', type: :request do
   let(:json) { JSON.parse(response.body).try(:with_indifferent_access) }
   let(:person) { FactoryGirl.create(:person) }
   let(:ministry) { FactoryGirl.create(:ministry) }
