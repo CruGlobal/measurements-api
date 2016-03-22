@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class MinistryPublicSerializer < ActiveModel::Serializer
     # Only renders "public" ministry attributes

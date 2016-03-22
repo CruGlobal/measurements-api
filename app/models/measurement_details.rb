@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metrics/ClassLength
   include ActiveRecord::AttributeAssignment
 

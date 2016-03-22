@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class AssignmentSerializer < BaseMinistrySerializer
     attributes :id, :team_role, :sub_ministries

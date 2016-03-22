@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Allows you to decorate an Assignment instance to indicate that it has been
 # changed by a user and so should be synced to global registry.
 class Assignment

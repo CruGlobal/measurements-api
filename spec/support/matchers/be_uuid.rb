@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec::Matchers.define :be_uuid do
   match do |actual|
     return false unless actual.is_a? String

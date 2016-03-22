@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MeasurementListUpdater
   def initialize(json_array)
     @json_array = json_array

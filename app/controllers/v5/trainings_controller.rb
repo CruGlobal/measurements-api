@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class TrainingsController < V5::BaseUserController
     power :trainings, as: :training_scope

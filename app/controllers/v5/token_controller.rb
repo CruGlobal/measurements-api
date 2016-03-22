@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class TokenController < V5::BaseUserController
     skip_before_action :authenticate_request, only: :index

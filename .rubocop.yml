@@ -7,7 +7,7 @@ AllCops:
     - script/**/*
     - vendor/**/*
     - bin/**/*
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.3
 
 Rails:
   Enabled: true

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GrSync
   class MergeNotificationHandler
     def initialize(winner_entity_id, loser_entity_id)

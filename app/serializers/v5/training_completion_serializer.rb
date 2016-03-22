@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class TrainingCompletionSerializer < ActiveModel::Serializer
     attributes :id, :phase, :number_completed, :date, :training_id

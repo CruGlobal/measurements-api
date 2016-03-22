@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Church < ActiveRecord::Base
   has_many :children, class_name: 'Church', foreign_key: :parent_id
   belongs_to :parent, class_name: 'Church', counter_cache: :children_count

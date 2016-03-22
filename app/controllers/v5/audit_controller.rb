@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class AuditController < V5::BaseUserController
     DEFAULT_PAGE = 1

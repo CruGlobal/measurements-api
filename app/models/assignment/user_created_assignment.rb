@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 class Assignment
   class UserCreatedAssignment < ::Assignment
-    RELATIONSHIP = 'ministry:relationship'.freeze
+    RELATIONSHIP = 'ministry:relationship'
 
     # Virtual attributes
     attr_accessor :username, :key_guid, :person_gr_id, :ministry_gr_id

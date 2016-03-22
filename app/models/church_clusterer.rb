@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ChurchClusterer
   MAP_WIDTH = 848.0
   MAP_HEIGHT = 600.0

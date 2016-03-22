@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class AuditSerializer < ActiveModel::Serializer
     attributes :timestamp, :message, :type, :person_id, :ministry_id, :ministry_name

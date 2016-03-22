@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Church
   class UserCreatedChurch < ::Church
     after_create :write_audit

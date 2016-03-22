@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class NewToken
   include ActiveModel::Model
   include ActiveRecord::AttributeAssignment

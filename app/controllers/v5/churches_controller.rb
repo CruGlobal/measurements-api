@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class ChurchesController < V5::BaseUserController
     power :churches, map: { [:create, :update] => :changeable_churches }, as: :church_scope

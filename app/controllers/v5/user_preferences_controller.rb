@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class UserPreferencesController < V5::BaseUserController
     def index
