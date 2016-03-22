@@ -21,10 +21,11 @@ module V5
     private
 
     def load_audits
+      audits = audit_scope.order(created_at: :desc)
       if params[:per_page]
-        audit_scope.paginate(page: page, per_page: per_page)
+        audits.paginate(page: page, per_page: per_page)
       else
-        audit_scope.limit(params[:number_of_entries] || DEFAULT_PER_PAGE).order(created_at: :desc)
+        audits.limit(params[:number_of_entries] || DEFAULT_PER_PAGE)
       end
     end
 

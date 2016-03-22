@@ -9,7 +9,8 @@ RSpec.describe 'V5::Audits', type: :request do
 
     before do
       3.times do |i|
-        FactoryGirl.create(:audit, person: user, ministry: ministry, created_at: i.months.ago)
+        # create audits in reverse order so we can test sorting
+        FactoryGirl.create(:audit, person: user, ministry: ministry, created_at: (2 - i).months.ago)
       end
     end
 
@@ -30,6 +31,8 @@ RSpec.describe 'V5::Audits', type: :request do
 
         expect(response).to be_success
         expect(json['entries'].count).to be 2
+        expect(json['entries'].first['timestamp']).to eq Time.zone.now.strftime('%Y-%m-%d')
+        expect(json['entries'].last['timestamp']).to eq 1.month.ago.strftime('%Y-%m-%d')
         expect(json['meta']['total_pages']).to be 2
         expect(json['meta']['total']).to be 3
       end
