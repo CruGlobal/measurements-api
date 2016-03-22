@@ -27,15 +27,15 @@ class Church < ActiveRecord::Base
     created_by.try(:cas_username)
   end
 
-  def value_at(period)
-    return {} unless period
+  def value_at(period, values)
+    return {} unless period && values
     begin
       period_date = Date.parse period
     rescue ArgumentError
       period_date = Date.parse("#{period}-01")
     end
     return {} if period_date < start_date || (end_date.present? && period_date > end_date)
-    value = church_values.where('period <= ?', period).order(period: :desc).first.try(:attributes)
+    value = values[id].try(:first).try(:attributes)
     value ||= attributes
     value.with_indifferent_access.slice(:size, :development)
   end

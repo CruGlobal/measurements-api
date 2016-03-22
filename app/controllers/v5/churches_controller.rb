@@ -3,9 +3,12 @@ module V5
     power :churches, map: { [:create, :update] => :changeable_churches }, as: :church_scope
 
     def index
-      render json: filtered_churches,
+      churches = filtered_churches.to_a
+      church_ids = churches.collect(&:id)
+      render json: churches,
              serializer_context_class: V5::ChurchArraySerializer,
-             scope: { period: params[:period] }
+             scope: { period: params[:period],
+                      values: ChurchValue.values_for(church_ids, params[:period]) }
     end
 
     def create

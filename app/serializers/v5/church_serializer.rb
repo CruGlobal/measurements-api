@@ -18,7 +18,7 @@ module V5
 
     def development
       if scope && scope[:period] && scope[:period] != Time.zone.today.strftime('%Y-%m')
-        object.value_at(scope[:period])[:development]
+        object.value_at(scope[:period], scope[:values])[:development]
       else
         object[:development]
       end
