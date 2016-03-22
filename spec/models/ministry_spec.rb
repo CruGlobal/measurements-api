@@ -205,8 +205,8 @@ describe Ministry, type: :model do
       stub_request(:get, url).to_return(body: { entity: entity }.to_json)
       area = create(:area)
       allow(Area).to receive(:for_gr_id).with(area_gr_id) { area }
-      assignment_sync = double(sync: nil)
-      allow(GrSync::AssignmentSync).to receive(:new) { assignment_sync }
+      assignments_sync = double(sync: nil)
+      allow(GrSync::MultiAssignmentSync).to receive(:new) { assignments_sync }
 
       ministry = Ministry.ministry(ministry_gr_id)
 
@@ -214,9 +214,9 @@ describe Ministry, type: :model do
       expect(ministry.gr_id).to eq ministry_gr_id
       expect(ministry.name).to eq 'Test'
       expect(ministry.area).to eq area
-      expect(GrSync::AssignmentSync).to have_received(:new)
-        .with(ministry.id, entity['ministry'])
-      expect(assignment_sync).to have_received(:sync)
+      expect(GrSync::MultiAssignmentSync).to have_received(:new)
+        .with(ministry, entity['ministry'])
+      expect(assignments_sync).to have_received(:sync)
     end
   end
 

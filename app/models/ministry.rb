@@ -49,7 +49,7 @@ class Ministry < ActiveRecord::Base
       entity = ministry.update_from_entity
       return nil if entity.nil? || (entity.key?(:is_active) && entity[:is_active] == false)
       ministry.save
-      GrSync::AssignmentSync.new(ministry.id, entity).sync
+      GrSync::MultiAssignmentSync.new(ministry, entity).sync
     end
     ministry
   end
