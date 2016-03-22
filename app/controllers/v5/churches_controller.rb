@@ -4,7 +4,7 @@ module V5
 
     def index
       churches = filtered_churches.to_a
-      church_ids = churches.collect(&:id)
+      church_ids = churches.collect { |c| c.id if c.is_a? Church }.compact
       render json: churches,
              serializer_context_class: V5::ChurchArraySerializer,
              scope: { period: params[:period],
