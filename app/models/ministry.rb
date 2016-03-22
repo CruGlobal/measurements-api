@@ -83,6 +83,23 @@ class Ministry < ActiveRecord::Base
     self.min_code = [ministry.min_code, min_code].join('_') unless ministry.nil?
   end
 
+  def from_entity(entity = {})
+    entity = super(entity)
+    assign_area_from_entity(entity)
+    entity
+  end
+
+  private
+
+  def assign_area_from_entity(entity)
+    return unless entity.present?
+    area_relationship = entity['area:relationship']
+    return unless area_relationship.present?
+    area_gr_id = area_relationship['area']
+    return unless area_gr_id.present?
+    self.area = Area.for_gr_id(area_gr_id)
+  end
+
   class << self
     private
 

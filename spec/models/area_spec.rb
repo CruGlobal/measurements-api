@@ -10,7 +10,7 @@ describe Area do
     it 'queries global registry and creates a new are if one does not exist' do
       gr_id = SecureRandom.uuid
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?entity_type=area&"\
-        "filters[area_code]=EUWE"
+        'filters[area_code]=EUWE'
       stub_request(:get, url).to_return(body: {
         entities: [{
           area: {
