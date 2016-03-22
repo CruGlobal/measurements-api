@@ -44,6 +44,7 @@ class Church < ActiveRecord::Base
   def default_values
     self.development ||= 1
     self.security ||= :public_church
+    self.parent_id = nil if parent_id == -1
   end
 
   def log_church_value

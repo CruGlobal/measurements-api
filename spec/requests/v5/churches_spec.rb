@@ -91,6 +91,15 @@ RSpec.describe 'V5::Churches', type: :request do
         expect(church_value).to be_present
         expect(church_value.period).to eq Time.zone.today.strftime('%Y-%m')
       end
+
+      it 'removes parent' do
+        child_church = FactoryGirl.create(:church, parent: church, ministry: ministry)
+
+        put "/v5/churches/#{child_church.id}", { parent_id: -1 },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(child_church.reload.parent).to be_nil
+      end
     end
 
     context 'trying to move church to another ministry you do not have access to' do

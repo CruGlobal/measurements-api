@@ -56,7 +56,9 @@ module V5
                           :size, :security]
       permitted_params = params.permit(permitted_params)
       permitted_params[:created_by_id] = current_user.id
-      permitted_params[:ministry_id] = Ministry.find_by(gr_id: permitted_params[:ministry_id]).try(:id)
+      if permitted_params[:ministry_id]
+        permitted_params[:ministry_id] = Ministry.find_by(gr_id: permitted_params[:ministry_id]).try(:id)
+      end
       fix_enum_params(permitted_params, :security, :development)
     end
 
