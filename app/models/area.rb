@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Area < ActiveRecord::Base
   has_many :ministries
 

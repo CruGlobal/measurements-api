@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class TokenAndUserSerializer < ActiveModel::Serializer
     attributes :status, :session_ticket, :assignments

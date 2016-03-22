@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Story < ActiveRecord::Base
   enum privacy: { everyone: 0, team_only: 1 }
   enum state: { draft: 0, published: 1, removed: 2 }

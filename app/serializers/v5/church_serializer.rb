@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class ChurchSerializer < ActiveModel::Serializer
     attributes :name, :latitude, :longitude, :jf_contrib, :cluster_count, :id, :gr_id, :development,

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CASHelpers
   def validate_ticket_request(person, ticket = nil)
     person ||= FactoryGirl.build(:person)

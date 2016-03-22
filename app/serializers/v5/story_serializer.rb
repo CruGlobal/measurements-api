@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class StorySerializer < ActiveModel::Serializer
     attributes :story_id,

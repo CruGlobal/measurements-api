@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class MeasurementTypeSerializer < ActiveModel::Serializer
     attributes :perm_link_stub,

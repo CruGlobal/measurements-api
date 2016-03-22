@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   module SystemAccessTokenProtectedConcern
     extend ActiveSupport::Concern

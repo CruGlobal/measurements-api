@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TokenAndUser < ActiveModelSerializers::Model
   attr_accessor :access_token, :person
 

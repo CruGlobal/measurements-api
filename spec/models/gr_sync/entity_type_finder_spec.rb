@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 describe GrSync::EntityTypeFinder do
@@ -6,7 +7,7 @@ describe GrSync::EntityTypeFinder do
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entity_types?"\
         'filters[name][]=ministry&filters[name][]=person'
       stub_request(:get, url)
-        .with(query: 'filters[name][]=ministry&filters[name][]=person')
+        .with(query: 'filters[name][]=ministry&filters[name][]=person'.dup)
         .to_return(body: { entity_types: [{ id: '1f' }, { id: '2f' }] }.to_json)
 
       type_ids = GrSync::EntityTypeFinder.entity_type_ids(%w(ministry person))

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Person
   class UpdatePreferences < ::Person
     def update_preferences(preferences = {})

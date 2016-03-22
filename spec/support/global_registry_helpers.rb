@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GlobalRegistryHelpers
   def gr_person_request_by_username(person = nil)
     person ||= FactoryGirl.create(:person)

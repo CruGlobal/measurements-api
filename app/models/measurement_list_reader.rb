@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MeasurementListReader
   include ActiveModel::Model
   include ActiveRecord::AttributeAssignment

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Constants
   # area_code to min_code map
   AREAS = {
@@ -17,14 +18,14 @@ module Constants
   }.freeze
 
   # Team Roles
-  LEADER_ROLE = 'leader'.freeze
-  INHERITED_LEADER_ROLE = 'inherited_leader'.freeze
-  ADMIN_ROLE = 'admin'.freeze
-  INHERITED_ADMIN_ROLE = 'inherited_admin'.freeze
-  MEMBER_ROLE = 'member'.freeze
-  SELF_ASSIGNED_ROLE = 'self_assigned'.freeze
-  BLOCKED_ROLE = 'blocked'.freeze
-  FORMER_MEMBER_ROLE = 'former_member'.freeze
+  LEADER_ROLE = 'leader'
+  INHERITED_LEADER_ROLE = 'inherited_leader'
+  ADMIN_ROLE = 'admin'
+  INHERITED_ADMIN_ROLE = 'inherited_admin'
+  MEMBER_ROLE = 'member'
+  SELF_ASSIGNED_ROLE = 'self_assigned'
+  BLOCKED_ROLE = 'blocked'
+  FORMER_MEMBER_ROLE = 'former_member'
 
   VALID_ROLES = [
     LEADER_ROLE,

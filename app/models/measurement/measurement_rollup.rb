@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Measurement
   class MeasurementRollup
     def run(measurement, ministry_gr_id, period, mcc)

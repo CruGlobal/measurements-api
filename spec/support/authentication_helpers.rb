@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module AuthenticationHelpers
   def authenticate_person(person = nil)
     person = FactoryGirl.create(:person) if person.nil?

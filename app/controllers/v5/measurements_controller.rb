@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V5
   class MeasurementsController < V5::BaseUserController
     power :measurements, map: { show: :showing_measurement }

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ModelHelpers
   def flatten_assignment(assignment)
     assignment = assignment.with_indifferent_access

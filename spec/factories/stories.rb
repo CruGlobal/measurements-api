@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryGirl.define do
   factory :story do
     sequence(:title) { |n| "Test Story (#{n})" }

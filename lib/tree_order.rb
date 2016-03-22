@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TreeOrder
   def initialize(rows, id_field, parent_id_field)
     @rows = rows

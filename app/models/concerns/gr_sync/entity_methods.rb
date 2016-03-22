@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GrSync
   module EntityMethods
     extend ActiveSupport::Concern

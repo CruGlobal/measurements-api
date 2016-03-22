@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 SIDEKIQ_CRON_HASH = {
   'Setup global registry subscriptions' => {
     'cron'  => '0 3 * * *',

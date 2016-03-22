@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GrSync
   class SubscriptionManager
     def initialize(entity_type_ids, endpoint)
