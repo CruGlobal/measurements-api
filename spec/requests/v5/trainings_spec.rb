@@ -5,11 +5,24 @@ RSpec.describe 'V5::Trainings', type: :request do
   let(:user) { FactoryGirl.create(:person) }
 
   describe 'GET /v5/training' do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
     let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
     let(:json) { JSON.parse(response.body) }
 
     it 'responds with trainings' do
+      FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin)
+
+      get '/v5/training', { ministry_id: ministry.gr_id },
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+      expect(response).to be_success
+      expect(json.first['id']).to be training.id
+    end
+
+    it 'responds with trainings even as inheritted leader' do
+      parent_ministry = FactoryGirl.create(:ministry)
+      ministry.update(parent: parent_ministry)
+      FactoryGirl.create(:assignment, person: user, ministry: parent_ministry, role: :admin)
+
       get '/v5/training', { ministry_id: ministry.gr_id },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
