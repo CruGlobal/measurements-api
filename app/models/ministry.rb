@@ -85,20 +85,11 @@ class Ministry < ActiveRecord::Base
 
   def from_entity(entity = {})
     entity = super(entity)
-    assign_area_from_entity(entity)
+    self.area = Area.for_gr_id(entity&.dig('area:relationship', 'area'))
     entity
   end
 
   private
-
-  def assign_area_from_entity(entity)
-    return unless entity.present?
-    area_relationship = entity['area:relationship']
-    return unless area_relationship.present?
-    area_gr_id = area_relationship['area']
-    return unless area_gr_id.present?
-    self.area = Area.for_gr_id(area_gr_id)
-  end
 
   class << self
     private
