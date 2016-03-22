@@ -28,7 +28,7 @@ class Ministry < ActiveRecord::Base
 
   has_many :user_content_locales, dependent: :destroy
   has_many :stories, dependent: :destroy
-  belongs_to :area, dependent: :destroy
+  belongs_to :area
 
   auto_strip_attributes :name
 
