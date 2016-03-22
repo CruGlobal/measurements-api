@@ -8,6 +8,11 @@ class Area < ActiveRecord::Base
       create_from_gr(area_code)
     end
 
+    def for_gr_id(gr_id)
+      found_area = find_by(gr_id: gr_id)
+      return found_area if found_area.present?
+    end
+
     private
 
     def create_from_gr(area_code)

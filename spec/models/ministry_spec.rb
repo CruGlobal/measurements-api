@@ -160,6 +160,40 @@ describe Ministry, type: :model do
     end
   end
 
+  context '.ministry' do
+    it 'finds an existing ministry by gr_id if it exists' do
+      gr_id = SecureRandom.uuid
+      existing_ministry = create(:ministry, gr_id: gr_id)
+
+      expect(Ministry.ministry(gr_id)).to eq existing_ministry
+    end
+
+    it 'retrieves a ministry from global registry if we do one for that gr_id' do
+      ministry_gr_id = SecureRandom.uuid
+      area_gr_id = SecureRandom.uuid
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry_gr_id}"
+      stub_request(:get, url).to_return(body: {
+        entity: {
+          ministry: {
+            id: ministry_gr_id, name: 'Test',
+            'area:relationship': {
+              area: area_gr_id
+            }
+          }
+        }
+      }.to_json)
+      area = create(:area)
+      allow(Area).to receive(:for_gr_id).with(area_gr_id) { area }
+
+      ministry = Ministry.ministry(ministry_gr_id)
+
+      expect(ministry).to_not be_new_record
+      expect(ministry.gr_id).to eq ministry_gr_id
+      expect(ministry.name).to eq 'Test'
+      expect(ministry.area).to eq area
+    end
+  end
+
   context '.create_or_update_from_entity!' do
     it 'updates an existing ministry based on the entity' do
       ministry = create(:ministry)

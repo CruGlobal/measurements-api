@@ -28,5 +28,14 @@ describe Area do
       expect(area.name).to eq 'Western Europe'
       expect(area).to be_active
     end
+
+    context '.for_gr_id' do
+      it 'finds an existing area by gr_id' do
+        gr_id = SecureRandom.uuid
+        area = create(:area, gr_id: gr_id)
+
+        expect(Area.for_gr_id(gr_id)).to eq area
+      end
+    end
   end
 end
