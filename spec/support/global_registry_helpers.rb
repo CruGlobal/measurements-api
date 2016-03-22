@@ -7,6 +7,7 @@ module GlobalRegistryHelpers
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
       .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
+      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .with(query: { entity_type: 'person',
                      fields: 'first_name,last_name,key_username,authentication.key_guid',
                      'filters[key_username]': person.cas_username })
@@ -20,6 +21,7 @@ module GlobalRegistryHelpers
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
       .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
+      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .with(query: { entity_type: 'person',
                      fields: 'first_name,last_name,key_username,authentication.key_guid',
                      'filters[authentication][key_guid]': person.cas_guid })
@@ -31,6 +33,7 @@ module GlobalRegistryHelpers
     response = { error: 'We couldn\'t find the record you were looking for.' }
     WebMock
       .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry.gr_id}")
+      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .to_return(status: 404, body: response.to_json, headers: {})
   end
 

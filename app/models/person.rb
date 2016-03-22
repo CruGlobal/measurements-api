@@ -88,6 +88,16 @@ class Person < ActiveRecord::Base
     person
   end
 
+  def self.person_for_gr_id(gr_id)
+    person = Person.find_by(gr_id: gr_id)
+    return person if person
+    entity = Person.find_entity(gr_id, entity_type: 'person')
+    person = Person.new
+    person.from_entity(entity)
+    person.save
+    person
+  end
+
   def self.find_entity_by_key_guid(guid)
     find_entity_by(
       entity_type: entity_type,

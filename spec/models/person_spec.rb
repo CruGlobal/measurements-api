@@ -24,4 +24,26 @@ describe Person, type: :model do
     context 'sub-ministry with no assignments' do
     end
   end
+
+  context '.person_for_gr_id' do
+    it 'finds a person for the gr_id if they exist already' do
+      gr_id = SecureRandom.uuid
+      person = create(:person, gr_id: gr_id)
+
+      expect(Person.person_for_gr_id(gr_id)).to eq person
+    end
+
+    it 'creates the person from global registry if they do not exist yet' do
+      gr_id = SecureRandom.uuid
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{gr_id}?entity_type=person"
+      entity = { person: { id: gr_id, first_name: 'John' } }
+      stub_request(:get, url).to_return(body: { entity: entity }.to_json)
+
+      person = Person.person_for_gr_id(gr_id)
+
+      expect(person).to_not be_new_record
+      expect(person.gr_id).to eq gr_id
+      expect(person.first_name).to eq 'John'
+    end
+  end
 end
