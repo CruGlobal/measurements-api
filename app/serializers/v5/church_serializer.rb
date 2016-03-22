@@ -9,7 +9,7 @@ module V5
     end
 
     def cluster_count
-      0
+      1
     end
 
     def child_count
