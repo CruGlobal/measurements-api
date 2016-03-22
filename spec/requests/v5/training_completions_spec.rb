@@ -102,7 +102,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
           delete "/v5/training_completion/#{completion.id}", nil,
                  'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
 
-          expect(response).to be_success
+          expect(response.response_code).to be 204
         end.to change(TrainingCompletion, :count).by(-1)
       end
     end
