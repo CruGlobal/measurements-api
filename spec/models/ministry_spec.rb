@@ -161,6 +161,28 @@ describe Ministry, type: :model do
     end
   end
 
+  context '#from_entity' do
+    it 'picks the first of multiple area:relationship entries if given' do
+      ministry_gr_id = SecureRandom.uuid
+      area1_gr_id = SecureRandom.uuid
+      area2_gr_id = SecureRandom.uuid
+      entity = {
+        ministry: {
+          id: ministry_gr_id, name: 'Test',
+          'area:relationship': [{ area: area1_gr_id }, { area: area2_gr_id }]
+        }
+      }.deep_stringify_keys
+      ministry = Ministry.new
+      area = create(:area)
+      allow(Area).to receive(:for_gr_id) { area }
+
+      ministry.from_entity(entity)
+
+      expect(Area).to have_received(:for_gr_id).with(area1_gr_id)
+      expect(ministry.area).to eq area
+    end
+  end
+
   context '.ministry' do
     it 'finds an existing ministry by gr_id if it exists' do
       gr_id = SecureRandom.uuid
@@ -169,22 +191,22 @@ describe Ministry, type: :model do
       expect(Ministry.ministry(gr_id)).to eq existing_ministry
     end
 
-    it 'retrieves a ministry from global registry if we do one for that gr_id' do
+    it 'retrieves a ministry from global registry if none exists for gr_id' do
       ministry_gr_id = SecureRandom.uuid
       area_gr_id = SecureRandom.uuid
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry_gr_id}"
-      stub_request(:get, url).to_return(body: {
-        entity: {
-          ministry: {
-            id: ministry_gr_id, name: 'Test',
-            'area:relationship': {
-              area: area_gr_id
-            }
-          }
+      entity = {
+        ministry: {
+          id: ministry_gr_id, name: 'Test',
+          'area:relationship': { area: area_gr_id },
+          'person:relationship': [{ person: '1' }, { person: '2' }]
         }
-      }.to_json)
+      }.deep_stringify_keys
+      stub_request(:get, url).to_return(body: { entity: entity }.to_json)
       area = create(:area)
       allow(Area).to receive(:for_gr_id).with(area_gr_id) { area }
+      assignment_sync = double(sync: nil)
+      allow(GrSync::AssignmentSync).to receive(:new) { assignment_sync }
 
       ministry = Ministry.ministry(ministry_gr_id)
 
@@ -192,6 +214,9 @@ describe Ministry, type: :model do
       expect(ministry.gr_id).to eq ministry_gr_id
       expect(ministry.name).to eq 'Test'
       expect(ministry.area).to eq area
+      expect(GrSync::AssignmentSync).to have_received(:new)
+        .with(ministry.id, entity['ministry'])
+      expect(assignment_sync).to have_received(:sync)
     end
   end
 

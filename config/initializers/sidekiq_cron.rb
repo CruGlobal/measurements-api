@@ -9,6 +9,11 @@ SIDEKIQ_CRON_HASH = {
     'cron' => '0 4 * * *',
     'class' => 'GrSync::WithGrWorker',
     'args' => [{}, 'GrSync::MinistriesSync', 'sync_all']
+  },
+  'Sync assignments' => {
+    'cron' => '0 4 * * *',
+    'class' => 'GrSync::WithGrWorker',
+    'args' => [{}, 'GrSync::AssignmentsSync', 'sync_all']
   }
 }.freeze
 

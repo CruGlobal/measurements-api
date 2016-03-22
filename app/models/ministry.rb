@@ -49,6 +49,7 @@ class Ministry < ActiveRecord::Base
       entity = ministry.update_from_entity
       return nil if entity.nil? || (entity.key?(:is_active) && entity[:is_active] == false)
       ministry.save
+      GrSync::AssignmentSync.new(ministry.id, entity).sync
     end
     ministry
   end
@@ -86,9 +87,22 @@ class Ministry < ActiveRecord::Base
 
   def from_entity(entity = {})
     entity = super(entity)
-    area_gr_id = entity&.dig('area:relationship', 'area')
-    self.area = Area.for_gr_id(area_gr_id) if area_gr_id
+    assign_area_from_entity(entity)
     entity
+  end
+
+  private
+
+  def assign_area_from_entity(entity)
+    relationship = entity&.dig('area:relationship')
+    # area:relationship could be an array in the rare case of an ministry that
+    # is in two ares. We are choosing not to model that case in our
+    # application (just assuming all ministries have one area), but to prevent
+    # an error, just take the first of multiople possible areas from global
+    # registry.
+    area_gr_id = Array.wrap(relationship).first&.dig('area')
+    return unless area_gr_id
+    self.area = Area.for_gr_id(area_gr_id)
   end
 
   class << self
