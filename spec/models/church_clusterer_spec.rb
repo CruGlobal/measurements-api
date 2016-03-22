@@ -7,8 +7,11 @@ RSpec.describe ChurchClusterer, type: :model do
     FactoryGirl.build_stubbed(:church, latitude: 10, longitude: 1,
                                        parent: nearby_church2)
   end
+  let!(:distant_orphan_church) do
+    FactoryGirl.build_stubbed(:church, latitude: 10, longitude: 5)
+  end
   let(:church_array) do
-    [distant_church, nearby_church1, nearby_church2]
+    [distant_church, nearby_church1, nearby_church2, distant_orphan_church]
   end
 
   context 'cluster by lat/long' do
@@ -18,9 +21,11 @@ RSpec.describe ChurchClusterer, type: :model do
 
       cluster = filtered.find { |e| e.is_a? Array }
       distant_entry = filtered.find { |e| e.try(:id) == distant_church.id }
+      orphan_entry = filtered.find { |e| e.try(:id) == distant_orphan_church.id }
       expect(cluster).to be_present
       expect(distant_entry.id).to be distant_church.id
       expect(distant_entry.parent_cluster_id).to be cluster.first.id
+      expect(orphan_entry.parent_cluster_id).to be nil
     end
   end
 end
