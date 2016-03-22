@@ -10,7 +10,7 @@ module Powers
       end
 
       power :training_completions do
-        return unless assignment.leader_role?
+        return unless assignment.try(:leader_role?)
         TrainingCompletion.includes(:training).where(trainings: { ministry_id: assignment.ministry.id })
       end
     end
