@@ -56,11 +56,18 @@ module V5
       fix_enum_params(permitted_params, :security, :development)
     end
 
-    def filtered_churches
+    def church_filters_params
       params[:period] ||= Time.zone.today.strftime('%Y-%m')
-      churches = ::ChurchFilter.new(params).filter(church_scope)
+      [:long_max, :long_min, :lat_max, :lat_min].each do |s|
+        params[s] = params[s].to_f if params.key? s
+      end
+      params
+    end
+
+    def filtered_churches
+      churches = ::ChurchFilter.new(church_filters_params).filter(church_scope)
       return churches unless params[:long_min]
-      ::ChurchClusterer.new(params).cluster(churches)
+      ::ChurchClusterer.new(church_filters_params).cluster(churches)
     end
   end
 end
