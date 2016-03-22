@@ -19,7 +19,7 @@ describe GrSync::MinistriesSync, '#sync_all' do
   end
 
   def stub_ministries_page(is_active, page, has_next_page, ministries)
-    url = "http://#{ENV['GLOBAL_REGISTRY_URL']}/entities?"\
+    url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?"\
       "entity_type=ministry&fields=name&filters%5B#{is_active}%5D=true&"\
       "filters%5Bparent_id:exists%5D=true&levels=0&page=#{page}&per_page=50"
     body = {
