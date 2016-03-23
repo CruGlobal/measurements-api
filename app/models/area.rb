@@ -4,12 +4,14 @@ class Area < ActiveRecord::Base
 
   class << self
     def for_code(area_code)
+      return nil unless area_code.present?
       found_area = find_by(code: area_code)
       return found_area if found_area.present?
       create_from_gr_for_code(area_code)
     end
 
     def for_gr_id(gr_id)
+      return nil unless gr_id.present?
       found_area = find_by(gr_id: gr_id)
       return found_area if found_area.present?
       create_from_gr_for_id(gr_id)
