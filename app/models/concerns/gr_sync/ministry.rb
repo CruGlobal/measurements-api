@@ -11,6 +11,10 @@ module GrSync
       has_ds: ::Ministry::MCC_DS
     }.freeze
 
+    included do
+      before_create :create_entity, if: 'gr_id.blank?'
+    end
+
     # Getter/Setters for GR
     def location=(value)
       self.latitude = value[:latitude] if value.key? :latitude

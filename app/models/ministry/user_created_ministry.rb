@@ -8,7 +8,6 @@ class Ministry
 
     validates :min_code, presence: true, on: :create
 
-    before_create :create_entity, if: 'gr_id.blank?'
     after_create :create_admin_assignment
 
     private

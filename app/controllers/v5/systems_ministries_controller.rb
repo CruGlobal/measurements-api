@@ -9,10 +9,8 @@ module V5
       case params[:action].to_sym
       when :show, :update
         Ministry.find_by(gr_id: params[:id])
-      when :index
+      else
         Ministry.all
-      when :create
-        ::Ministry::UserCreatedMinistry
       end
     end
   end
