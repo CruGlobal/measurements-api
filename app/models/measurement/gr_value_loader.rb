@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 class Measurement
   class GrValueLoader
+    NUMBER_OF_HISTORIC_MONTHS = 11
+
     include ActiveModel::Model
     include ActiveRecord::AttributeAssignment
 
@@ -28,14 +30,10 @@ class Measurement
     end
 
     def build_total_hash(gr_resp)
-      total_hash = {}
-      i_period = period_from
-      loop do
-        total_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
-        break if i_period == @period
-        i_period = (Date.parse("#{i_period}-01") + 1.month).strftime('%Y-%m')
+      (0..NUMBER_OF_HISTORIC_MONTHS).each_with_object({}) do |i, hash|
+        month_period = (Date.parse("#{@period}-01") - i.months).strftime('%Y-%m')
+        hash[month_period] = gr_resp.find { |m| m['period'] == month_period }.try(:[], 'value').to_f
       end
-      total_hash
     end
 
     def gr_request_params(level)
@@ -55,7 +53,7 @@ class Measurement
 
     def period_from
       return @period unless @historical && can_historic
-      from = Date.parse("#{@period}-01") - 11.months
+      from = Date.parse("#{@period}-01") - NUMBER_OF_HISTORIC_MONTHS.months
       from.strftime('%Y-%m')
     end
 
