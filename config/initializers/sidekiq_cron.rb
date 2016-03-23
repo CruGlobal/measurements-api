@@ -5,10 +5,10 @@ SIDEKIQ_CRON_HASH = {
     'class' => 'GrSync::SetupSubscriptionsWorker',
     'args'  => []
   },
-  'Sync ministries (with their assignments and people)' => {
+  'Sync ministries' => {
     'cron' => '0 4 * * *',
     'class' => 'GrSync::WithGrWorker',
-    'args' => [{}, 'GrSync::MinistriesSync', 'sync_all', []]
+    'args' => [{}, 'GrSync::MinistriesSync', 'sync_all']
   }
 }.freeze
 
