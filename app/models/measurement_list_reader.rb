@@ -30,7 +30,10 @@ class MeasurementListReader
     @measurements.each { |m| work_q.push m }
     workers = (1..ENV['MEASUREMENT_THREAD_COUNT'].to_i).map do
       Thread.new do
-        work_q.pop(true).load_gr_value(params) until work_q.empty?
+        until work_q.empty?
+          measurement = work_q.pop(true)
+          Measurement::GrValueLoader.new(params.merge(measurement: measurement)).load_gr_value
+        end
       end
     end
     workers.map(&:join)
