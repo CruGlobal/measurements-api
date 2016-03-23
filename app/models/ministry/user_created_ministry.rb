@@ -8,13 +8,16 @@ class Ministry
 
     validates :min_code, presence: true, on: :create
 
+    before_create :create_entity, if: 'gr_id.blank?'
     after_create :create_admin_assignment
 
     private
 
     def create_admin_assignment
       return unless created_by.present?
-      Assignment.create(ministry_id: id, person_id: created_by.id, role: :admin)
+      assignment = Assignment.create!(ministry_id: id, person_id: created_by.id,
+                                      role: 'admin')
+      assignment.create_gr_relationship
     end
   end
 end

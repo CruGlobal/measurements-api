@@ -112,7 +112,9 @@ RSpec.describe 'V5::Ministries', type: :request do
       let(:person) { FactoryGirl.create(:person) }
       context 'with required attributes' do
         let(:ministry) { FactoryGirl.build(:ministry) }
+        let(:assignment) { build(:assignment, ministry: ministry, person: person) }
         let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
+        let!(:gr_assignment_stub) { gr_create_assignment_request(assignment) }
         it 'responds successfully with the new ministry' do
           expect do
             post '/v5/ministries', ministry.attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
