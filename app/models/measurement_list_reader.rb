@@ -39,6 +39,7 @@ class MeasurementListReader
   def gr_loading_params
     {
       levels: Power.current.try(:measurement_levels) || [:total, :local, :person],
+      assignment_id: Power.current.try(:assignment).try(:gr_id),
       ministry_id: @ministry_id,
       mcc: @mcc,
       period: @period,

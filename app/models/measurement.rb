@@ -86,8 +86,13 @@ class Measurement < ActiveRecord::Base
   end
 
   def gr_request_params(level)
+    related_id = if level == :person
+                   @gr_loading_params[:assignment_id]
+                 else
+                   @gr_loading_params[:ministry_id]
+                 end
     {
-      'filters[related_entity_id]': @gr_loading_params[:ministry_id],
+      'filters[related_entity_id]': related_id,
       'filters[period_from]': period_from,
       'filters[period_to]': @gr_loading_params[:period],
       'filters[dimension]': dimension_filter(level),
