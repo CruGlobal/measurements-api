@@ -52,4 +52,64 @@ class Measurement < ActiveRecord::Base
     perm_link = perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
     find_by(perm_link: ["lmi_total_#{perm_link}", "lmi_total_custom_#{perm_link}"])
   end
+
+  def load_gr_value(params)
+    @gr_loading_params = params
+    return load_historic_gr_values if @gr_loading_params[:historical]
+    @gr_loading_params[:levels].each do |level|
+      measurement_level_id = send("#{level}_id")
+      filter_params = gr_request_params(level)
+      gr_resp = GlobalRegistryClient.client(:measurement_type).find(measurement_level_id, filter_params)
+      value = gr_resp['measurement_type']['measurements'].map { |m| m['value'].to_f }.sum
+      send("#{level}=", value)
+    end
+  end
+
+  private
+
+  def load_historic_gr_values
+    return unless can_historic
+    gr_resp = GlobalRegistry::MeasurementType
+              .find(total_id, gr_request_params(:total))['measurement_type']['measurements']
+    @total = build_total_hash(gr_resp)
+  end
+
+  def build_total_hash(gr_resp)
+    total_hash = {}
+    i_period = period_from
+    loop do
+      total_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
+      break if i_period == @gr_loading_params[:period]
+      i_period = (Date.parse("#{i_period}-01") + 1.month).strftime('%Y-%m')
+    end
+    total_hash
+  end
+
+  def gr_request_params(level)
+    {
+      'filters[related_entity_id]': @gr_loading_params[:ministry_id],
+      'filters[period_from]': period_from,
+      'filters[period_to]': @gr_loading_params[:period],
+      'filters[dimension]': dimension_filter(level),
+      per_page: 250
+    }
+  end
+
+  def period_from
+    return @gr_loading_params[:period] unless @gr_loading_params[:historical] && can_historic
+    from = Date.parse("#{@gr_loading_params[:period]}-01") - 11.months
+    from.strftime('%Y-%m')
+  end
+
+  def can_historic
+    Power.current.blank? || Power.current.historic_measurements
+  end
+
+  def dimension_filter(level)
+    if level == :total
+      @gr_loading_params[:mcc]
+    else
+      "#{@gr_loading_params[:mcc]}_#{@gr_loading_params[:source]}"
+    end
+  end
 end

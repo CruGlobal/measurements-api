@@ -18,72 +18,33 @@ class MeasurementListReader
 
     @measurements = Measurement.where(mcc_filter: [nil, mcc])
     @measurements = filter_by_show_hide
-    # it might be nice to run this each separate threads since they do 3 GR calls each
-    # Spencer suggests waiting until we test how the performs
-    # https://github.com/tra/spawnling might be a good option, or a vanilla thread pool
-    # https://blog.engineyard.com/2014/ruby-thread-pool
-    @measurements.each(&method(:load_gr_value))
+    load_measurements_from_gr
     split_children
   end
 
   private
 
-  def load_gr_value(measurement)
-    return load_historic_gr_values(measurement) if historical
-    levels = Power.current.try(:measurement_levels) || [:total, :local, :person]
-    levels.each do |level|
-      measurement_level_id = measurement.send("#{level}_id")
-      filter_params = gr_request_params(level)
-      gr_resp = GlobalRegistryClient.client(:measurement_type).find(measurement_level_id, filter_params)
-      value = gr_resp['measurement_type']['measurements'].map { |m| m['value'].to_f }.sum
-      measurement.send("#{level}=", value)
+  def load_measurements_from_gr
+    work_q = Queue.new
+    params = gr_loading_params
+    @measurements.each { |m| work_q.push m }
+    workers = (1..ENV['MEASUREMENT_THREAD_COUNT'].to_i).map do
+      Thread.new do
+        work_q.pop(true).load_gr_value(params) until work_q.empty?
+      end
     end
+    workers.map(&:join)
   end
 
-  def load_historic_gr_values(measurement)
-    return unless can_historic
-    gr_resp = GlobalRegistry::MeasurementType
-              .find(measurement.total_id, gr_request_params(:total))['measurement_type']['measurements']
-    measurement.total = build_total_hash(gr_resp)
-  end
-
-  def build_total_hash(gr_resp)
-    total_hash = {}
-    i_period = period_from
-    loop do
-      total_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
-      break if i_period == period
-      i_period = (Date.parse("#{i_period}-01") + 1.month).strftime('%Y-%m')
-    end
-    total_hash
-  end
-
-  def gr_request_params(level)
+  def gr_loading_params
     {
-      'filters[related_entity_id]': ministry_id,
-      'filters[period_from]': period_from,
-      'filters[period_to]': period,
-      'filters[dimension]': dimension_filter(level),
-      per_page: 250
+      levels: Power.current.try(:measurement_levels) || [:total, :local, :person],
+      ministry_id: @ministry_id,
+      mcc: @mcc,
+      period: @period,
+      source: @source,
+      historical: @historical
     }
-  end
-
-  def period_from
-    return period unless historical && can_historic
-    from = Date.parse("#{period}-01") - 11.months
-    from.strftime('%Y-%m')
-  end
-
-  def can_historic
-    Power.current.blank? || Power.current.historic_measurements
-  end
-
-  def dimension_filter(level)
-    if level == :total
-      mcc
-    else
-      "#{mcc}_#{source}"
-    end
   end
 
   def filter_by_show_hide
