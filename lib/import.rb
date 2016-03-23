@@ -71,7 +71,7 @@ class Import
   def field_value(klass, field, row)
     val = row[field]
     if enum_field?(klass, field)
-      klass.send(pluralized_field(field)).invert[val]
+      val.blank? ? nil : klass.send(pluralized_field(field)).invert[val.to_i]
     else
       val
     end
