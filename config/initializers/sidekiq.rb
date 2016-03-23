@@ -17,6 +17,10 @@ Sidekiq.configure_server do |config|
   config.reliable_fetch!
   config.reliable_scheduler!
   config.redis = { url: Redis.current.client.id, namespace: sidekiq_namespace }
+
+  config.server_middleware do |chain|
+    chain.add SidekiqResetGrClient
+  end
 end
 
 Sidekiq.default_worker_options = {
