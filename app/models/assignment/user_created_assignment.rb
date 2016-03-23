@@ -2,7 +2,15 @@
 class Assignment
   class UserCreatedAssignment < ::Assignment
     # Virtual attributes
-    attr_accessor :username, :key_guid, :person_gr_id, :ministry_gr_id
+    attr_accessor :username,
+                  :key_guid,
+                  :person_gr_id,
+                  :ministry_gr_id,
+                  :first_name,
+                  :last_name,
+                  :email,
+                  :preferred_name,
+                  :ea_guid
 
     before_validation :lookup_person, on: :create
     before_validation :lookup_ministry, on: :create
@@ -31,6 +39,12 @@ class Assignment
                         Person.person(key_guid)
                       end
       end
+      create_person if person.blank?
+    end
+
+    def create_person
+      # TODO: create person here if username, ea_guid or key_guid == email address set and person doesn't exist
+      self.person = Person.new
     end
   end
 end

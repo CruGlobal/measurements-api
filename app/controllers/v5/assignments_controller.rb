@@ -17,7 +17,8 @@ module V5
     end
 
     def create
-      permit_params %i(username key_guid person_id ministry_id team_role)
+      permit_params %i(username key_guid person_id ministry_id team_role
+                       first_name last_name email preferred_name ea_guid)
       if build_assignment
         render_assignment :created
       else
