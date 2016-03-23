@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module GrSync
   class EntityUpdatePush
     def self.queue_with_root_gr(record)

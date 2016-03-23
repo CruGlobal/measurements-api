@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Ministry
   class UserUpdatedMinistry < SimpleDelegator
     def save
