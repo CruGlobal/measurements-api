@@ -20,7 +20,7 @@ class Assignment
 
     def lookup_person
       if person_gr_id.present?
-        self.person = Person.find_by(gr_id: person_gr_id)
+        self.person = Person.for_gr_id(person_gr_id)
       elsif !username.blank?
         self.person = Person.person_for_username(username)
       elsif !key_guid.blank?
