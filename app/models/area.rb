@@ -11,7 +11,7 @@ class Area < ActiveRecord::Base
     end
 
     def for_gr_id(gr_id)
-      return nil unless gr_id.present?
+      return unless gr_id.present?
       found_area = find_by(gr_id: gr_id)
       return found_area if found_area.present?
       create_from_gr_for_id(gr_id)
