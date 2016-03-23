@@ -2,7 +2,8 @@
 module V5
   class MinistriesController < V5::BaseUserController
     power :ministries, map: {
-      [:show, :update] => :show_ministry,
+      [:show] => :show_ministry,
+      [:update] => :update_ministry,
       [:create] => :create_ministry
     }, as: :ministry_scope
 

@@ -246,4 +246,8 @@ describe Ministry, type: :model do
       expect(Ministry.last.gr_id).to eq gr_id
     end
   end
+
+  context '.update_entity' do
+
+  end
 end
