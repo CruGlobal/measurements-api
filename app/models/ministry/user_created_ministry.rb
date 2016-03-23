@@ -14,7 +14,9 @@ class Ministry
 
     def create_admin_assignment
       return unless created_by.present?
-      Assignment.create(ministry_id: id, person_id: created_by.id, role: :admin)
+      assignment = Assignment.create!(ministry_id: id, person_id: created_by.id,
+                                      role: 'admin')
+      assignment.create_gr_relationship
     end
   end
 end

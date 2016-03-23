@@ -73,6 +73,10 @@ class Assignment < ActiveRecord::Base
                    role: inherited_role? ? role : "inherited_#{role}".to_sym)
   end
 
+  def create_gr_relationship
+    GrSync::AssignmentPush.new(self).push_to_gr
+  end
+
   class << self
     private
 

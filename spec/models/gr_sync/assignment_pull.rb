@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe GrSync::AssignmentSync, '#sync' do
+describe GrSync::AssignmentPull, '#sync' do
   context '#sync' do
     it 'updates an existing assignment' do
       ministry = create(:ministry)
@@ -13,7 +13,7 @@ describe GrSync::AssignmentSync, '#sync' do
         'team_role' => 'admin'
       }
 
-      GrSync::AssignmentSync.new(ministry, person_relationship).sync
+      GrSync::AssignmentPull.new(ministry, person_relationship).sync
 
       expect(assignment.reload.role).to eq 'admin'
     end
@@ -30,7 +30,7 @@ describe GrSync::AssignmentSync, '#sync' do
       }
 
       expect do
-        GrSync::AssignmentSync.new(ministry, person_relationship).sync
+        GrSync::AssignmentPull.new(ministry, person_relationship).sync
       end.to change(Assignment, :count).by(1)
 
       expect(Person).to have_received(:person_for_gr_id).with(person_gr_id)

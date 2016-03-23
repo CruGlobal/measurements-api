@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module GrSync
-  class AssignmentSync
+  class AssignmentPull
     def initialize(ministry, person_relationship)
       @ministry = ministry
       @relationship = person_relationship

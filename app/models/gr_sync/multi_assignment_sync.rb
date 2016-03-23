@@ -16,7 +16,7 @@ module GrSync
     private
 
     def sync_relationship(relationship)
-      AssignmentSync.new(@ministry, relationship).sync
+      AssignmentPull.new(@ministry, relationship).sync
     end
   end
 end
