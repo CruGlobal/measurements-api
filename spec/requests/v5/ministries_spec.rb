@@ -242,8 +242,12 @@ RSpec.describe 'V5::Ministries', type: :request do
         end
 
         it 'responds successfully with updated ministry' do
+          allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
+
           put "/v5/ministries/#{ministry.gr_id}", changes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
 
+          expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
+            .with(ministry)
           expect(response).to be_success
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(ministry.attributes.slice(%w(name location_zoom)).merge(changes))

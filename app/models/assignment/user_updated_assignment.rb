@@ -4,7 +4,7 @@
 class Assignment
   class UserUpdatedAssignment < SimpleDelegator
     def save
-      save_succeeded = __getobj__.save
+      save_succeeded = super
       update_gr_relationship if save_succeeded
       save_succeeded
     end

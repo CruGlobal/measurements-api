@@ -87,10 +87,14 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
     let(:ministry) { FactoryGirl.create(:ministry) }
     context 'valid ministry id' do
       it 'responds with the updated ministry details' do
+        allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
+
         put "/v5/sys_ministries/#{ministry.gr_id}",
             { name: 'New Name', mccs: ['gcm'], ministry_scope: 'Area' },
             'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
 
+        expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
+          .with(ministry)
         expect(response).to be_success
         expect(response).to have_http_status(200)
         expect(json).to include_json(ministry_id: ministry.gr_id, name: 'New Name', ministry_scope: 'Area')

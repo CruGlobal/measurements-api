@@ -17,8 +17,10 @@ module GrSync
       from_entity self.class.find_entity(attribute_to_entity_property(:id), params)
     end
 
-    def update_entity(_params = {})
-      # TODO: implement
+    def async_update_entity
+      # Use the root global registry key by default which is what we do for
+      # updates to ministries, people and assignments.
+      GrSync::EntityUpdatePush.queue_with_root_gr(self)
     end
 
     def attribute_to_entity_property(property)

@@ -14,6 +14,12 @@ module Powers
         ministry if inherited_assignment.present?
       end
 
+      power :update_ministry do
+        # Only leaders/inherited leaders may show or update a ministry
+        next unless ministry.present? && inherited_assignment.present?
+        ::Ministry::UserUpdatedMinistry.new(ministry)
+      end
+
       power :create_ministry do
         # current Assignment is for parent ministry
         # Anyone can create Ministries, only leaders of a ministry can create sub-ministries
