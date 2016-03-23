@@ -157,6 +157,12 @@ RSpec.describe 'V5::Ministries', type: :request do
           FactoryGirl.create(:assignment, ministry: parent, person: person,
                                           role: %i(admin leader).sample)
         end
+        let!(:new_admin_assignment) do
+          build(:assignment, ministry: ministry, person: person, role: 'admin')
+        end
+        let!(:gr_new_admin_assignment_stub) do
+          gr_create_assignment_request(new_admin_assignment)
+        end
 
         it 'responds successfully with new ministry' do
           expect do
@@ -165,6 +171,7 @@ RSpec.describe 'V5::Ministries', type: :request do
             expect(response).to be_success
             expect(response).to have_http_status(201)
             expect(gr_request_stub).to have_been_requested
+            expect(gr_new_admin_assignment_stub).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
             expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
             expect(json[:parent_id]).to be_uuid.and(eq parent.gr_id)
