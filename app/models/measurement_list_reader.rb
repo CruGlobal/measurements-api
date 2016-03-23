@@ -36,11 +36,12 @@ class MeasurementListReader
         end
       end
     end
-    workers.map(&:join)
+    workers.each(&:join)
   end
 
   def gr_loading_params
     {
+      gr_client: GlobalRegistryClient.client(:measurement_type),
       levels: Power.current.try(:measurement_levels) || [:total, :local, :person],
       assignment_id: Power.current.try(:assignment).try(:gr_id),
       ministry_id: @ministry_id,

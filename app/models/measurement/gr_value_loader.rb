@@ -4,7 +4,7 @@ class Measurement
     include ActiveModel::Model
     include ActiveRecord::AttributeAssignment
 
-    attr_accessor :measurement, :levels, :ministry_id, :assignment_id,
+    attr_accessor :gr_client, :measurement, :levels, :ministry_id, :assignment_id,
                   :mcc, :period, :source, :historical
 
     def load_gr_value
@@ -12,8 +12,8 @@ class Measurement
       @levels.each do |level|
         measurement_level_id = @measurement.send("#{level}_id")
         filter_params = gr_request_params(level)
-        gr_resp = GlobalRegistryClient.client(:measurement_type).find(measurement_level_id, filter_params)
-        value = gr_resp['measurement_type']['measurements'].map { |m| m['value'].to_f }.sum
+        gr_resp = @gr_client.find(measurement_level_id, filter_params)
+        value = gr_resp['measurement_type']['measurements'].sum { |m| m['value'].to_f }
         @measurement.send("#{level}=", value)
       end
     end
