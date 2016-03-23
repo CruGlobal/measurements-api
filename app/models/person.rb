@@ -2,6 +2,9 @@
 class Person < ActiveRecord::Base
   include GrSync::EntityMethods
 
+  GR_FIELDS ='first_name,last_name,key_username,authentication.key_guid,'\
+    'authentication.ea_guid'
+
   has_many :user_content_locales, dependent: :destroy
   has_many :user_map_views, dependent: :destroy
   has_many :user_measurement_states, dependent: :destroy
@@ -92,7 +95,7 @@ class Person < ActiveRecord::Base
         person = new if person.nil?
         entity = find_entity_by(
           entity_type: entity_type,
-          fields: 'first_name,last_name,key_username,authentication.key_guid',
+          fields: GR_FIELDS,
           'filters[key_username]': username
         )
         return if entity.nil?
@@ -130,8 +133,7 @@ class Person < ActiveRecord::Base
     def find_entity_by_auth_guid(gr_auth_prefix, guid)
       find_entity_by(
         entity_type: entity_type,
-        fields: 'first_name,last_name,key_username,authentication.key_guid,'\
-        'authentication.ea_guid',
+        fields: GR_FIELDS,
         "filters[authentication][#{gr_auth_prefix}_guid]": guid
       )
     end

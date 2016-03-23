@@ -19,7 +19,7 @@ class Assignment
 
     authorize_values_for :role
 
-    protected
+    private
 
     def lookup_ministry
       return if ministry_gr_id.blank?
@@ -30,11 +30,11 @@ class Assignment
       if person_gr_id.present?
         self.person = Person.for_gr_id(person_gr_id)
       elsif !username.blank?
-        self.person = Person.person_for_username(username)
+        self.person = find_or_create_person_by_username(username)
       elsif !key_guid.blank?
         # Legacy GMA identities saved user login as guid
         self.person = if key_guid.include?('@')
-                        Person.person_for_username(key_guid)
+                        find_or_create_person_by_username(key_guid)
                       else
                         Person.person(key_guid)
                       end
@@ -42,9 +42,12 @@ class Assignment
       create_person if person.blank?
     end
 
-    def create_person
-      # TODO: create person here if username, ea_guid or key_guid == email address set and person doesn't exist
-      self.person = Person.new
+    def find_or_create_person_by_username(username)
+      Person.person_for_username(username) || create_person_from_username(username)
+    end
+
+    def create_person_from_username(username)
+      Person.create!(cas_username: username)
     end
   end
 end
