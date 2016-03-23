@@ -80,7 +80,7 @@ class ChurchFilter
 
   # arel methods
   def public
-    table[:security].gteq(Church.securities['public_church'])
+    table[:security].gteq(Church.securities['registered_public_church'])
   end
 
   def in_tree(min_tree_ids)

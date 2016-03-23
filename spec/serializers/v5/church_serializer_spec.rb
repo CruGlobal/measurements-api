@@ -66,5 +66,11 @@ describe V5::ChurchSerializer do
         end
       end
     end
+
+    it "won't return 0 security" do
+      resource.security = :local_private_church
+
+      expect(hash[:security]).to eq 1
+    end
   end
 end
