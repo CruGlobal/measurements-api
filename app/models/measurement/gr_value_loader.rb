@@ -4,7 +4,6 @@ class Measurement
     NUMBER_OF_HISTORIC_MONTHS = 11
 
     include ActiveModel::Model
-    include ActiveRecord::AttributeAssignment
 
     attr_accessor :gr_client, :measurement, :levels, :ministry_id, :assignment_id,
                   :mcc, :period, :source, :historical

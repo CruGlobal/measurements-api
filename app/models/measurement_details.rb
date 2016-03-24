@@ -16,6 +16,8 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     if @id
       @measurement = Measurement.find_by(total_id: id) || Measurement.find_by_perm_link(id)
     end
+
+    # make sure instance vars are set
     @current_power = Power.current
     gr_singleton
     ministry
