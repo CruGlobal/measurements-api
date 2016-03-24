@@ -10,7 +10,7 @@ RSpec.describe 'V5::Churches', type: :request do
     let(:json) { JSON.parse(response.body) }
 
     it 'responds with churches' do
-      get '/v5/churches', { show_all: true, ministy_id: ministry.gr_id },
+      get '/v5/churches', { show_all: true, ministry_id: ministry.gr_id },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
 
       expect(response).to be_success
@@ -20,11 +20,26 @@ RSpec.describe 'V5::Churches', type: :request do
     it 'gives development stage when looking at past period' do
       church.update(start_date: 2.months.ago)
 
-      get '/v5/churches', { show_all: true, ministy_id: ministry.gr_id, period: 2.months.ago.strftime('%Y-%m') },
+      get '/v5/churches', { show_all: true, ministry_id: ministry.gr_id, period: 2.months.ago.strftime('%Y-%m') },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
 
       expect(response).to be_success
       expect(json.first['development']).to be 1
+    end
+
+    context 'as inherited admin' do
+      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+
+      it 'responds with churches' do
+        church.update(ministry: child_ministry)
+
+        get '/v5/churches', { ministry_id: child_ministry.gr_id },
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to be_success
+        expect(json.first['id']).to be church.id
+      end
     end
   end
 

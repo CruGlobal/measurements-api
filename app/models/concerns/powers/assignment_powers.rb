@@ -62,7 +62,7 @@ module Powers
     end
 
     def role_approved?
-      assignment.present? && assignment.approved_role?
+      inherited_assignment.present? && inherited_assignment.approved_role?
     end
   end
 end
