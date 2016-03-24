@@ -119,7 +119,7 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def get_from_gr_with_params(type, params)
-    gr_singleton.find(measurement.send("#{type}_id"), params)['measurement_type']['measurements']
+    gr_singleton.find(measurement.send("#{type}_id"), params.compact)['measurement_type']['measurements']
   end
 
   def gr_request_params(dimension_level, related_id = nil, period = nil)
