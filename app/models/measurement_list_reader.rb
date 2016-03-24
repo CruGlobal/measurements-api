@@ -28,7 +28,7 @@ class MeasurementListReader
     work_q = Queue.new
     params = gr_loading_params
     @measurements.each { |m| work_q.push m }
-    workers = (1..ENV['MEASUREMENT_THREAD_COUNT'].to_i).map do
+    workers = (1..thread_count).map do
       Thread.new do
         until work_q.empty?
           measurement = work_q.pop(true)
@@ -92,5 +92,9 @@ class MeasurementListReader
       meas.loaded_children = children
       next meas if meas.parent_id.blank?
     end
+  end
+
+  def thread_count
+    ENV['MEASUREMENT_THREAD_COUNT'] ? ENV['MEASUREMENT_THREAD_COUNT'].to_i : 5
   end
 end
