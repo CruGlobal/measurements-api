@@ -22,7 +22,7 @@ describe GrSync::AssignmentPull, '#sync' do
       ministry = create(:ministry)
       person = create(:person)
       assignment = create(:assignment, person: person, ministry: ministry,
-                          role: 'leader')
+                                       role: 'leader')
       person_relationship = {
         'person' => person.gr_id, 'relationship_entity_id' => assignment.gr_id,
         'created_by' => ENV['GLOBAL_REGISTRY_SYSTEM_ID']
@@ -37,7 +37,7 @@ describe GrSync::AssignmentPull, '#sync' do
       ministry = create(:ministry)
       person = create(:person)
       assignment = create(:assignment, person: person, ministry: ministry,
-                          role: 'leader')
+                                       role: 'leader')
       person_relationship = {
         'person' => person.gr_id, 'relationship_entity_id' => assignment.gr_id,
         'created_by' => SecureRandom.uuid, 'team_role' => 'member'
