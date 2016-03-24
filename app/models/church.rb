@@ -35,7 +35,8 @@ class Church < ActiveRecord::Base
     rescue ArgumentError
       period_date = Date.parse("#{period}-01")
     end
-    return {} if period_date < start_date || (end_date.present? && period_date > end_date)
+    return {} if period_date.end_of_month < start_date ||
+                 (end_date.present? && period_date > end_date)
     value = values[id].try(:first).try(:attributes)
     value ||= attributes
     value.with_indifferent_access.slice(:size, :development)

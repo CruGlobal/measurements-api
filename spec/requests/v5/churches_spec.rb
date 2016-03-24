@@ -16,6 +16,16 @@ RSpec.describe 'V5::Churches', type: :request do
       expect(response).to be_success
       expect(json.first['id']).to be church.id
     end
+
+    it 'gives development stage when looking at past period' do
+      church.update(start_date: 2.months.ago)
+
+      get '/v5/churches', { show_all: true, ministy_id: ministry.gr_id, period: 2.months.ago.strftime('%Y-%m') },
+          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+
+      expect(response).to be_success
+      expect(json.first['development']).to be 1
+    end
   end
 
   describe 'POST /v5/churches' do
