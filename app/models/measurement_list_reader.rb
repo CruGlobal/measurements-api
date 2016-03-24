@@ -95,6 +95,6 @@ class MeasurementListReader
   end
 
   def thread_count
-    ENV['MEASUREMENT_THREAD_COUNT'] ? ENV['MEASUREMENT_THREAD_COUNT'].to_i : 5
+    ENV.fetch('MEASUREMENT_THREAD_COUNT').to_i
   end
 end
