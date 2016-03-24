@@ -28,8 +28,7 @@ gem 'consul'
 gem 'assignable_values'
 gem 'awesome_nested_set'
 gem 'global_registry'
-gem 'carrierwave'
-gem 'fog'
+gem 'carrierwave-aws'
 gem 'will_paginate'
 
 group :development, :test do

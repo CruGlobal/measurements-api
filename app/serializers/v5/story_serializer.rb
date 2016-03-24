@@ -32,7 +32,7 @@ module V5
     end
 
     def image_url
-      object.image.file.try(:exists?) ? object.image_url : object.user_image_url
+      object.image.file.try(:exists?) ? object.image.url : object.user_image_url
     end
 
     def created_by
