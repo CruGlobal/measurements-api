@@ -13,7 +13,9 @@ else
     config.fog_directory = ENV.fetch('AWS_BUCKET')
     config.fog_public = false
     config.fog_attributes = { 'x-amz-storage-class' => 'REDUCED_REDUNDANCY' }
-    config.fog_authenticated_url_expiration = 1.month
+    # X-Amz-Expires must be less than a week (in seconds); that is,
+    # the given X-Amz-Expires must be less than 604800 seconds
+    config.fog_authenticated_url_expiration = 1.day
     config.storage :fog
   end
 end
