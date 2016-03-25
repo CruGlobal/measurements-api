@@ -84,5 +84,46 @@ describe GrSync::AssignmentPull, '#sync' do
         GrSync::AssignmentPull.new(ministry, person_relationship).sync
       end.to_not change(Assignment, :count)
     end
+
+    describe 'handling multiple GR assignments for person and ministry' do
+      it 'replaces an existing assignment if relationship has higher role level' do
+        ministry = create(:ministry)
+        person = create(:person)
+        assignment = create(:assignment, ministry: ministry, person: person,
+                                         role: Assignment.roles[:self_assigned])
+        new_gr_id = SecureRandom.uuid
+        person_relationship = {
+          'person' => person.gr_id, 'relationship_entity_id' => new_gr_id,
+          'team_role' => 'leader', 'created_by' => ENV['GLOBAL_REGISTRY_SYSTEM_ID']
+        }
+
+        expect do
+          GrSync::AssignmentPull.new(ministry, person_relationship).sync
+        end.to_not change(Assignment, :count)
+
+        expect(assignment.reload.gr_id).to eq new_gr_id
+        expect(assignment.role).to eq 'leader'
+      end
+
+      it 'leaves existing assignment if relationship has lower role level' do
+        ministry = create(:ministry)
+        person = create(:person)
+        assignment = create(:assignment, ministry: ministry, person: person,
+                                         role: Assignment.roles[:leader])
+        original_assignment_gr_id = assignment.gr_id
+        new_gr_id = SecureRandom.uuid
+        person_relationship = {
+          'person' => person.gr_id, 'relationship_entity_id' => new_gr_id,
+          'team_role' => 'self_assigned', 'created_by' => ENV['GLOBAL_REGISTRY_SYSTEM_ID']
+        }
+
+        expect do
+          GrSync::AssignmentPull.new(ministry, person_relationship).sync
+        end.to_not change(Assignment, :count)
+
+        expect(assignment.reload.gr_id).to eq original_assignment_gr_id
+        expect(assignment.role).to eq 'leader'
+      end
+    end
   end
 end
