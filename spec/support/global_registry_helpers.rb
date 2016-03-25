@@ -39,7 +39,11 @@ module GlobalRegistryHelpers
     WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/entities").with(
       headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" },
       body: {
-        entity: { person: { key_username: person.cas_username } }
+        entity: { person: {
+          first_name: person.first_name, last_name: person.last_name,
+          key_username: person.cas_username, email: person.email,
+          preferred_name: person.preferred_name
+        } }
       }.to_json
     ).to_return(body: {
       entity: { person: { key_username: person.cas_username, id: person.gr_id } }

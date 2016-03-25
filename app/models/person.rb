@@ -78,7 +78,8 @@ class Person < ActiveRecord::Base
 
     # Global Registry Entity Properties to sync
     def entity_properties
-      [:first_name, :last_name, :key_username, :authentication].concat(super)
+      [:first_name, :last_name, :key_username, :authentication,
+       :email, :preferred_name].concat(super)
     end
 
     def person(cas_guid, refresh = false)

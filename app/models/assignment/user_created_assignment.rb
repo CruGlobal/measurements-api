@@ -49,7 +49,8 @@ class Assignment
 
     def create_person_from_params
       person = Person.new(
-        cas_username: username, first_name: first_name, last_name: last_name)
+        cas_username: username, first_name: first_name, last_name: last_name,
+        email: email, preferred_name: preferred_name)
       person.create_entity
       person.save!
       person

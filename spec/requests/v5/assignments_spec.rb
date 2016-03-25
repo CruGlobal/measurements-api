@@ -283,9 +283,12 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
 
       context 'create assignment for another user by username when they do not exist in GR' do
-        let(:other) { FactoryGirl.build(:person) }
+        let(:other) { FactoryGirl.build(:person, email: 'j@t.co', preferred_name: 'Jo') }
         let(:attributes) do
-          { username: other.cas_username, ministry_id: ministries[:a22].gr_id, team_role: 'member' }
+          { username: other.cas_username, ministry_id: ministries[:a22].gr_id,
+            team_role: 'member', first_name: other.first_name,
+            last_name: other.last_name, email: other.email,
+            preferred_name: other.preferred_name }
         end
         let(:new_assignment) do
           FactoryGirl.build(:assignment, person: other, ministry: ministries[:a22], role: 'member')
@@ -297,7 +300,9 @@ RSpec.describe 'V5::Assignments', type: :request do
         let!(:create_person_stub) { gr_create_person_request(other) }
 
         it 'responds successfully with new assignment' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          expect do
+            post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          end.to change(Person, :count).by(1)
 
           expect(response).to be_success
           expect(response).to have_http_status 201
