@@ -119,6 +119,7 @@ class Person < ActiveRecord::Base
     private
 
     def person_for_auth_guid(guid_field_prefix, gr_auth_prefix, guid, refresh)
+      return if guid.blank?
       guid_field = "#{guid_field_prefix}_guid"
       person = find_by(guid_field => guid)
       return person unless person.nil? || refresh

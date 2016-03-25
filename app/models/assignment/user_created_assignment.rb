@@ -8,6 +8,7 @@ class Assignment
                   :ministry_gr_id,
                   :first_name,
                   :last_name,
+                  :email,
                   :preferred_name,
                   :ea_guid
 
@@ -27,10 +28,12 @@ class Assignment
 
     def assign_person
       self.person = Person.person_for_gr_id(person_gr_id) ||
-                    person_by_username || person_for_key_guid
+                    person_for_key_guid || Person.person_for_ea_guid(ea_guid) ||
+                    person_by_username
     end
 
     def person_for_key_guid
+      return if key_guid.blank?
       # Legacy GMA identities saved user login as guid
       if key_guid.include?('@')
         person_by_username(key_guid)
