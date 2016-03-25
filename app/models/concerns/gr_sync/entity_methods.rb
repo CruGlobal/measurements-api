@@ -72,6 +72,9 @@ module GrSync
       def find_entity(id, params = {})
         response = client.find(id, params)
         response['entity'].with_indifferent_access if response.key?('entity')
+      rescue RestClient::InternalServerError => e
+        Rollbar.error(e, id: id, params: params)
+        raise e
       rescue RestClient::ResourceNotFound
         nil
       end
