@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321203255) do
+ActiveRecord::Schema.define(version: 20160325143822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,8 +148,11 @@ ActiveRecord::Schema.define(version: 20160321203255) do
     t.string   "last_name"
     t.uuid     "cas_guid"
     t.string   "cas_username"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.uuid     "ea_guid"
+    t.string   "email"
+    t.string   "preferred_name"
   end
 
   create_table "stories", force: :cascade do |t|

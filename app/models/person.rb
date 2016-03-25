@@ -2,6 +2,9 @@
 class Person < ActiveRecord::Base
   include GrSync::EntityMethods
 
+  GR_FIELDS = 'first_name,last_name,key_username,authentication.key_guid,'\
+    'authentication.ea_guid'
+
   has_many :user_content_locales, dependent: :destroy
   has_many :user_map_views, dependent: :destroy
   has_many :user_measurement_states, dependent: :destroy
@@ -51,61 +54,6 @@ class Person < ActiveRecord::Base
     inherited_assignment_for_ministry(ministry).try(:role)
   end
 
-  def self.entity_type
-    'person'
-  end
-
-  # Global Registry Entity Properties to sync
-  def self.entity_properties
-    [:first_name, :last_name, :key_username, :authentication].concat(super)
-  end
-
-  def self.person(guid, refresh = false)
-    person = find_by(cas_guid: guid)
-    if person.nil? || refresh
-      person = new(cas_guid: guid) if person.nil?
-      entity = find_entity_by_key_guid guid
-      return if entity.nil?
-      person.from_entity entity
-      person.save
-    end
-    person
-  end
-
-  def self.person_for_username(username, refresh = false)
-    person = find_by(cas_username: username)
-    if person.nil? || refresh
-      person = new if person.nil?
-      entity = find_entity_by(
-        entity_type: entity_type,
-        fields: 'first_name,last_name,key_username,authentication.key_guid',
-        'filters[key_username]': username
-      )
-      return if entity.nil?
-      person.from_entity entity
-      person.save
-    end
-    person
-  end
-
-  def self.person_for_gr_id(gr_id)
-    person = Person.find_by(gr_id: gr_id)
-    return person if person
-    entity = Person.find_entity(gr_id, entity_type: 'person')
-    person = Person.new
-    person.from_entity(entity)
-    person.save
-    person
-  end
-
-  def self.find_entity_by_key_guid(guid)
-    find_entity_by(
-      entity_type: entity_type,
-      fields: 'first_name,last_name,key_username,authentication.key_guid',
-      'filters[authentication][key_guid]': guid
-    )
-  end
-
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -120,6 +68,77 @@ class Person < ActiveRecord::Base
       Ministry.ministry(ministry)
     elsif ministry.is_a? Ministry
       ministry
+    end
+  end
+
+  class << self
+    def entity_type
+      'person'
+    end
+
+    # Global Registry Entity Properties to sync
+    def entity_properties
+      [:first_name, :last_name, :key_username, :authentication,
+       :email, :preferred_name].concat(super)
+    end
+
+    def person(cas_guid, refresh = false)
+      person_for_auth_guid(:cas, :key, cas_guid, refresh)
+    end
+
+    def person_for_ea_guid(ea_guid, refresh = false)
+      person_for_auth_guid(:ea, :ea, ea_guid, refresh)
+    end
+
+    def person_for_username(username, refresh = false)
+      person = find_by(cas_username: username)
+      if person.nil? || refresh
+        person = new if person.nil?
+        entity = find_entity_by(
+          entity_type: entity_type,
+          fields: GR_FIELDS,
+          'filters[key_username]': username
+        )
+        return if entity.nil?
+        person.from_entity entity
+        person.save
+      end
+      person
+    end
+
+    def person_for_gr_id(gr_id)
+      return if gr_id.blank?
+      person = Person.find_by(gr_id: gr_id)
+      return person if person
+      entity = Person.find_entity(gr_id, entity_type: 'person')
+      person = Person.new
+      person.from_entity(entity)
+      person.save
+      person
+    end
+
+    private
+
+    def person_for_auth_guid(guid_field_prefix, gr_auth_prefix, guid, refresh)
+      return if guid.blank?
+      guid_field = "#{guid_field_prefix}_guid"
+      person = find_by(guid_field => guid)
+      return person unless person.nil? || refresh
+
+      person = new(guid_field => guid) if person.nil?
+      entity = find_entity_by_auth_guid(gr_auth_prefix, guid)
+      return if entity.nil?
+      person.from_entity entity
+      person.save
+      person
+    end
+
+    def find_entity_by_auth_guid(gr_auth_prefix, guid)
+      find_entity_by(
+        entity_type: entity_type,
+        fields: GR_FIELDS,
+        "filters[authentication][#{gr_auth_prefix}_guid]": guid
+      )
     end
   end
 end

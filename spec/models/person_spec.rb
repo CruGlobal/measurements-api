@@ -25,6 +25,59 @@ describe Person, type: :model do
     end
   end
 
+  context '.person' do
+    it 'returns an existing person by cas guid' do
+      person = create(:person, cas_guid: SecureRandom.uuid)
+      expect(Person.person(person.cas_guid)).to eq person
+    end
+
+    it 'fetches a person from global registry if one does not exist' do
+      cas_guid = SecureRandom.uuid
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?entity_type=person&"\
+        'fields=first_name,last_name,key_username,authentication.key_guid,'\
+        "authentication.ea_guid&filters%5Bauthentication%5D%5Bkey_guid%5D=#{cas_guid}"
+      response = {
+        entities: [
+          { person: { first_name: 'Joe' } }
+        ]
+      }
+      request_stub = stub_request(:get, url).to_return(body: response.to_json)
+
+      person = Person.person(cas_guid)
+
+      expect(person).to_not be_new_record
+      expect(person.first_name).to eq 'Joe'
+      expect(person.cas_guid).to eq cas_guid
+      expect(request_stub).to have_been_requested
+    end
+  end
+
+  context '.person_for_ea_guid' do
+    it 'returns an existing person by ea_guid' do
+      person = create(:person, ea_guid: SecureRandom.uuid)
+      expect(Person.person_for_ea_guid(person.ea_guid)).to eq person
+    end
+
+    it 'fetches a person from global registry if one does not exist' do
+      ea_guid = SecureRandom.uuid
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?entity_type=person&"\
+        'fields=first_name,last_name,key_username,authentication.key_guid,'\
+        "authentication.ea_guid&filters%5Bauthentication%5D%5Bea_guid%5D=#{ea_guid}"
+      response = {
+        entities: [
+          { person: { first_name: 'Joe' } }
+        ]
+      }
+      stub_request(:get, url).to_return(body: response.to_json)
+
+      person = Person.person_for_ea_guid(ea_guid)
+
+      expect(person).to_not be_new_record
+      expect(person.first_name).to eq 'Joe'
+      expect(person.ea_guid).to eq ea_guid
+    end
+  end
+
   context '.person_for_gr_id' do
     it 'finds a person for the gr_id if they exist already' do
       gr_id = SecureRandom.uuid

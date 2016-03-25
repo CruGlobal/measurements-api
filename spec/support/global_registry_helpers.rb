@@ -2,16 +2,44 @@
 module GlobalRegistryHelpers
   def gr_person_request_by_username(person = nil)
     person ||= FactoryGirl.create(:person)
-    response = { person: { id: person.gr_id, last_name: person.last_name, first_name: person.first_name,
-                           key_username: person.cas_username, client_integration_id: person.cas_guid,
-                           authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
       .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .with(query: { entity_type: 'person',
-                     fields: 'first_name,last_name,key_username,authentication.key_guid',
+                     fields: Person::GR_FIELDS,
                      'filters[key_username]': person.cas_username })
-      .to_return(status: 200, body: { entities: [response] }.to_json, headers: {})
+      .to_return(body: { entities: [person_gr_response(person)] }.to_json)
+  end
+
+  def person_gr_response(person)
+    { person: { id: person.gr_id, last_name: person.last_name, first_name: person.first_name,
+                key_username: person.cas_username, client_integration_id: person.cas_guid,
+                authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
+  end
+
+  def gr_person_request_by_username_not_found(username)
+    WebMock
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
+      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
+      .with(query: { entity_type: 'person',
+                     fields: Person::GR_FIELDS,
+                     'filters[key_username]': username })
+      .to_return(body: { entities: [] }.to_json)
+  end
+
+  def gr_create_person_request(person)
+    WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/entities").with(
+      headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" },
+      body: {
+        entity: { person: {
+          first_name: person.first_name, last_name: person.last_name,
+          key_username: person.cas_username, email: person.email,
+          preferred_name: person.preferred_name
+        } }
+      }.to_json
+    ).to_return(body: {
+      entity: { person: { key_username: person.cas_username, id: person.gr_id } }
+    }.to_json)
   end
 
   def gr_person_request_by_guid(person = nil)
@@ -23,7 +51,7 @@ module GlobalRegistryHelpers
       .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .with(query: { entity_type: 'person',
-                     fields: 'first_name,last_name,key_username,authentication.key_guid',
+                     fields: Person::GR_FIELDS,
                      'filters[authentication][key_guid]': person.cas_guid })
       .to_return(status: 200, body: { entities: [response] }.to_json, headers: {})
   end
@@ -46,22 +74,20 @@ module GlobalRegistryHelpers
   end
 
   def gr_create_assignment_request(assignment)
-    response = { person: {
-      id: assignment.person.gr_id,
-      'ministry:relationship' => [{ ministry: assignment.ministry.gr_id,
-                                    relationship_entity_id: assignment.gr_id || SecureRandom.uuid,
-                                    client_integration_id: "_#{assignment.person.gr_id}_#{assignment.ministry.gr_id}",
-                                    team_role: assignment.role
-                                  }] } }
-
     # We need to always create assignments using the root GLOBAL_REGISTRY_TOKEN
-    # keey and not a system key to prevent a system from gaining
-    # higher-than-planned access to the measurements api data.
     WebMock
       .stub_request(:put, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{assignment.person.gr_id}")
       .with(query: { fields: 'ministry:relationship', full_response: 'true' },
             headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
-      .to_return(status: 200, body: { entity: response }.to_json, headers: {})
+      .to_return(
+        body: { entity: { person: {
+          id: assignment.person.gr_id,
+          'ministry:relationship' => [
+            { ministry: assignment.ministry.gr_id,
+              relationship_entity_id: assignment.gr_id || SecureRandom.uuid,
+              client_integration_id: "_#{assignment.person.gr_id}_#{assignment.ministry.gr_id}",
+              team_role: assignment.role }]
+        } } }.to_json)
   end
 
   def gr_update_assignment_request(assignment)

@@ -2,35 +2,58 @@
 class Assignment
   class UserCreatedAssignment < ::Assignment
     # Virtual attributes
-    attr_accessor :username, :key_guid, :person_gr_id, :ministry_gr_id
+    attr_accessor :username,
+                  :key_guid,
+                  :person_gr_id,
+                  :ministry_gr_id,
+                  :first_name,
+                  :last_name,
+                  :email,
+                  :preferred_name,
+                  :ea_guid
 
-    before_validation :lookup_person, on: :create
-    before_validation :lookup_ministry, on: :create
+    before_validation :assign_person, on: :create
+    before_validation :assign_ministry, on: :create
 
     before_create :create_gr_relationship
 
     authorize_values_for :role
 
-    protected
+    private
 
-    def lookup_ministry
+    def assign_ministry
       return if ministry_gr_id.blank?
       self.ministry = Ministry.ministry(ministry_gr_id)
     end
 
-    def lookup_person
-      if person_gr_id.present?
-        self.person = Person.find_by(gr_id: person_gr_id)
-      elsif !username.blank?
-        self.person = Person.person_for_username(username)
-      elsif !key_guid.blank?
-        # Legacy GMA identities saved user login as guid
-        self.person = if key_guid.include?('@')
-                        Person.person_for_username(key_guid)
-                      else
-                        Person.person(key_guid)
-                      end
+    def assign_person
+      self.person = Person.person_for_gr_id(person_gr_id) ||
+                    person_for_key_guid || Person.person_for_ea_guid(ea_guid) ||
+                    person_by_username
+    end
+
+    def person_for_key_guid
+      return if key_guid.blank?
+      # Legacy GMA identities saved user login as guid
+      if key_guid.include?('@')
+        person_by_username(key_guid)
+      else
+        Person.person(key_guid)
       end
+    end
+
+    def person_by_username
+      return if username.blank?
+      Person.person_for_username(username) || create_person_from_params
+    end
+
+    def create_person_from_params
+      person = Person.new(
+        cas_username: username, first_name: first_name, last_name: last_name,
+        email: email, preferred_name: preferred_name)
+      person.create_entity
+      person.save!
+      person
     end
   end
 end
