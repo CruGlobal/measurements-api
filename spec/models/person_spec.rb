@@ -34,7 +34,7 @@ describe Person, type: :model do
     it 'fetches a person from global registry if one does not exist' do
       cas_guid = SecureRandom.uuid
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?entity_type=person&"\
-        "fields=first_name,last_name,key_username,authentication.key_guid,"\
+        'fields=first_name,last_name,key_username,authentication.key_guid,'\
         "authentication.ea_guid&filters%5Bauthentication%5D%5Bkey_guid%5D=#{cas_guid}"
       response = {
         entities: [
@@ -61,7 +61,7 @@ describe Person, type: :model do
     it 'fetches a person from global registry if one does not exist' do
       ea_guid = SecureRandom.uuid
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?entity_type=person&"\
-        "fields=first_name,last_name,key_username,authentication.key_guid,"\
+        'fields=first_name,last_name,key_username,authentication.key_guid,'\
         "authentication.ea_guid&filters%5Bauthentication%5D%5Bea_guid%5D=#{ea_guid}"
       response = {
         entities: [

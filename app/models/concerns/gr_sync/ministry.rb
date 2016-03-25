@@ -36,13 +36,6 @@ module GrSync
       super lmi
     end
 
-    # Filter to create Global Registry Entity before creating ActiveRecord entry
-    def create_entity
-      entity = super
-      # update ministry_id from GR entity id
-      self.gr_id = entity[:id]
-    end
-
     # Model attribute value to Global Registry Entity property value
     # Return nil to remove property from the request
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength

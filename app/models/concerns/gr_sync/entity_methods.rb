@@ -6,7 +6,8 @@ module GrSync
     # Creates the entity in Global Registry
     def create_entity(_options = {})
       # TODO: Handle exceptions
-      self.class.client.post(to_entity)['entity'][self.class.entity_type].with_indifferent_access
+      entity = self.class.client.post(to_entity)['entity'][self.class.entity_type].with_indifferent_access
+      self.gr_id = entity[:id]
     end
 
     # Updates self from Global Registry entity with given :id

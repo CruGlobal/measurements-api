@@ -258,7 +258,7 @@ RSpec.describe 'V5::Assignments', type: :request do
         end
       end
 
-      context 'create assignment for another user by username' do
+      context 'create assignment for another user by username when they exist in GR' do
         let(:other) { FactoryGirl.build(:person) }
         let(:attributes) do
           { username: other.cas_username, ministry_id: ministries[:a22].gr_id, team_role: 'member' }
@@ -282,8 +282,36 @@ RSpec.describe 'V5::Assignments', type: :request do
         end
       end
 
-      context 'create assignment for another user on different ministry' do
+      context 'create assignment for another user by username when they do not exist in GR' do
         let(:other) { FactoryGirl.build(:person) }
+        let(:attributes) do
+          { username: other.cas_username, ministry_id: ministries[:a22].gr_id, team_role: 'member' }
+        end
+        let(:new_assignment) do
+          FactoryGirl.build(:assignment, person: other, ministry: ministries[:a22], role: 'member')
+        end
+        let!(:assignment_request_stub) { gr_create_assignment_request(new_assignment) }
+        let!(:find_person_stub) do
+          gr_person_request_by_username_not_found(other.cas_username)
+        end
+        let!(:create_person_stub) { gr_create_person_request(other) }
+
+        it 'responds successfully with new assignment' do
+          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+
+          expect(response).to be_success
+          expect(response).to have_http_status 201
+          expect(find_person_stub).to have_been_requested
+          expect(create_person_stub).to have_been_requested
+          expect(assignment_request_stub).to have_been_requested
+          expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
+            .and(include('id'))
+          expect(json['id']).to be_uuid
+        end
+      end
+
+      context 'create assignment for another existing user on different ministry' do
+        let(:other) { create(:person) }
         let(:attributes) do
           { person_id: other.gr_id, ministry_id: ministries[:c1].gr_id,
             team_role: 'blocked' }

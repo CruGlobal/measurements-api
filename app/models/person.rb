@@ -2,7 +2,7 @@
 class Person < ActiveRecord::Base
   include GrSync::EntityMethods
 
-  GR_FIELDS ='first_name,last_name,key_username,authentication.key_guid,'\
+  GR_FIELDS = 'first_name,last_name,key_username,authentication.key_guid,'\
     'authentication.ea_guid'
 
   has_many :user_content_locales, dependent: :destroy
@@ -106,6 +106,7 @@ class Person < ActiveRecord::Base
     end
 
     def person_for_gr_id(gr_id)
+      return if gr_id.blank?
       person = Person.find_by(gr_id: gr_id)
       return person if person
       entity = Person.find_entity(gr_id, entity_type: 'person')
