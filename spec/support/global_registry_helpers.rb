@@ -11,14 +11,6 @@ module GlobalRegistryHelpers
       .to_return(body: { entities: [person_gr_response(person)] }.to_json)
   end
 
-  def gr_person_request_by_gr_id(person)
-    WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{person.gr_id}")
-      .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
-      .with(query: { entity_type: 'person' })
-      .to_return(body: { entities: [person_gr_response(person)] }.to_json)
-  end
-
   def person_gr_response(person)
     { person: { id: person.gr_id, last_name: person.last_name, first_name: person.first_name,
                 key_username: person.cas_username, client_integration_id: person.cas_guid,
