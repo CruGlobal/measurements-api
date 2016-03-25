@@ -5,7 +5,7 @@ module GrSync
       if params[:confirmation_url].present?
         ConfirmSubscriptionWorker.perform_async(params[:confirmation_url])
       else
-        NotificationWorker.perform_async(params[:notification])
+        NotificationWorker.perform_async(params)
       end
       render nothing: true
     end

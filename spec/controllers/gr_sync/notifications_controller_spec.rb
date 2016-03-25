@@ -15,7 +15,7 @@ describe GrSync::NotificationsController do
     it 'queues a notification worker if confirmation url not present' do
       allow(GrSync::NotificationWorker).to receive(:perform_async)
 
-      post :create, notification: { 'action' => 'updated', 'id' => '1f' }
+      post :create, { 'action' => 'updated', 'id' => '1f' }
 
       expect(GrSync::NotificationWorker).to have_received(:perform_async)
         .with('action' => 'updated', 'id' => '1f')
