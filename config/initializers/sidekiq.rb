@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'sidekiq'
+require 'sidekiq/web'
 require Rails.root.join('config', 'initializers', 'redis')
 
 sidekiq_project_name = ENV.fetch('PROJECT_NAME') { Rails.application.class.parent.to_s }
@@ -21,6 +22,10 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     chain.add SidekiqResetGrClient
   end
+end
+
+Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+  username == ENV.fetch('SIDEKIQ_USERNAME') && password == ENV.fetch('SIDEKIQ_PASSWORD')
 end
 
 Sidekiq.default_worker_options = {

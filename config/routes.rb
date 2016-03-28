@@ -34,8 +34,5 @@ Rails.application.routes.draw do
     resources :audit, only: :index
   end
 
-  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    username == ENV.fetch('SIDEKIQ_USERNAME') && password == ENV.fetch('SIDEKIQ_PASSWORD')
-  end
-  mount Sidekiq::Web, at: "/#{ENV.fetch('SIDEKIQ_URL_SECRET')}/sidekiq"
+  mount Sidekiq::Web, at: '/sidekiq'
 end
