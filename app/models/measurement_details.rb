@@ -26,12 +26,12 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   def load
     validate!
 
-    threads = [:load_local_from_gr, :load_total_from_gr, :load_user_from_gr, :load_sub_mins_from_gr,
-               :load_team_from_gr, :load_split_measurements]
-    threads = threads.map do |method|
+    tasks = [:load_local_from_gr, :load_total_from_gr, :load_user_from_gr, :load_sub_mins_from_gr,
+             :load_team_from_gr, :load_split_measurements]
+    threads = tasks.map do |method|
       Thread.new { send(method) }
     end
-    threads.each { |t| t.join(1) }
+    threads.each(&:join)
 
     update_total_in_gr
   end
