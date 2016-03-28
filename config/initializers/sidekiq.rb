@@ -24,6 +24,7 @@ Sidekiq.configure_server do |config|
   end
 end
 
+Sidekiq::Web.set :session_secret, ENV.fetch('SECRET_KEY_BASE', '0987654321fedcba')
 Sidekiq::Web.use Rack::Auth::Basic do |username, password|
   username == ENV.fetch('SIDEKIQ_USERNAME') && password == ENV.fetch('SIDEKIQ_PASSWORD')
 end
