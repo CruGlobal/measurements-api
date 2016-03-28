@@ -9,11 +9,30 @@ module GrSync
     def sync
       return unless @relationship['created_by'] == ENV.fetch('GLOBAL_REGISTRY_SYSTEM_ID')
       return unless @relationship.key?('team_role')
+      create_or_update_assignment
+    end
+
+    private
+
+    def create_or_update_assignment
       assignment_gr_id = @relationship['relationship_entity_id']
-      assignment = Assignment.find_or_initialize_by(gr_id: assignment_gr_id)
-      assignment.update!(
-        ministry: @ministry, role: @relationship['team_role'],
-        person: Person.person_for_gr_id(@relationship['person']))
+      person = Person.person_for_gr_id(@relationship['person'])
+      assignment = Assignment.find_or_initialize_by(ministry: @ministry, person: person)
+
+      # We will update/create the assignment for this (ministry, person) pair if
+      # either there is no assignment for that ministry and person or if the
+      # role we currently have for that ministry and person is a lower-level
+      # role (by enum number) than the role for this new relationship we are
+      # pulling in. That helps us resolve duplicate assignments in global
+      # registry by taking the one with the highest authority.
+      return unless assignment.new_record? ||
+                    Assignment.roles[assignment.role] < relationship_role_number
+
+      assignment.update!(gr_id: assignment_gr_id, role: relationship_role_number)
+    end
+
+    def relationship_role_number
+      @role ||= Assignment.roles[@relationship['team_role'].to_sym]
     end
   end
 end
