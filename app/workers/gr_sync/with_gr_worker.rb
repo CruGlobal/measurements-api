@@ -2,7 +2,6 @@
 module GrSync
   class WithGrWorker
     include Sidekiq::Worker
-    sidekiq_options retry: false
 
     def self.queue_call(gr_client_params, klass, method, *args)
       perform_async(gr_client_params, klass.name, method, *args)

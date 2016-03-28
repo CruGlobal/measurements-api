@@ -21,7 +21,6 @@ gem 'xml-simple', require: 'xmlsimple'
 gem 'sidekiq-unique-jobs'
 gem 'sidekiq-cron'
 gem 'redis-namespace'
-gem 'redis-rails'
 gem 'sinatra', :require => nil
 gem 'auto_strip_attributes', '~> 2.0'
 gem 'arel'
