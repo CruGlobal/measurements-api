@@ -63,6 +63,19 @@ RSpec.describe 'V5::Churches', type: :request do
       end
     end
 
+    context 'as inherited admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      it 'creates a church' do
+        expect do
+          post '/v5/churches', attributes.merge(ministry_id: child_ministry.gr_id),
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to be_success
+        end.to change { Church.count }.by(1).and(change { Audit.count }.by(1))
+      end
+    end
+
     context 'as self-assigned' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'can create public church' do
@@ -83,10 +96,22 @@ RSpec.describe 'V5::Churches', type: :request do
       end
     end
 
-    context 'as unassociated' do
-      it 'fails to create private church' do
+    context 'as self-assigned' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :blocked) }
+      it 'fails to create church' do
         expect do
-          post '/v5/churches', attributes,
+          post '/v5/churches', attributes.merge(security: 2),
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+          expect(response).to_not be_success
+        end.to_not change { Church.count }
+      end
+    end
+
+    context 'as unassociated' do
+      it 'fails to create church' do
+        expect do
+          post '/v5/churches', attributes.merge(security: 2),
                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
 
           expect(response).to_not be_success
@@ -131,6 +156,24 @@ RSpec.describe 'V5::Churches', type: :request do
           put "/v5/churches/#{church.id}", attributes.merge(security: 0),
               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
         end.to change { church.reload.security }.to('private_church')
+      end
+    end
+
+    context 'as inherited admin' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+
+      it 'updates church' do
+        church.update(ministry: child_ministry)
+
+        put "/v5/churches/#{church.id}", attributes.merge(ministry_id: child_ministry.gr_id),
+            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+
+        expect(response).to be_success
+        expect(church.reload.size).to eq attributes[:size]
+        church_value = church.church_values.last
+        expect(church_value).to be_present
+        expect(church_value.period).to eq Time.zone.today.strftime('%Y-%m')
       end
     end
 
