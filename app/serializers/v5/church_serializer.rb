@@ -26,7 +26,8 @@ module V5
     end
 
     def security
-      object[:security]
+      s = object[:security]
+      s == 0 ? 1 : s
     end
 
     def parents

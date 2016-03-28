@@ -59,6 +59,9 @@ module V5
       if permitted_params[:ministry_id]
         permitted_params[:ministry_id] = Ministry.find_by(gr_id: permitted_params[:ministry_id]).try(:id)
       end
+      if permitted_params[:security] && permitted_params[:security].to_i == 0
+        permitted_params[:security] = 1
+      end
       fix_enum_params(permitted_params, :security, :development)
     end
 

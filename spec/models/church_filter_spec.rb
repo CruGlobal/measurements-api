@@ -92,7 +92,7 @@ RSpec.describe ChurchFilter, type: :model do
       end
     end
 
-    context 'as unknown user' do
+    context 'as blocked user' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :blocked) }
       it "doesn't include private child churches" do
         Power.with_power(admin_power) do

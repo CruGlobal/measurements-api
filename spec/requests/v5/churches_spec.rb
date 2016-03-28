@@ -110,6 +110,13 @@ RSpec.describe 'V5::Churches', type: :request do
 
         expect(child_church.reload.parent).to be_nil
       end
+
+      it 'moves 0 security to 1' do
+        expect do
+          put "/v5/churches/#{church.id}", attributes.merge(security: 0),
+              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        end.to change { church.reload.security }.to('private_church')
+      end
     end
 
     context 'trying to move church to another ministry you do not have access to' do

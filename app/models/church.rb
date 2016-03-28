@@ -17,7 +17,8 @@ class Church < ActiveRecord::Base
 
   after_update :log_church_value
 
-  enum security: { local_private_church: 0, private_church: 1, public_church: 2 }
+  enum security: { local_private_church: 0, private_church: 1,
+                   registered_public_church: 2, global_public_church: 3 }
   authorize_values_for :security
   enum development: { target: 1, group_stage: 2, church: 3, multiplying_church: 5 }
 
@@ -44,7 +45,7 @@ class Church < ActiveRecord::Base
 
   def default_values
     self.development ||= 1
-    self.security ||= :public_church
+    self.security ||= :registered_public_church
     self.parent_id = nil if parent_id == -1
   end
 
