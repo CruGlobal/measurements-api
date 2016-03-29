@@ -31,7 +31,7 @@ RSpec.describe 'V5::Measurements', type: :request do
 
   describe 'GET /v5/measurements' do
     let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
-    let!(:measurement) { FactoryGirl.create(:measurement, english: 'English Name') }
+    let!(:measurement) { FactoryGirl.create(:measurement, english: 'English Name', perm_link: 'lmi_total_test') }
 
     it 'responds with measurements' do
       stub_gr_measurement_calls(measurement)
