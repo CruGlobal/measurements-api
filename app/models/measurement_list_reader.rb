@@ -53,16 +53,9 @@ class MeasurementListReader
   end
 
   def filter_by_show_hide
-    query = []
-    query = [show_filter] if ministry.lmi_show.present?
-    query << hide_filter if ministry.lmi_hide.present?
-    if query.count == 2
-      @measurements.where(query[0].or(query[1]))
-    elsif query.count == 1
-      @measurements.where(query[0])
-    else
-      @measurements
-    end
+    query = hide_filter
+    query = query.or(show_filter) if ministry.lmi_show.present?
+    @measurements.where(query)
   end
 
   def ministry
@@ -78,7 +71,9 @@ class MeasurementListReader
   # core measurements to hide
   def hide_filter
     perm_links = ministry.lmi_hide.map { |lmi| "lmi_total_#{lmi}" }
-    table[:perm_link].does_not_match('%_custom_%').and(table[:perm_link].not_in(perm_links))
+    query = table[:perm_link].does_not_match('%_custom_%')
+    query = query.and(table[:perm_link].not_in(perm_links)) if perm_links.any?
+    query
   end
 
   def table

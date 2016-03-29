@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe MeasurementListReader, type: :model do
   let(:user) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry, lmi_hide: ['hidden'], lmi_show: ['shown']) }
+  let(:ministry) { FactoryGirl.create(:ministry) }
 
   describe '#new' do
     let(:list) { MeasurementListReader.new }
@@ -51,7 +51,7 @@ RSpec.describe MeasurementListReader, type: :model do
       stub_measurement_gr_calls
     end
 
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_test', mcc_filter: nil) }
     let(:list) { MeasurementListReader.new(ministry_id: ministry.gr_id, mcc: 'DS') }
 
     it 'returns Measurements' do
@@ -73,16 +73,25 @@ RSpec.describe MeasurementListReader, type: :model do
       expect(list.load.count).to be 1
     end
 
-    it 'filters by ministry hide_values and show_values' do
-      meas2 = FactoryGirl.create(:measurement, perm_link: 'lmi_total_hidden')
-      FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_not_shown')
+    describe 'filters by ministry hide_values and show_values' do
+      it 'shows default lmi with show/hide unset' do
+        FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_not_shown')
 
-      expect(list.load.count).to be 1
+        expect(list.load.count).to be 1
+      end
+      it 'includes custom when set' do
+        ministry.update(lmi_hide: ['hidden'], lmi_show: ['shown'])
+        meas2 = FactoryGirl.create(:measurement, perm_link: 'lmi_total_hidden')
+        FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_not_shown')
 
-      meas.update(perm_link: 'lmi_total_not_hidden')
-      meas2.update(perm_link: 'lmi_total_custom_asdf')
+        expect(list.load.count).to be 1
 
-      expect(list.load.count).to be 1
+        meas.update(perm_link: 'lmi_total_not_hidden')
+        meas2.update(perm_link: 'lmi_total_custom_shown')
+        stub_measurement_gr_calls(meas2)
+
+        expect(list.load.count).to be 2
+      end
     end
 
     describe 'info based on assignment' do
