@@ -7,10 +7,10 @@ module Powers
       # Power definitions
 
       power :changeable_churches do
-        break nil if assignment.blank? || assignment.blocked_role?
-        churches = Church.where(ministry: assignment.ministry)
-        churches = churches.where('security >= ?', Church.securities[:public_church]) if assignment.self_assigned?
-        churches
+        break nil if blocked?
+        churches = Church.where(ministry: fallback_assignment.ministry)
+        break churches unless assignment.try(:self_assigned?)
+        churches.where('security >= ?', Church.securities[:public_church])
       end
 
       power :churches do
@@ -19,9 +19,9 @@ module Powers
     end
 
     def assignable_church_securities
-      if assignment.blank? || assignment.blocked_role?
+      if blocked?
         []
-      elsif assignment.self_assigned?
+      elsif assignment.try(:self_assigned?)
         %w(registered_public_church global_public_church)
       else
         Church.securities.keys
@@ -36,16 +36,26 @@ module Powers
     end
 
     def assignable_church_user_created_church_ministries
-      # assigment.ministry_id is going to be the id the user is trying to create a church on
-      [assignment.ministry] if assignment.present? && !assignment.blocked?
+      # inherited_assignment.ministry_id is going to be the id the user is trying to create a church on
+      [fallback_assignment.ministry] unless blocked?
     end
 
     def visiable_local_churches_security
-      if assignment.blank? || assignment.blocked_role?
+      if blocked?
         Church.securities['registered_public_church']
-      else
+      elsif assignment.blank? || assignment.self_assigned?
         Church.securities['private_church']
+      else
+        Church.securities['local_private_church']
       end
+    end
+
+    def fallback_assignment
+      @fallback_assignment ||= inherited_assignment || assignment
+    end
+
+    def blocked?
+      assignment.try(:blocked_role?) || fallback_assignment.blank?
     end
   end
 end
