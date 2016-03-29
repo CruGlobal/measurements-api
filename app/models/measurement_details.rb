@@ -16,17 +16,22 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     if @id
       @measurement = Measurement.find_by(total_id: id) || Measurement.find_by_perm_link(id)
     end
+
+    # make sure instance vars are set
+    @current_power = Power.current
+    gr_singleton
+    ministry
   end
 
   def load
     validate!
 
-    load_total_from_gr
-    load_local_from_gr
-    load_user_from_gr
-    load_sub_mins_from_gr
-    load_team_from_gr
-    load_split_measurements
+    tasks = [:load_local_from_gr, :load_total_from_gr, :load_user_from_gr, :load_sub_mins_from_gr,
+             :load_team_from_gr, :load_split_measurements]
+    threads = tasks.map do |method|
+      Thread.new { send(method) }
+    end
+    threads.each(&:join)
 
     update_total_in_gr
   end
@@ -53,11 +58,11 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def load_user_from_gr
-    unless Power.current.try(:assignment)
+    unless @current_power.try(:assignment)
       @my_measurements = build_monthly_hash([])
       return
     end
-    gr_resp = load_measurements_of_type(:person, :none, Power.current.assignment.gr_id)
+    gr_resp = load_measurements_of_type(:person, :none, @current_power.assignment.gr_id)
     @my_measurements = build_monthly_hash(gr_resp)
     @self_breakdown, this_period_sum = build_breakdown_hash(gr_resp)
     @my_measurements[period] = this_period_sum
@@ -108,7 +113,9 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
 
   def load_assignments
     approved_teammates = ministry.assignments.includes(:person).where(Assignment.approved_condition)
-    approved_teammates = approved_teammates.where.not(id: Power.current.assignment.id) if Power.current.try(:assignment)
+    if @current_power.try(:assignment)
+      approved_teammates = approved_teammates.where.not(id: @current_power.assignment.id)
+    end
     self_assigned_teammates = ministry.assignments.includes(:person).where(role: :self_assigned)
 
     [self_assigned_teammates.to_a, approved_teammates.to_a]
@@ -201,6 +208,6 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def gr_singleton
-    GlobalRegistryClient.client(:measurement_type)
+    @gr_singleton ||= GlobalRegistryClient.client(:measurement_type)
   end
 end
