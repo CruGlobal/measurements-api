@@ -90,6 +90,26 @@ RSpec.describe ChurchFilter, type: :model do
           expect(filtered).to_not include church2
         end
       end
+
+      it 'includes local local_private churches' do
+        local_private_church.update(ministry: ministry)
+        Power.with_power(admin_power) do
+          expect(filtered).to include local_private_church
+        end
+      end
+    end
+
+    context 'as self_assigned user' do
+      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+
+      it "doesn't include local local_private churches" do
+        local_private_church.update(ministry: ministry)
+        church2.update(ministry: ministry)
+        Power.with_power(admin_power) do
+          expect(filtered).to_not include local_private_church
+          expect(filtered).to_not include church2
+        end
+      end
     end
 
     context 'as blocked user' do

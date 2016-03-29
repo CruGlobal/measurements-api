@@ -43,7 +43,7 @@ module Powers
     def visiable_local_churches_security
       if blocked?
         Church.securities['registered_public_church']
-      elsif inherited_assignment.present?
+      elsif assignment.blank? || assignment.self_assigned?
         Church.securities['private_church']
       else
         Church.securities['local_private_church']
