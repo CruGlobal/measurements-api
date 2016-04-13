@@ -2,6 +2,7 @@
 require 'csv'
 require 'tree_order'
 require 'import_mappings'
+require 'aws-sdk-resources'
 
 # For importing from the old SQL Server database that has been dumped to CSV,
 # and uploaded to S3 in the folder sql_server_csv_dump.
