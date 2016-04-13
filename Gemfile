@@ -30,6 +30,7 @@ gem 'awesome_nested_set'
 gem 'global_registry'
 gem 'carrierwave-aws'
 gem 'will_paginate'
+gem 'aws-sdk', '~> 2'
 
 group :development, :test do
   gem 'dotenv-rails'
