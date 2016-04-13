@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class MeasurementListReader
   include ActiveModel::Model
-  include ActiveRecord::AttributeAssignment
 
   attr_accessor :ministry_id, :mcc, :period, :source, :historical
 
