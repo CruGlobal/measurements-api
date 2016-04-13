@@ -97,15 +97,14 @@ class Import
   end
 
   def csv_text(table)
-    fog.get_object(ENV.fetch('AWS_BUCKET'), "sql_server_csv_dump/#{table}.csv").body
+    s3.get_object(key: "sql_server_csv_dump/#{table}.csv", bucket_name: ENV.fetch('S3_BUCKET')).body
   end
 
-  def fog
-    @fog ||=
-      Fog::Storage.new(
-        provider: 'AWS',
-        aws_access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY'))
+  def s3
+    @s3 ||= AWS::S3::Client.new(
+      access_key_id: ENV.fetch('S3_ACCESS_KEY_ID'),
+      secret_access_key: ENV.fetch('S3_SECRET_ACCESS_KEY')
+    )
   end
 
   class SkipRecord < StandardError
