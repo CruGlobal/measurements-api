@@ -104,7 +104,8 @@ class Import
   def s3
     @s3 ||= ::Aws::S3::Client.new(
       access_key_id: ENV.fetch('S3_ACCESS_KEY_ID'),
-      secret_access_key: ENV.fetch('S3_SECRET_ACCESS_KEY')
+      secret_access_key: ENV.fetch('S3_SECRET_ACCESS_KEY'),
+      region: 'us-east-1'
     )
   end
 
