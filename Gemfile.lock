@@ -345,7 +345,6 @@ DEPENDENCIES
   auto_strip_attributes (~> 2.0)
   awesome_nested_set
   awesome_print
-  aws-sdk (~> 2)
   carrierwave-aws
   consul
   coveralls
