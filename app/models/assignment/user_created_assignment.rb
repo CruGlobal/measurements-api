@@ -36,7 +36,7 @@ class Assignment
       return if key_guid.blank?
       # Legacy GMA identities saved user login as guid
       if key_guid.include?('@')
-        person_by_username(key_guid)
+        Person.person_for_username(key_guid)
       else
         Person.person(key_guid)
       end
