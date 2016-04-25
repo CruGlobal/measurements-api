@@ -7,7 +7,7 @@ describe RackResetGrClient do
     env = double
     GlobalRegistryClient.parameters = { access_token: 'a' }
 
-    RackResetGrClient.new(app).call(env)
+    ::RackResetGrClient.new(app).call(env)
 
     expect(GlobalRegistryClient.parameters).to eq({})
     expect(app).to have_received(:call).with(env)

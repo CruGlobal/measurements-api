@@ -37,7 +37,7 @@ module MeasurementsApi
       end
     end
 
-    config.middleware.use 'RackResetGrClient'
+    config.middleware.use '::RackResetGrClient'
 
     config.log_formatter = ::Logger::Formatter.new
 

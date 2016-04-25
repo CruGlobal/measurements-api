@@ -24,7 +24,7 @@ module V5
       # We need to serialize ourselves, AMS doesn't serialize nested assignments (by design), we need deep nesting
       object.person.try(:assignments).map do |assignment|
         serializer = V5::AssignmentSerializer.new(assignment)
-        ActiveModel::Serializer::Adapter.create(serializer).as_json
+        ::ActiveModelSerializers::Adapter.create(serializer).as_json
       end.compact
     end
   end

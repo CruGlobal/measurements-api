@@ -37,7 +37,7 @@ module GrSync
     end
 
     def relationship_entity_id(response)
-      assignment = response['entity']['person'][RELATIONSHIP].find do |relationship|
+      assignment = Array.wrap(response['entity']['person'][RELATIONSHIP]).find do |relationship|
         relationship['ministry'] == ministry.gr_id
       end
       assignment['relationship_entity_id']
