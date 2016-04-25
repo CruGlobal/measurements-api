@@ -111,7 +111,7 @@ class Person < ActiveRecord::Base
       person = Person.find_by(gr_id: gr_id)
       return person if person
       entity = Person.find_entity(gr_id, entity_type: 'person')
-      person = Person.new
+      person = Person.find_or_initialize_by(gr_id: gr_id)
       person.from_entity(entity)
       person.save
       person
@@ -125,9 +125,10 @@ class Person < ActiveRecord::Base
       person = find_by(guid_field => guid)
       return person unless person.nil? || refresh
 
-      person = new(guid_field => guid) if person.nil?
       entity = find_entity_by_auth_guid(gr_auth_prefix, guid)
       return if entity.nil?
+      person = find_or_initialize_by(gr_id: entity['person']['id'])
+      person.send("#{guid_field}=", guid)
       person.from_entity entity
       person.save
       person
