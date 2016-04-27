@@ -86,9 +86,11 @@ module V5
     end
 
     def ministry_params
-      valid_params = %i(name parent_id min_code lmi_show lmi_hide mccs ministry_scope
-                        default_mcc hide_reports_tab location location_zoom)
-      permitted_params = post_params.permit valid_params
+      permitted_params = post_params.permit(*::Ministry::PERMITTED_PARAMS)
+      # Set missing array fields to an empty array (http://guides.rubyonrails.org/security.html#unsafe-query-generation)
+      %i(lmi_show lmi_hide mccs).each do |param|
+        permitted_params[param] = [] unless permitted_params[param].present?
+      end
       permitted_params[:parent_id] =
         Ministry.ministry(permitted_params[:parent_id]).try(:id) if permitted_params.key? :parent_id
       permitted_params
