@@ -11,7 +11,7 @@ class Ministry < ActiveRecord::Base
   SCOPES = %w(National Area Global National\ Region).freeze
 
   PERMITTED_PARAMS = [:name, :parent_id, :min_code, :ministry_scope, :default_mcc, :hide_reports_tab,
-                      :location, :location_zoom, lmi_show: [], lmi_hide: [], mccs: []].freeze
+                      :location_zoom, location: [:latitude, :longitude], lmi_show: [], lmi_hide: [], mccs: []].freeze
 
   include GrSync::EntityMethods
   include GrSync::Ministry
