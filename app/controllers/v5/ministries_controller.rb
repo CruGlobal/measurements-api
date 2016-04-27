@@ -87,9 +87,11 @@ module V5
 
     def ministry_params
       permitted_params = post_params.permit(*::Ministry::PERMITTED_PARAMS)
-      # Set missing array fields to an empty array (http://guides.rubyonrails.org/security.html#unsafe-query-generation)
+      # Set nil array fields to an empty array (http://guides.rubyonrails.org/security.html#unsafe-query-generation)
       %i(lmi_show lmi_hide mccs).each do |param|
-        permitted_params[param] = [] unless permitted_params[param].present?
+        if permitted_params.key(param)
+          permitted_params[param] = [] if permitted_params[param].nil?
+        end
       end
       permitted_params[:parent_id] =
         Ministry.ministry(permitted_params[:parent_id]).try(:id) if permitted_params.key? :parent_id
