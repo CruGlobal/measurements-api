@@ -6,7 +6,9 @@ module Powers
     included do
       # Power definitions
       power :trainings do
-        Training.where(ministry: inherited_assignment.ministry) if inherited_assignment.try(:leader_role?)
+        Training.all if assignment.try(:approved_role?) ||
+                        assignment.try(:self_assigned?) ||
+                        inherited_assignment.try(:leader_role?)
       end
 
       power :training_completions do
