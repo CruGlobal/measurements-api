@@ -25,12 +25,12 @@ module GrSync
       {
         entity: {
           person: {
+            client_integration_id: person.id,
             RELATIONSHIP => {
               ministry: ministry.gr_id,
               client_integration_id: "_#{person.gr_id}_#{ministry.gr_id}",
               team_role: assignment.role
-            },
-            'client_integration_id' => ''
+            }
           }
         }
       }
