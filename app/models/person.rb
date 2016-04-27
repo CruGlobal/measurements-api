@@ -93,13 +93,13 @@ class Person < ActiveRecord::Base
     def person_for_username(username, refresh = false)
       person = find_by(cas_username: username)
       if person.nil? || refresh
-        person = new if person.nil?
         entity = find_entity_by(
           entity_type: entity_type,
           fields: GR_FIELDS,
           'filters[key_username]': username
         )
-        return if entity.nil?
+        return person if entity.nil?
+        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
         person.from_entity entity
         person.save
       end
