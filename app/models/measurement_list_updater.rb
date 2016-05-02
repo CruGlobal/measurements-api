@@ -26,7 +26,7 @@ class MeasurementListUpdater
                                                     measurement[:measurement_type_id],
                                                     measurement[:measurement_type_id])
     if measurement[:measurement].blank?
-      @error = 'You can only post measurements for local and person_assignment measuremenets. '\
+      @error = 'You can only post measurements for local and person_assignment measurements. '\
                  "measurement_type_id: #{measurement[:measurement_type_id]} is not permitted"
       return false
     end

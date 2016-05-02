@@ -9,6 +9,11 @@ SIDEKIQ_CRON_HASH = {
     'cron' => '0 4 * * *',
     'class' => 'GrSync::WithGrWorker',
     'args' => [{}, 'GrSync::MinistriesSync', 'sync_all']
+  },
+  'Church - Training Rollup' => {
+    'cron' => '30 1 * * *',
+    'class' => 'GrSync::WithGrWorker',
+    'args' => [{}, 'GrSync::ChurchTrainingRollup', 'rollup_all']
   }
 }.freeze
 
