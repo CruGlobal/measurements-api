@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 module V5
   class TrainingsController < V5::BaseUserController
-    power :trainings, as: :training_scope
+    power :trainings, map: {
+      [:create, :update, :destroy] => :edit_training
+    }, as: :training_scope
 
     def index
       render json: filtered_trainings,

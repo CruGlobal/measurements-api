@@ -11,6 +11,10 @@ module Powers
                         inherited_assignment.try(:leader_role?)
       end
 
+      power :edit_training do
+        Training.all if assignment.try(:approved_role?) || inherited_assignment.try(:leader_role?)
+      end
+
       power :training_completions do
         return unless assignment.try(:leader_role?)
         TrainingCompletion.includes(:training).where(trainings: { ministry_id: assignment.ministry.id })
