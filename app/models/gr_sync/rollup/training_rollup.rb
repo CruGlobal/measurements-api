@@ -8,27 +8,44 @@ module GrSync
         super.merge('filters[dimension:like]' => '_training')
       end
 
-      def stats_for_period(_period)
-        # ministry = ::Ministry.arel_table
-        # training = ::Training.arel_table
-        # complete = ::TrainingCompletion.arel_table
-        []
+      def stats_for_period(period) # rubocop:disable Metrics/AbcSize
+        ministry = ::Ministry.arel_table
+        training = ::Training.arel_table
+        complete = ::TrainingCompletion.arel_table
+
+        query = complete.project(ministry[:gr_id], training[:mcc], complete[:number_completed].sum)
+                        .join(training).on(training[:id].eq(complete[:training_id]))
+                        .join(ministry).on(ministry[:id].eq(training[:ministry_id]))
+                        .where(training[:ministry_id].not_eq(nil))
+                        .where(training[:mcc].not_eq(nil))
+                        .where(training[:date].lteq(period.end_of_month))
+                        .where(training[:date].gteq(period.beginning_of_month))
+                        .group(ministry[:gr_id], training[:mcc])
+        execute(query.to_sql).to_hash
+      end
+
+      def measurements_for_period(period)
+        measurements = []
+        stats_for_period(period).each do |row|
+          dimension = "#{row['mcc']}_training"
+          value = row['sum'].to_f
+          if value != gr_current_value(row['gr_id'], period, dimension)
+            measurements << { period: period.strftime(PERIOD_FORMAT), related_entity_id: row['gr_id'],
+                              mcc: dimension, value: value.to_s, measurement_type_id: gr_measurement_type['id'] }
+          end
+        end
+        measurements
+      end
+
+      def gr_current_value(related_entity_id, period, dimension)
+        period_str = period.strftime(PERIOD_FORMAT)
+        found = gr_measurement_type['measurements'].find do |item|
+          item['period'] == period_str &&
+            item['related_entity_id'] == related_entity_id &&
+            item['dimension'] == dimension
+        end
+        found['value'].to_f unless found.nil?
       end
     end
   end
 end
-
-# Dim training_count_obj = (
-#   From c In d.gcm_trainings
-#   Where c.gcm_training_completions.Where(
-#     Function(b) b.date.Year = PeriodDate.Year And b.date.Month = PeriodDate.Month
-#   ).Count > 0
-#   Select c.gcm_training_completions.Where(
-#     Function(b) b.date.Year = PeriodDate.Year And b.date.Month = PeriodDate.Month
-#   ).Max(Function(a) a.number_completed)
-# )
-#
-# Dim q = From c In d.gcm_training_completions
-# Where c.date.Year = PeriodDate.Year
-# And c.date.Month = PeriodDate.Month
-# Group By c.gcm_training.ministry_id, c.gcm_training.mcc Into Count()
