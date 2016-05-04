@@ -55,4 +55,14 @@ Rails.application.configure do
 
   # Allow us to turn off HTTP logging with an env var
   HttpLogger.logger.level = Logger::Severity::UNKNOWN if ENV['NO_HTTP_LOGGER']
+
+  config.middleware.insert_before 0, 'Rack::Cors' do
+    allow do
+      origins '*'
+      resource '*',
+               headers: :any,
+               methods: [:get, :post, :delete, :put, :patch, :options, :head],
+               max_age: 0
+    end
+  end
 end

@@ -27,16 +27,6 @@ module MeasurementsApi
       g.fixture_replacement :factory_girl, dir: 'spec/factories'
     end
 
-    config.middleware.insert_before 0, 'Rack::Cors' do
-      allow do
-        origins '*'
-        resource '*',
-                 headers: :any,
-                 methods: [:get, :post, :delete, :put, :patch, :options, :head],
-                 max_age: 0
-      end
-    end
-
     config.middleware.use '::RackResetGrClient'
 
     config.log_formatter = ::Logger::Formatter.new

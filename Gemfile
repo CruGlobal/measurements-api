@@ -9,7 +9,6 @@ gem 'puma'
 gem 'newrelic_rpm'
 gem 'rails-api-newrelic'
 gem 'versionist'
-gem 'rack-cors', require: 'rack/cors'
 gem 'rollbar'
 gem 'syslog-logger'
 gem 'oj'
@@ -42,6 +41,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'http_logger'
   gem 'awesome_print'
+  gem 'rack-cors', require: 'rack/cors'
 end
 
 group :test do
