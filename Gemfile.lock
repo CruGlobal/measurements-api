@@ -368,6 +368,7 @@ DEPENDENCIES
   rack-cors
   rails-api
   rails-api-newrelic
+  rake (~> 11.1.1)
   redis-namespace
   rollbar
   rspec-json_expectations

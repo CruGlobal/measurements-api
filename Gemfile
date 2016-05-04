@@ -3,6 +3,7 @@ source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro'
 end
 
+gem 'rake', '~> 11.1.1'
 gem 'rails-api'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
 gem 'puma'
