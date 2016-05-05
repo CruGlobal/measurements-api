@@ -3,7 +3,7 @@ module V5
   module SystemAccessTokenProtectedConcern
     extend ActiveSupport::Concern
 
-    SYSTEM_TOKEN_AUTH_TIMEOUT = 1.day
+    SYSTEM_TOKEN_AUTH_TIMEOUT = 30.minutes
 
     protected
 
@@ -38,13 +38,13 @@ module V5
     def check_token(token)
       return token if token_has_auth(token)
 
-      resp = GlobalRegistry::System.new(access_token: token, xff: request.remote_ip).get(limit: 1)
+      resp = GlobalRegistry::System.new(access_token: token, xff: request.headers['HTTP_X_FORWARDED_FOR']).get(limit: 1)
       return unless resp.present?
 
       Rails.cache.write(cache_key(token), '1', expires_in: SYSTEM_TOKEN_AUTH_TIMEOUT)
 
       token
-    rescue RestClient::BadRequest
+    rescue RestClient::BadRequest, RuntimeError
       nil
     end
 
@@ -53,7 +53,7 @@ module V5
     end
 
     def cache_key(token)
-      "token/#{token}/authenticated"
+      "token:#{token}:authenticated"
     end
   end
 end

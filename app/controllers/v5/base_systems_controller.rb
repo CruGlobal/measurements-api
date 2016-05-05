@@ -14,7 +14,7 @@ module V5
     end
 
     def with_token(&_)
-      GlobalRegistryClient.parameters = { access_token: @access_token, xff: request.remote_ip }
+      GlobalRegistryClient.parameters = { access_token: @access_token, xff: request.headers['HTTP_X_FORWARDED_FOR'] }
       yield
     ensure
       GlobalRegistryClient.parameters = nil

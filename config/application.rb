@@ -34,5 +34,14 @@ module MeasurementsApi
     # RubyCAS config
     config.rubycas.cas_base_url = ENV.fetch('CAS_BASE_URL')
     config.rubycas.logger = Rails.logger
+
+    # Use Redis as cache store
+    config.cache_store = :redis_store, {
+      host: Redis.current.client.host,
+      port: Redis.current.client.port,
+      db: 2,
+      namespace: 'measurements-api:cache:',
+      expires_in: 1.day
+    }
   end
 end
