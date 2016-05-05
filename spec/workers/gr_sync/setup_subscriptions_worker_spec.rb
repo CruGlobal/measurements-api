@@ -3,7 +3,7 @@ require 'rails_helper'
 
 describe GrSync::SetupSubscriptionsWorker, '#perform' do
   it 'subscribes the relevant entity types ids with correct endpoint' do
-    endpoint = 'http://test.host/gr_sync/asdf/notifications'
+    endpoint = 'https://test.host/gr_sync/asdf/notifications'
     allow(GrSync::SubscribedEntities).to receive(:entity_type_ids) { %w(1f 2f) }
     manager = double(ensure_subscribed_to_all: nil)
     allow(GrSync::SubscriptionManager).to receive(:new) { manager }

@@ -41,9 +41,6 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   config.active_record.raise_in_transactional_callbacks = true
 
-  # SITE_HOST in development can be helpful for testing webhooks with ngrok
-  Rails.application.routes.default_url_options[:host] = ENV['SITE_HOST'] || 'localhost:3000'
-
   HttpLogger.log_headers = true
   HttpLogger.logger = Logger.new(STDOUT)
   HttpLogger.collapse_body_limit = 10_000
