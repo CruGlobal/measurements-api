@@ -27,7 +27,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
                           .to_return(status: 200, body: { access: 'granted' }.to_json)
 
       get '/v5/sys_measurement_types', access_token: token
-      travel_to 5.hours.from_now do
+      travel_to 5.minutes.from_now do
         get '/v5/sys_measurement_types', access_token: token
       end
       expect(gr_request).to have_been_requested
