@@ -40,7 +40,12 @@ class ImportMappings
         TreeOrder.new(rows, :id, :parent_id).ordered_parents_first
       end
     ],
-    [Person, :person, { person_id: :gr_id }],
+    [
+      Person, :person, { person_id: :gr_id },
+      lambda do |person, _row|
+        ImportUtil.update_person_from_gr(person) if person.cas_guid.blank? || person.cas_username.blank?
+      end
+    ],
     [
       Audit, :audit, { timestamp: :created_at },
       lambda do |audit, row|

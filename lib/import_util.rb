@@ -33,6 +33,13 @@ class ImportUtil
       person.id
     end
 
+    def update_person_from_gr(person)
+      return unless person.gr_id.present?
+      entity = Person.find_entity(person.gr_id, entity_type: 'person', fields: Person::GR_FIELDS)
+      return unless entity
+      person.from_entity(entity)
+    end
+
     def import_story_image(story, image_url)
       uri = URI(image_url)
       io = FilelessIO.new
