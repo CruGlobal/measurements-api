@@ -33,6 +33,8 @@ class ImportMappings
         ministry.mccs << Ministry::MCC_LLM if row[:llm]
         ministry.mccs << Ministry::MCC_GCM if row[:gcm]
         ministry.mccs << Ministry::MCC_DS if row[:ds]
+        ministry.lmi_show = [] if row[:lmi_show].blank?
+        ministry.lmi_hide = [] if row[:lmi_hide].blank?
       end,
       lambda do |rows|
         TreeOrder.new(rows, :id, :parent_id).ordered_parents_first
