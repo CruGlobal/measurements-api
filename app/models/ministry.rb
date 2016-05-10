@@ -1,11 +1,19 @@
 # frozen_string_literal: true
-class Ministry < ActiveRecord::Base
+class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   # Valid MCCs (Mission Critical Components)
   MCC_SLM = 'slm'
   MCC_LLM = 'llm'
   MCC_GCM = 'gcm'
   MCC_DS = 'ds'
   MCCS = [MCC_SLM, MCC_LLM, MCC_GCM, MCC_DS].freeze
+
+  # Map global registry mcc property names to MCC value
+  ENTITY_MCCS = {
+    has_slm: MCC_SLM,
+    has_llm: MCC_LLM,
+    has_gcm: MCC_GCM,
+    has_ds: MCC_DS
+  }.freeze
 
   # WHQ Scopes
   SCOPES = %w(National Area Global National\ Region).freeze
@@ -14,7 +22,6 @@ class Ministry < ActiveRecord::Base
                       :location_zoom, location: [:latitude, :longitude], lmi_show: [], lmi_hide: [], mccs: []].freeze
 
   include GrSync::EntityMethods
-  include GrSync::Ministry
 
   acts_as_nested_set dependent: :nullify
 
@@ -41,6 +48,7 @@ class Ministry < ActiveRecord::Base
                           unless: 'default_mcc.blank?'
   validates :min_code, uniqueness: true, on: :create, if: 'min_code.present?'
   before_validation :generate_min_code, on: :create, if: 'gr_id.blank?'
+  before_create :create_entity, if: 'gr_id.blank?'
 
   authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
 
@@ -94,7 +102,78 @@ class Ministry < ActiveRecord::Base
     entity
   end
 
+  # Getter/Setters for GR
+  def location=(value)
+    self.latitude = value[:latitude] if value.key? :latitude
+    self.longitude = value[:longitude] if value.key? :longitude
+  end
+
+  def location
+    # TODO: walk parent ministries to find lat/lng if missing
+    { latitude: latitude, longitude: longitude }
+  end
+
+  def lmi_show=(lmi)
+    lmi = lmi.split(',') if lmi.is_a? String
+    super lmi
+  end
+
+  def lmi_hide=(lmi)
+    lmi = lmi.split(',') if lmi.is_a? String
+    super lmi
+  end
+
   private
+
+  # Model attribute value to Global Registry Entity property value
+  # Return nil to remove property from the request
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+  def attribute_to_entity_property(property)
+    case property.to_sym
+    when :id
+      gr_id
+    when :parent_id
+      parent.try(:gr_id)
+    when :client_integration_id
+      min_code
+    when :has_ds, :has_llm, :has_gcm, :has_slm
+      mcc = ENTITY_MCCS[property]
+      mccs.include? mcc
+    when :lmi_show
+      lmi_show.empty? ? nil : lmi_show.join(',')
+    when :lmi_hide
+      lmi_hide.empty? ? nil : lmi_hide.join(',')
+    when :location
+      loc = location
+      loc.delete_if { |_k, v| v.nil? }
+      return nil if loc.empty?
+      loc[:client_integration_id] = min_code
+      loc
+    else
+      super
+    end
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+
+  # Set self attribute value from Global Registry Entity property and value
+  def attribute_from_entity_property(property, value = nil) # rubocop:disable Metrics/MethodLength
+    case property.to_sym
+    when :id
+      super(:gr_id, value)
+    when :parent_id
+      self.parent_gr_id = value
+      super(:parent_id, self.class.find_by(gr_id: value).try(:id))
+    when :has_ds, :has_llm, :has_gcm, :has_slm
+      mcc = ENTITY_MCCS[property]
+      if value
+        mccs << mcc unless mccs.include? mcc
+      else
+        mccs.delete mcc
+      end
+    else
+      super(property, value)
+    end
+  end
 
   def assign_area_from_entity(entity)
     relationship = entity&.dig('area:relationship')
@@ -109,6 +188,17 @@ class Ministry < ActiveRecord::Base
   end
 
   class << self
+    # Global Registry Entity type
+    def entity_type
+      'ministry'
+    end
+
+    # Global Registry Entity Properties to sync
+    def entity_properties
+      [:name, :parent_id, :min_code, :location, :location_zoom, :lmi_hide, :lmi_show,
+       :hide_reports_tab, :has_slm, :has_llm, :has_gcm, :has_ds].concat(super)
+    end
+
     private
 
     # Arel methods
