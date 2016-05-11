@@ -62,7 +62,7 @@ module Powers
     end
 
     def role_approved?
-      inherited_assignment.present? && inherited_assignment.approved_role?
+      assignment.try(:approved_role?) || inherited_assignment.try(:approved_role?)
     end
   end
 end
