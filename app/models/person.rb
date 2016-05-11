@@ -17,6 +17,17 @@ class Person < ActiveRecord::Base
   # Map GR key_username to cas_username
   alias_attribute :key_username, :cas_username
 
+  def attribute_to_entity_property(property)
+    case property.to_sym
+    when :id
+      gr_id
+    when :client_integration_id
+      id
+    else
+      super
+    end
+  end
+
   def attribute_from_entity_property(property, value = nil)
     case property.to_sym
     when :id
