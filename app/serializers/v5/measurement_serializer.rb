@@ -20,6 +20,11 @@ module V5
     attribute :custom?, key: :is_custom
     attribute :english, key: :name
 
+    def attributes(args)
+      # Remove nil values
+      super(args).reject { |_k, v| v.nil? }
+    end
+
     def custom?
       object.perm_link.sub('lmi_total_', '').starts_with?('custom_')
     end
@@ -37,11 +42,11 @@ module V5
     end
 
     def measurement_type_ids
-      {
-        total: object.total_id,
-        local: object.local_id,
-        person: object.person_id
-      }
+      type_ids = {}
+      type_ids['total'] = object.total_id if object.total.present?
+      type_ids['local'] = object.local_id if object.local.present?
+      type_ids['person'] = object.person_id if object.person.present?
+      type_ids
     end
   end
 end
