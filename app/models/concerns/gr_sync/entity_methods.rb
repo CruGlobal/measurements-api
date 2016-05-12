@@ -75,7 +75,7 @@ module GrSync
         response['entity'].with_indifferent_access if response.key?('entity')
       rescue RestClient::InternalServerError => e
         Rollbar.error(e, id: id, params: params)
-        raise e
+        nil
       rescue RestClient::ResourceNotFound
         nil
       end

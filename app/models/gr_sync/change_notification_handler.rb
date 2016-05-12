@@ -15,7 +15,8 @@ module GrSync
     end
 
     def deleted_notification
-      @model.find_by(gr_id: @gr_id).try(&:destroy!)
+      # Do not delete entities, for now
+      # @model.find_by(gr_id: @gr_id).try(&:destroy!)
     end
 
     private

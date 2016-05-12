@@ -22,6 +22,9 @@ module GrSync
       all_ministries_missing_active do |entity|
         yield entity
       end
+      all_inactive_whq_ministries do |entity|
+        yield entity
+      end
     end
 
     # Find id, name for all active ministries
@@ -47,6 +50,19 @@ module GrSync
         fields: 'name',
         'filters[parent_id:exists]': true,
         'filters[is_active:not_exists]': true
+      ) do |entity|
+        yield entity
+      end
+    end
+
+    def all_inactive_whq_ministries
+      raise 'block required' unless block_given?
+      page_helper.find_entities_each(
+        entity_type: 'ministry',
+        levels: 0,
+        fields: 'name',
+        'filters[is_active]': false,
+        ruleset: 'global_ministries'
       ) do |entity|
         yield entity
       end
