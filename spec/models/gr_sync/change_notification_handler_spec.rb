@@ -25,14 +25,14 @@ describe GrSync::ChangeNotificationHandler do
     expect(Person).to have_received(:create_or_update_from_entity!).with(entity)
   end
 
-  it 'deletes a record if deleted in global registry' do
-    person = create(:person)
-
-    expect do
-      GrSync::ChangeNotificationHandler.new('person', person.gr_id)
-                                       .deleted_notification
-    end.to change(Person, :count).by(-1)
-  end
+  # it 'deletes a record if deleted in global registry' do
+  #   person = create(:person)
+  #
+  #   expect do
+  #     GrSync::ChangeNotificationHandler.new('person', person.gr_id)
+  #                                      .deleted_notification
+  #   end.to change(Person, :count).by(-1)
+  # end
 
   it 'does not error for delete notification for non-existent record' do
     expect do

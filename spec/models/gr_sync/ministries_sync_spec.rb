@@ -7,7 +7,8 @@ describe GrSync::MinistriesSync, '#sync_all' do
       stub_ministries_page('is_active', 1, true, [{ id: '1' }, { id: '2' }]),
       stub_ministries_page('is_active', 2, false, [{ id: '3' }]),
       stub_ministries_page('is_active:not_exists', 1, true, [{ id: '4' }]),
-      stub_ministries_page('is_active:not_exists', 2, false, [{ id: '5' }])
+      stub_ministries_page('is_active:not_exists', 2, false, [{ id: '5' }]),
+      stub_whq_ministries
     ]
     allow(::Ministry).to receive(:ministry)
 
@@ -26,6 +27,17 @@ describe GrSync::MinistriesSync, '#sync_all' do
     body = {
       entities: ministries.map { |m| { ministry: m } },
       meta: { page: page, next_page: has_next_page }
+    }
+    stub_request(:get, url).to_return(body: body.to_json)
+  end
+
+  def stub_whq_ministries
+    url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?"\
+      'entity_type=ministry&fields=name&filters%5Bis_active%5D=false&'\
+      'levels=0&page=1&per_page=50&ruleset=global_ministries'
+    body = {
+      entities: [{ ministry: { id: 6 } }],
+      meta: { page: 1, next_page: false }
     }
     stub_request(:get, url).to_return(body: body.to_json)
   end
