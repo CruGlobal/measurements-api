@@ -58,7 +58,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     if ministry.nil? || refresh
       ministry = new(gr_id: gr_id) if ministry.nil?
       entity = ministry.update_from_entity
-      return nil if entity.nil? || (entity.key?(:is_active) && entity[:is_active] == false)
+      return nil if entity.nil?
       ministry.save
       GrSync::MultiAssignmentSync.new(ministry, entity).sync
     end
