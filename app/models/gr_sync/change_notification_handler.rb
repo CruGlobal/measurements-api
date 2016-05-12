@@ -24,6 +24,8 @@ module GrSync
     def created_or_updated_notification
       entity = GlobalRegistryClient.client.find(@gr_id)
       @model.create_or_update_from_entity!(entity)
+    rescue ActiveRecord::RecordInvalid => e
+      Rollbar.error(e, gr_id: @gr_id, entity: entity)
     end
   end
 end
