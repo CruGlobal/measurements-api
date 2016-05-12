@@ -196,7 +196,7 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     # Global Registry Entity Properties to sync
     def entity_properties
       [:name, :parent_id, :min_code, :location, :location_zoom, :lmi_hide, :lmi_show,
-       :hide_reports_tab, :has_slm, :has_llm, :has_gcm, :has_ds].concat(super)
+       :hide_reports_tab, :has_slm, :has_llm, :has_gcm, :has_ds, :ministry_scope].concat(super)
     end
 
     private
