@@ -33,8 +33,7 @@ describe GrSync::MinistriesSync, '#sync_all' do
 
   def stub_whq_ministries
     url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities?"\
-      'entity_type=ministry&fields=name&filters%5Bis_active%5D=false&'\
-      'levels=0&page=1&per_page=50&ruleset=global_ministries'
+      'entity_type=ministry&fields=name&levels=0&page=1&per_page=50&ruleset=global_ministries'
     body = {
       entities: [{ ministry: { id: 6 } }],
       meta: { page: 1, next_page: false }

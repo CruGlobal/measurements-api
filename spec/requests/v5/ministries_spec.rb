@@ -21,16 +21,16 @@ RSpec.describe 'V5::Ministries', type: :request do
       expect(json.length).to be ministries.length
     end
 
-    context 'with refresh=true' do
-      it 'responds with HTTP 202 Accepted' do
-        clear_uniqueness_locks
-        expect do
-          get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
-          expect(response).to be_success
-          expect(response).to have_http_status(202)
-        end.to change(GrSync::WithGrWorker.jobs, :size).by(1)
-      end
-    end
+    # context 'with refresh=true' do
+    #   it 'responds with HTTP 202 Accepted' do
+    #     clear_uniqueness_locks
+    #     expect do
+    #       get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+    #       expect(response).to be_success
+    #       expect(response).to have_http_status(202)
+    #     end.to change(GrSync::WithGrWorker.jobs, :size).by(1)
+    #   end
+    # end
 
     context 'with whq_only=true' do
       it 'responds with whq ministries' do
