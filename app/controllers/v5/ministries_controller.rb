@@ -41,7 +41,7 @@ module V5
       @ministries ||= ministry_scope
       # Filter ministries if whq_only
       if bool_value(params[:whq_only])
-        @ministries = @ministries.where(ministry_scope: ::Ministry::SCOPES).includes(:area)
+        @ministries = @ministries.where(ministry_scope: ::Ministry::SCOPES).includes(:area).order(name: :asc)
       end
     end
 
