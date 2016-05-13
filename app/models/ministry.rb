@@ -123,6 +123,14 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     super lmi
   end
 
+  def update_from_entity(params = {})
+    super
+  rescue Net::HTTPGatewayTimeOut
+    # India and US-Student Ministries timeout, fetch basic properties
+    # fields=* returns all fields except relationships
+    super(fields: '*')
+  end
+
   private
 
   # Model attribute value to Global Registry Entity property value
