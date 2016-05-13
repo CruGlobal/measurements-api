@@ -8,7 +8,8 @@ module V5
     }, as: :ministry_scope
 
     def index
-      return if refresh_ministries
+      # Disable Manual ministry refresh
+      # return if refresh_ministries
       load_ministries
       render_ministries
     end
