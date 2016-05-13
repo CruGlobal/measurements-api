@@ -10,7 +10,7 @@ module V5
       @assignment.save
     rescue ActiveRecord::RecordNotUnique
       found_assignment = ::Assignment.find_by(person_id: @assignment.person_id, ministry_id: @assignment.ministry_id)
-      return nil unless assignment.present?
+      return nil unless found_assignment.present?
       @assignment = ::Assignment::UserUpdatedAssignment.new(found_assignment)
       @assignment.update(role: assignment_params[:team_role])
     end
