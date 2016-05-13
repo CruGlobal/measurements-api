@@ -26,6 +26,11 @@ module V5
              :supported_staff_only, :perm_link_stub,
              to: :measurement
 
+    def attributes(args)
+      # Remove nil values
+      super(args).reject { |_k, v| v.nil? }
+    end
+
     def custom?
       perm_link.sub('lmi_total_', '').starts_with?('custom_')
     end

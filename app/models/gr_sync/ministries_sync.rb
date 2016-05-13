@@ -22,7 +22,7 @@ module GrSync
       all_ministries_missing_active do |entity|
         yield entity
       end
-      all_inactive_whq_ministries do |entity|
+      all_whq_ministries do |entity|
         yield entity
       end
     end
@@ -55,13 +55,13 @@ module GrSync
       end
     end
 
-    def all_inactive_whq_ministries
+    # All WHQ Ministries - this has overlap with previous queries, but includes approx 50 they miss
+    def all_whq_ministries
       raise 'block required' unless block_given?
       page_helper.find_entities_each(
         entity_type: 'ministry',
         levels: 0,
         fields: 'name',
-        'filters[is_active]': false,
         ruleset: 'global_ministries'
       ) do |entity|
         yield entity

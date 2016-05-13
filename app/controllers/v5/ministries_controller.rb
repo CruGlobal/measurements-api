@@ -8,7 +8,8 @@ module V5
     }, as: :ministry_scope
 
     def index
-      return if refresh_ministries
+      # Disable Manual ministry refresh
+      # return if refresh_ministries
       load_ministries
       render_ministries
     end
@@ -41,7 +42,7 @@ module V5
       @ministries ||= ministry_scope
       # Filter ministries if whq_only
       if bool_value(params[:whq_only])
-        @ministries = @ministries.where(ministry_scope: ::Ministry::SCOPES).includes(:area)
+        @ministries = @ministries.where(ministry_scope: ::Ministry::SCOPES).includes(:area).order(name: :asc)
       end
     end
 
