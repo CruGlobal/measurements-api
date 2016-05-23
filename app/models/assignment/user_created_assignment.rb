@@ -36,7 +36,9 @@ class Assignment
       return if key_guid.blank?
       # Legacy GMA identities saved user login as guid
       if key_guid.include?('@')
-        Person.person_for_username(key_guid)
+        self.email = key_guid
+        self.key_guid = nil
+        person_by_email
       else
         Person.person(key_guid)
       end
@@ -45,6 +47,11 @@ class Assignment
     def person_by_username
       return if username.blank?
       Person.person_for_username(username) || create_person_from_params
+    end
+
+    def person_by_email
+      return if email.blank?
+      Person.person_for_email(email) || create_person_from_params
     end
 
     def create_person_from_params
