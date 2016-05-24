@@ -23,6 +23,8 @@ class Person < ActiveRecord::Base
       gr_id
     when :client_integration_id
       id
+    when :email_address
+      [{ email: email, client_integration_id: email }]
     else
       super
     end
@@ -90,7 +92,7 @@ class Person < ActiveRecord::Base
     # Global Registry Entity Properties to sync
     def entity_properties
       [:first_name, :last_name, :key_username, :authentication,
-       :email, :preferred_name].concat(super)
+       :email_address, :preferred_name].concat(super)
     end
 
     def person(cas_guid, refresh = false)
@@ -108,6 +110,22 @@ class Person < ActiveRecord::Base
           entity_type: entity_type,
           fields: GR_FIELDS,
           'filters[key_username]': username
+        )
+        return person if entity.nil?
+        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
+        person.from_entity entity
+        person.save
+      end
+      person
+    end
+
+    def person_for_email(email, refresh = false)
+      person = find_by(email: email)
+      if person.nil? || refresh
+        entity = find_entity_by(
+          entity_type: entity_type,
+          fields: GR_FIELDS,
+          'filters[email_address][email]': email
         )
         return person if entity.nil?
         person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
