@@ -53,7 +53,7 @@ module GlobalRegistryHelpers
     ministry ||= FactoryGirl.build(:ministry)
     response = { error: 'We couldn\'t find the record you were looking for.' }
     WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry.gr_id}")
+      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry.gr_id}?fields=*,area:relationship")
       .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
       .to_return(status: 404, body: response.to_json, headers: {})
   end

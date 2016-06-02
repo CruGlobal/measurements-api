@@ -57,12 +57,22 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     ministry = find_by(gr_id: gr_id)
     if ministry.nil? || refresh
       ministry = new(gr_id: gr_id) if ministry.nil?
-      entity = ministry.update_from_entity
+      entity = ministry.update_from_entity(fields: '*,area:relationship')
       return nil if entity.nil?
       ministry.save
-      GrSync::MultiAssignmentSync.new(ministry, entity).sync
+      ministry.sync_assignments
     end
     ministry
+  end
+
+  def sync_assignments
+    entity = Ministry.find_entity(gr_id, 'fields' => 'person:relationship',
+                                         'filters[owned_by]' => ENV.fetch('GLOBAL_REGISTRY_SYSTEM_ID'))
+               &.dig(self.class.entity_type)
+    GrSync::MultiAssignmentSync.new(self, entity).sync
+  rescue Net::HTTPGatewayTimeOut
+    # India and US-Student Ministries timeout
+    nil
   end
 
   def team_members # rubocop:disable Metrics/AbcSize
@@ -121,14 +131,6 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   def lmi_hide=(lmi)
     lmi = lmi.split(',') if lmi.is_a? String
     super lmi
-  end
-
-  def update_from_entity(params = {})
-    super
-  rescue Net::HTTPGatewayTimeOut
-    # India and US-Student Ministries timeout, fetch basic properties
-    # fields=* returns all fields except relationships
-    super(fields: '*')
   end
 
   private

@@ -194,15 +194,21 @@ describe Ministry, type: :model do
     it 'retrieves a ministry from global registry if none exists for gr_id' do
       ministry_gr_id = SecureRandom.uuid
       area_gr_id = SecureRandom.uuid
-      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry_gr_id}"
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry_gr_id}?fields=*,area:relationship"
       entity = {
         ministry: {
           id: ministry_gr_id, name: 'Test',
-          'area:relationship': { area: area_gr_id },
-          'person:relationship': [{ person: '1' }, { person: '2' }]
+          'area:relationship': { area: area_gr_id }
+
         }
       }.deep_stringify_keys
       stub_request(:get, url).to_return(body: { entity: entity }.to_json)
+      assignment_entity = { ministry: {
+        id: ministry_gr_id, 'person:relationship': [{ person: '1' }, { person: '2' }]
+      } }.deep_stringify_keys
+      stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry_gr_id}?"\
+                         "filters[owned_by]=#{ENV['GLOBAL_REGISTRY_SYSTEM_ID']}&fields=person:relationship")
+        .to_return(body: { entity: assignment_entity }.to_json)
       area = create(:area)
       allow(Area).to receive(:for_gr_id).with(area_gr_id) { area }
       assignments_sync = double(sync: nil)
@@ -215,7 +221,7 @@ describe Ministry, type: :model do
       expect(ministry.name).to eq 'Test'
       expect(ministry.area).to eq area
       expect(GrSync::MultiAssignmentSync).to have_received(:new)
-        .with(ministry, entity['ministry'])
+        .with(ministry, assignment_entity['ministry'])
       expect(assignments_sync).to have_received(:sync)
     end
   end
