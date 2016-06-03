@@ -7,7 +7,8 @@ module GrSync
     end
 
     def sync
-      return unless @relationship['created_by'] == ENV.fetch('GLOBAL_REGISTRY_SYSTEM_ID')
+      return if @relationship.key?('created_by') &&
+                @relationship['created_by'] != ENV.fetch('GLOBAL_REGISTRY_SYSTEM_ID')
       return unless @relationship.key?('team_role')
       create_or_update_assignment
     end
