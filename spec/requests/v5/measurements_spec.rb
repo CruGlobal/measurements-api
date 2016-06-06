@@ -89,19 +89,19 @@ RSpec.describe 'V5::Measurements', type: :request do
     context 'as admin' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
 
-      it 'responds with measurement breakdowns' do
+      it 'responds with created' do
+        clear_uniqueness_locks
         measurements_body = [{ measurement_type_id: measurement.local_id, source: 'gma-app',
                                value: 123, ministry_id: ministry.gr_id, mcc: 'gcm' },
                              { measurement_type_id: measurement.local_id, source: 'churches',
                                value: 123, ministry_id: ministry.gr_id, mcc: 'gcm' }]
-        post_gr_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
-        allow_any_instance_of(Measurement::MeasurementRollup).to receive(:run)
 
-        post '/v5/measurements/', { _json: measurements_body },
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
-
-        expect(response.code.to_i).to be 201
-        expect(post_gr_stub).to have_been_requested.times(2)
+        expect do
+          post '/v5/measurements/', { _json: measurements_body },
+               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+          expect(response).to be_success
+          expect(response).to have_http_status(201)
+        end.to change(GrSync::WithGrWorker.jobs, :size).by(2)
       end
     end
   end

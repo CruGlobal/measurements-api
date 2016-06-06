@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 class Measurement
   class MeasurementRollup
-    def run(measurement, ministry_gr_id, period, mcc)
+    def run(measurement, ministry_gr_id, period, mcc, gr_client = nil)
       @measurement = measurement
       @ministry_gr_id = ministry_gr_id
       @period = period
       @mcc = mcc
 
-      @gr_client = GlobalRegistry::MeasurementType.new
+      @gr_client = gr_client.present? ? gr_client.measurement_type : GlobalRegistry::MeasurementType.new
       @ministry = Ministry.ministry(ministry_gr_id)
       @running_total = 0
 
