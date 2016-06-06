@@ -6,13 +6,26 @@ class MeasurementListUpdater
 
   def commit
     return unless valid?
-    # might be nice to do this threaded as-well
-    @json_array.each(&method(:push_measurement))
-    @json_array.each(&method(:update_totals))
+    batch = Sidekiq::Batch.new
+    batch.on(:success, 'MeasurementsListUpdater#update_totals', json: @json_array,
+                                                                gr_client_params: GlobalRegistryClient.parameters)
+    batch.jobs do
+      @json_array.each do |measurement|
+        GrSync::WithGrWorker.queue_call(GlobalRegistryClient.parameters,
+                                        GrSync::MeasurementPush, :push_to_gr, measurement)
+      end
+    end
   end
 
   def valid?
     @json_array.all?(&method(:valid_measurement?))
+  end
+
+  def update_totals(_status, options)
+    options[:json].each do |measurement|
+      GrSync::WithGrWorker.queue_call(options[:gr_client_params],
+                                      GrSync::MeasurementPush, :update_totals, measurement)
+    end
   end
 
   attr_reader :error
@@ -68,28 +81,5 @@ class MeasurementListUpdater
       return false
     end
     true
-  end
-
-  def push_measurement(measurement)
-    gr_params = measurement.slice(:period, :value, :related_entity_id, :measurement_type_id)
-    gr_params[:dimension] = measurement[:mcc]
-    gr_params[:dimension] += "_#{measurement[:source]}" if measurement[:source].present?
-
-    GlobalRegistryClient.client(:measurement).post(measurement: gr_params)
-  end
-
-  def update_totals(measurement)
-    mcc = measurement[:mcc]
-    mcc = mcc[0..mcc.index('_') - 1] if mcc.include?('_')
-
-    related_id = measurement[:related_entity_id]
-    if measurement[:measurement_type_id] == measurement[:measurement].person_id
-      related_id = Assignment.find_by(gr_id: measurement[:related_entity_id]).ministry.gr_id
-    end
-    update_ministry(related_id, measurement[:period], measurement[:measurement], mcc)
-  end
-
-  def update_ministry(ministry_gr_id, period, measurement, mcc)
-    Measurement::MeasurementRollup.new.run(measurement, ministry_gr_id, period, mcc)
   end
 end
