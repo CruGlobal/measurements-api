@@ -8,6 +8,7 @@ module GrSync
     end
 
     def push_to_gr(measurement)
+      measurement.symbolize_keys!
       gr_params = measurement.slice(:period, :value, :related_entity_id, :measurement_type_id)
       gr_params[:dimension] = measurement[:mcc]
       gr_params[:dimension] += "_#{measurement[:source]}" if measurement[:source].present?
@@ -16,8 +17,9 @@ module GrSync
     end
 
     def update_totals(measurement)
-      mcc = measurement[:mcc]
-      mcc = mcc[0..mcc.index('_') - 1] if mcc.include?('_')
+      measurement.symbolize_keys!
+      measurement[:measurement] = Measurement.find(measurement[:measurement_id])
+      mcc = determine_mcc(measurement[:mcc])
 
       related_id = measurement[:related_entity_id]
       if measurement[:measurement_type_id] == measurement[:measurement].person_id
@@ -27,6 +29,11 @@ module GrSync
     end
 
     private
+
+    def determine_mcc(mcc)
+      mcc[0..mcc.index('_') - 1] if mcc.include?('_')
+      mcc
+    end
 
     def update_ministry(ministry_gr_id, period, measurement, mcc)
       Measurement::MeasurementRollup.new.run(measurement, ministry_gr_id, period, mcc, gr_client)
