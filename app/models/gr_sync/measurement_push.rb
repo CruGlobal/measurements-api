@@ -8,6 +8,7 @@ module GrSync
     end
 
     def push_to_gr(measurement)
+      measurement.symbolize_keys!
       gr_params = measurement.slice(:period, :value, :related_entity_id, :measurement_type_id)
       gr_params[:dimension] = measurement[:mcc]
       gr_params[:dimension] += "_#{measurement[:source]}" if measurement[:source].present?
@@ -16,6 +17,8 @@ module GrSync
     end
 
     def update_totals(measurement)
+      measurement.symbolize_keys!
+      measurement[:measurement] = Measurement.find(measurement[:measurement_id])
       mcc = measurement[:mcc]
       mcc = mcc[0..mcc.index('_') - 1] if mcc.include?('_')
 
