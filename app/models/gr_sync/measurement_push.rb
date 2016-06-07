@@ -19,8 +19,7 @@ module GrSync
     def update_totals(measurement)
       measurement.symbolize_keys!
       measurement[:measurement] = Measurement.find(measurement[:measurement_id])
-      mcc = measurement[:mcc]
-      mcc = mcc[0..mcc.index('_') - 1] if mcc.include?('_')
+      mcc = determine_mcc(measurement[:mcc])
 
       related_id = measurement[:related_entity_id]
       if measurement[:measurement_type_id] == measurement[:measurement].person_id
@@ -30,6 +29,11 @@ module GrSync
     end
 
     private
+
+    def determine_mcc(mcc)
+      mcc[0..mcc.index('_') - 1] if mcc.include?('_')
+      mcc
+    end
 
     def update_ministry(ministry_gr_id, period, measurement, mcc)
       Measurement::MeasurementRollup.new.run(measurement, ministry_gr_id, period, mcc, gr_client)

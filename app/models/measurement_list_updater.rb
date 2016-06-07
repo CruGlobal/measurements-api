@@ -34,7 +34,11 @@ class MeasurementListUpdater
 
   def valid_measurement?(measurement)
     return false unless validate_measurement_mcc(measurement)
+    return false unless validate_measurement_type(measurement)
+    true
+  end
 
+  def validate_measurement_type(measurement)
     current_measurement = Measurement.find_by('person_id = ? OR local_id = ?',
                                               measurement[:measurement_type_id],
                                               measurement[:measurement_type_id])
@@ -44,7 +48,6 @@ class MeasurementListUpdater
       return false
     end
     measurement[:measurement_id] = current_measurement.id
-
     if measurement[:measurement_type_id] == current_measurement.local_id
       return false unless validate_local_measurement(measurement)
     else
