@@ -34,17 +34,21 @@ class MeasurementListUpdater
 
   def valid_measurement?(measurement)
     return false unless validate_measurement_mcc(measurement)
+    return false unless validate_measurement_type(measurement)
+    true
+  end
 
-    measurement[:measurement] = Measurement.find_by('person_id = ? OR local_id = ?',
-                                                    measurement[:measurement_type_id],
-                                                    measurement[:measurement_type_id])
-    if measurement[:measurement].blank?
+  def validate_measurement_type(measurement)
+    current_measurement = Measurement.find_by('person_id = ? OR local_id = ?',
+                                              measurement[:measurement_type_id],
+                                              measurement[:measurement_type_id])
+    if current_measurement.blank?
       @error = 'You can only post measurements for local and person_assignment measurements. '\
                  "measurement_type_id: #{measurement[:measurement_type_id]} is not permitted"
       return false
     end
-
-    if measurement[:measurement_type_id] == measurement[:measurement].local_id
+    measurement[:measurement_id] = current_measurement.id
+    if measurement[:measurement_type_id] == current_measurement.local_id
       return false unless validate_local_measurement(measurement)
     else
       return false unless validate_person_measurement(measurement)
