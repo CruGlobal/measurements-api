@@ -7,8 +7,8 @@ class MeasurementListUpdater
   def commit
     return unless valid?
     batch = Sidekiq::Batch.new
-    batch.on(:success, 'MeasurementListUpdater#update_totals', json: @json_array,
-                                                               gr_client_params: GlobalRegistryClient.parameters)
+    batch.on(:success, Callback::MeasurementListUpdaterCallback,
+             json: @json_array, gr_client_params: GlobalRegistryClient.parameters)
     batch.jobs do
       @json_array.each do |measurement|
         GrSync::WithGrWorker.queue_call(GlobalRegistryClient.parameters,
@@ -19,13 +19,6 @@ class MeasurementListUpdater
 
   def valid?
     @json_array.all?(&method(:valid_measurement?))
-  end
-
-  def update_totals(_status, options)
-    options[:json].each do |measurement|
-      GrSync::WithGrWorker.queue_call(options[:gr_client_params],
-                                      GrSync::MeasurementPush, :update_totals, measurement)
-    end
   end
 
   attr_reader :error
