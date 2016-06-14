@@ -120,7 +120,7 @@ class Person < ActiveRecord::Base
           'filters[key_username]': username
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
         person.from_entity entity
         person.save
       end
@@ -136,7 +136,7 @@ class Person < ActiveRecord::Base
           'filters[email_address][email]': email
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
         person.from_entity entity
         person.save
       end
