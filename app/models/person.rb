@@ -143,14 +143,15 @@ class Person < ActiveRecord::Base
       person
     end
 
-    def person_for_gr_id(gr_id)
+    def person_for_gr_id(gr_id, refresh = false)
       return if gr_id.blank?
       person = Person.find_by(gr_id: gr_id)
-      return person if person
-      entity = Person.find_entity(gr_id, entity_type: 'person')
-      person = Person.find_or_initialize_by(gr_id: gr_id)
-      person.from_entity(entity)
-      person.save
+      if person.nil? || refresh
+        entity = Person.find_entity(gr_id, entity_type: 'person', fields: GR_FIELDS)
+        person = Person.find_or_initialize_by(gr_id: gr_id)
+        person.from_entity(entity)
+        person.save
+      end
       person
     end
 
