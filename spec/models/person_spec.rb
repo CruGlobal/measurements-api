@@ -79,7 +79,8 @@ describe Person, type: :model do
 
     it 'creates the person from global registry if they do not exist yet' do
       gr_id = SecureRandom.uuid
-      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{gr_id}?entity_type=person"
+      url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{gr_id}?entity_type=person&"\
+        'fields=first_name,last_name,key_username,authentication,email_address.email'
       entity = { person: { id: gr_id, first_name: 'John' } }
       stub_request(:get, url).to_return(body: { entity: entity }.to_json)
 

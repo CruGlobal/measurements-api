@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Person < ActiveRecord::Base
+class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   include GrSync::EntityMethods
 
   GR_FIELDS = 'first_name,last_name,key_username,authentication,email_address.email'
