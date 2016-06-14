@@ -2,8 +2,7 @@
 class Person < ActiveRecord::Base
   include GrSync::EntityMethods
 
-  GR_FIELDS = 'first_name,last_name,key_username,authentication.key_guid,'\
-    'authentication.ea_guid'
+  GR_FIELDS = 'first_name,last_name,key_username,authentication,email_address.email'
 
   has_many :user_content_locales, dependent: :destroy
   has_many :user_map_views, dependent: :destroy
@@ -20,11 +19,16 @@ class Person < ActiveRecord::Base
   def attribute_to_entity_property(property)
     case property.to_sym
     when :id
-      gr_id
+      nil
     when :client_integration_id
+      return cas_guid if cas_guid.present?
+      return ea_guid if ea_guid.present?
+      return email if email.present?
       id
+    when :authentication
+      { key_guid: cas_guid }
     when :email_address
-      [{ email: email, client_integration_id: email }]
+      [{ email: email, client_integration_id: email }] if email.present?
     else
       super
     end
@@ -37,6 +41,10 @@ class Person < ActiveRecord::Base
     when :authentication
       auth = value.with_indifferent_access
       self.cas_guid = auth[:key_guid] if auth.key? :key_guid
+      self.ea_guid = auth[:ea_guid] if auth.key? :ea_guid
+    when :email_address
+      email_address = Array.wrap(value).first
+      self.email = email_address['email'] if email_address.key? 'email'
     else
       super
     end
@@ -112,7 +120,7 @@ class Person < ActiveRecord::Base
           'filters[key_username]': username
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
         person.from_entity entity
         person.save
       end
@@ -128,7 +136,7 @@ class Person < ActiveRecord::Base
           'filters[email_address][email]': email
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity[:id]) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
         person.from_entity entity
         person.save
       end
@@ -164,11 +172,10 @@ class Person < ActiveRecord::Base
     end
 
     def find_entity_by_auth_guid(gr_auth_prefix, guid)
-      find_entity_by(
-        entity_type: entity_type,
-        fields: GR_FIELDS,
-        "filters[authentication][#{gr_auth_prefix}_guid]": guid
-      )
+      # When using authentication, we find by posting
+      client.post({ entity: { person: { authentication: { "#{gr_auth_prefix}_guid" => guid },
+                                        client_integration_id: guid } } },
+                  params: { fields: GR_FIELDS, full_response: 'true' })['entity']
     end
   end
 end

@@ -41,12 +41,11 @@ module GlobalRegistryHelpers
                            key_username: person.cas_username, client_integration_id: person.cas_guid,
                            authentication: { id: SecureRandom.uuid, key_guid: person.cas_guid } } }
     WebMock
-      .stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
+      .stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/entities")
       .with(headers: { 'Authorization' => "Bearer #{ENV['GLOBAL_REGISTRY_TOKEN']}" })
-      .with(query: { entity_type: 'person',
-                     fields: Person::GR_FIELDS,
-                     'filters[authentication][key_guid]': person.cas_guid })
-      .to_return(status: 200, body: { entities: [response] }.to_json, headers: {})
+      .with(query: { fields: Person::GR_FIELDS,
+                     full_response: 'true' })
+      .to_return(status: 200, body: { entity: response }.to_json, headers: {})
   end
 
   def gr_get_invalid_ministry_request(ministry)

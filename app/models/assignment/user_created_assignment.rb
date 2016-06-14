@@ -12,8 +12,8 @@ class Assignment
                   :preferred_name,
                   :ea_guid
 
-    before_validation :assign_person, on: :create
     before_validation :assign_ministry, on: :create
+    before_validation :assign_person, on: :create
 
     before_create :create_gr_relationship
 
