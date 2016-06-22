@@ -26,7 +26,7 @@ class Person < ActiveRecord::Base
       return email if email.present?
       id
     when :authentication
-      { key_guid: cas_guid }
+      { key_guid: cas_guid } if cas_guid.present?
     when :email_address
       [{ email: email, client_integration_id: email }] if email.present?
     else
