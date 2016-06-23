@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Person < ActiveRecord::Base
+class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
   include GrSync::EntityMethods
 
   GR_FIELDS = 'first_name,last_name,key_username,authentication,email_address.email'
@@ -20,11 +20,6 @@ class Person < ActiveRecord::Base
     case property.to_sym
     when :id
       nil
-    when :client_integration_id
-      return cas_guid if cas_guid.present?
-      return ea_guid if ea_guid.present?
-      return email if email.present?
-      id
     when :authentication
       { key_guid: cas_guid } if cas_guid.present?
     when :email_address
@@ -32,6 +27,13 @@ class Person < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def client_integration_id
+    return cas_guid if cas_guid.present?
+    return ea_guid if ea_guid.present?
+    return email if email.present?
+    id
   end
 
   def attribute_from_entity_property(property, value = nil)
@@ -143,14 +145,15 @@ class Person < ActiveRecord::Base
       person
     end
 
-    def person_for_gr_id(gr_id)
+    def person_for_gr_id(gr_id, refresh = false)
       return if gr_id.blank?
       person = Person.find_by(gr_id: gr_id)
-      return person if person
-      entity = Person.find_entity(gr_id, entity_type: 'person')
-      person = Person.find_or_initialize_by(gr_id: gr_id)
-      person.from_entity(entity)
-      person.save
+      if person.nil? || refresh
+        entity = Person.find_entity(gr_id, entity_type: 'person', fields: GR_FIELDS)
+        person = Person.find_or_initialize_by(gr_id: gr_id)
+        person.from_entity(entity)
+        person.save
+      end
       person
     end
 

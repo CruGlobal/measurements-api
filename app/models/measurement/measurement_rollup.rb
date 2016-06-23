@@ -65,16 +65,19 @@ class Measurement
       self.class.new.run(@measurement.parent, @ministry_gr_id, @period, @mcc) if @measurement.parent
     end
 
-    def load_measurements(measurement_id, related_id = nil, period = nil, params = nil)
-      request_params = {
-        'filters[related_entity_id][]': related_id,
-        'filters[period_from]': period,
-        'filters[period_to]': period,
-        per_page: 250
-      }
-      request_params = request_params.merge(params) if params
+    def load_measurements(measurement_id, related_ids = nil, period = nil, params = nil)
+      measurements = []
+      Array.wrap(related_ids).each_slice(40) do |ids|
+        request_params = {
+          'filters[related_entity_id][]': ids,
+          'filters[period_from]': period,
+          'filters[period_to]': period
+        }
+        request_params = request_params.merge(params) if params
 
-      @gr_client.find(measurement_id, request_params)['measurement_type']['measurements']
+        measurements.concat(@gr_client.find(measurement_id, request_params)['measurement_type']['measurements'])
+      end
+      measurements
     end
 
     def push_measurement_to_gr(value, related_id, type_id)
