@@ -17,7 +17,7 @@ module GrSync
       # on classes in the GrSync namespace.
       raise "#{klass_name} not in GrSync::" unless klass_name.to_s.start_with?('GrSync::')
 
-      gr_client = GlobalRegistryClient.new(gr_client_params)
+      gr_client = GlobalRegistryClient.new(gr_client_params&.symbolize_keys)
       klass_name.constantize.new(gr_client).public_send(method, *args)
     end
   end
