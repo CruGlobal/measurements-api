@@ -28,7 +28,7 @@ describe GrSync::WithGrWorker do
         GrSync::WithGrWorker.drain
       end.to change(GrSync::WithGrWorker.jobs, :size).by(-1)
 
-      expect(GlobalRegistryClient).to have_received(:new).with(access_token: 'zzz')
+      expect(GlobalRegistryClient).to have_received(:new).with(gr_params)
       expect(gr_sync_test).to have_received(:test).with('arg')
     end
 
