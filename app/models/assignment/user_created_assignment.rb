@@ -36,7 +36,7 @@ class Assignment
       return if key_guid.blank?
       # Legacy GMA identities saved user login as guid
       if key_guid.include?('@')
-        self.email = key_guid
+        self.email = key_guid.strip
         self.key_guid = nil
         person_by_email
       else

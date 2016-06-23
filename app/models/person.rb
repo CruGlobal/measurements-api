@@ -20,18 +20,20 @@ class Person < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
     case property.to_sym
     when :id
       nil
-    when :client_integration_id
-      return cas_guid if cas_guid.present?
-      return ea_guid if ea_guid.present?
-      return email if email.present?
-      id
     when :authentication
-      { key_guid: cas_guid }
+      { key_guid: cas_guid } if cas_guid.present?
     when :email_address
       [{ email: email, client_integration_id: email }] if email.present?
     else
       super
     end
+  end
+
+  def client_integration_id
+    return cas_guid if cas_guid.present?
+    return ea_guid if ea_guid.present?
+    return email if email.present?
+    id
   end
 
   def attribute_from_entity_property(property, value = nil)
