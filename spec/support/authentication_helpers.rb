@@ -9,7 +9,7 @@ module AuthenticationHelpers
   def authenticate_api
     token = SecureRandom.uuid.delete('-')
 
-    WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_URL'] + '/systems?limit=1')
+    WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_BACKEND_URL'] + '/systems?limit=1')
            .with(headers: { 'Authorization' => "Bearer #{token}" })
            .to_return(status: 200, body: { access: 'granted' }.to_json)
 
