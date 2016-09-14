@@ -42,5 +42,9 @@ module V5
     def localized_description
       object.localized_description || object.description
     end
+
+    def parent_id
+      measurement.parent.try(:perm_link_stub)
+    end
   end
 end
