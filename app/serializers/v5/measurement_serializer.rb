@@ -30,15 +30,15 @@ module V5
     end
 
     def locale
-      object.locale(scope[:locale], scope[:ministry_id])
+      object.locale(scope[:locale], scope[:ministry])
     end
 
     def localized_name
-      object.localized_name(scope[:locale], scope[:ministry_id])
+      object.localized_name(scope[:locale], scope[:ministry])
     end
 
     def localized_description
-      object.localized_description(scope[:locale], scope[:ministry_id])
+      object.localized_description(scope[:locale], scope[:ministry])
     end
 
     def measurement_type_ids
