@@ -5,7 +5,8 @@ module V5
 
     def index
       load_measurements
-      render json: @measurements, each_serializer: V5::MeasurementSerializer
+      render json: @measurements, scope: { locale: params[:locale], ministry: ministry },
+             each_serializer: V5::MeasurementSerializer
     end
 
     def show
@@ -36,6 +37,10 @@ module V5
       return @measurement if @measurement
       @measurement = MeasurementDetails.new(params.permit(:id, :ministry_id, :mcc, :period))
       @measurement.load
+    end
+
+    def ministry
+      @ministry ||= Ministry.ministry(params[:ministry_id])
     end
   end
 end
