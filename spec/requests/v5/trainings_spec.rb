@@ -6,7 +6,7 @@ RSpec.describe 'V5::Trainings', type: :request do
   let(:user) { FactoryGirl.create(:person) }
 
   describe 'GET /v5/training' do
-    let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
+    let!(:training) { FactoryGirl.create(:training, ministry: ministry, date: 1.month.ago) }
     let(:json) { JSON.parse(response.body) }
 
     it 'responds with trainings' do
