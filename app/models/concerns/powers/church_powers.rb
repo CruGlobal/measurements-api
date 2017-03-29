@@ -10,7 +10,7 @@ module Powers
         break nil if blocked?
         churches = Church.where(ministry: fallback_assignment.ministry)
         break churches unless assignment.try(:self_assigned?)
-        churches.where('security >= ?', Church.securities[:public_church])
+        churches.where('security >= ?', Church.securities[:registered_public_church])
       end
 
       power :churches do
