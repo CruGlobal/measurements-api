@@ -4,7 +4,7 @@ require 'rails_helper'
 describe V5::TokenAndUserSerializer do
   describe 'token request' do
     let(:resource) do
-      token = CruLib::AccessToken.new(
+      token = CruAuthLib::AccessToken.new(
         key_guid: 'asdf-1234',
         email: 'email@email.com',
         first_name: 'Tony',

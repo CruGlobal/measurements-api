@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'cru_lib'
+require 'cru_auth_lib'
 
-CruLib.configure do |config|
+CruAuthLib.configure do |config|
   config.redis_host = ENV.fetch('REDIS_PORT_6379_TCP_ADDR')
 end

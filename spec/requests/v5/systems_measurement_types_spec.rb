@@ -20,7 +20,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     end
 
     it 'caches authentication' do
-      token = CruLib::AccessToken.new.token
+      token = CruAuthLib::AccessToken.new.token
 
       gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_BACKEND_URL'] + '/systems?limit=1')
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
@@ -34,7 +34,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     end
 
     it 'reauthenticates authentication after expire' do
-      token = CruLib::AccessToken.new.token
+      token = CruAuthLib::AccessToken.new.token
 
       gr_request = WebMock.stub_request(:get, ENV['GLOBAL_REGISTRY_BACKEND_URL'] + '/systems?limit=1')
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
