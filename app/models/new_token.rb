@@ -49,13 +49,13 @@ class NewToken
     map.each do |k, v|
       attributes[k] = st.extra_attributes[v] if st.extra_attributes.key?(v)
     end
-    CruLib::AccessToken.new(attributes)
+    CruAuthLib::AccessToken.new(attributes)
   end
 
   # Stores a Service Ticket to Access Token relationship
   # This is used to invalidate access tokens when CAS session expires
   def store_service_ticket(ticket, token)
-    CruLib.redis_client.setex(redis_ticket_key(ticket), 2.hours.to_i, token.token)
+    CruAuthLib.redis_client.setex(redis_ticket_key(ticket), 2.hours.to_i, token.token)
   end
 
   def redis_ticket_key(ticket)

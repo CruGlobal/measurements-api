@@ -35,7 +35,7 @@ module V5
     end
 
     def check_token(token)
-      CruLib::AccessToken.read(token)
+      CruAuthLib::AccessToken.read(token)
     end
   end
 end
