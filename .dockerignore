@@ -1,4 +1,5 @@
+.bundle/config
 .git
-vendor/cache
+vendor
 log/*
 tmp
