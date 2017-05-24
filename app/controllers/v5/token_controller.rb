@@ -11,7 +11,7 @@ module V5
     end
 
     def destroy
-      CruLib::AccessToken.del(@access_token.token)
+      CruAuthLib::AccessToken.del(@access_token.token)
       render status: :ok, plain: 'OK'
     end
 

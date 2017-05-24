@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/CruGlobal/cru_lib.git
-  revision: 8da4a0abb7195c0ad4e23aaf26e55ead312c441a
-  specs:
-    cru_lib (0.0.6)
-      active_model_serializers
-      global_registry
-      redis
-
-GIT
   remote: https://github.com/rails-api/active_model_serializers.git
   revision: db87f8d85e7a46ef195a555cb7e2509f1affc622
   specs:
@@ -97,6 +88,9 @@ GEM
       tins (~> 1.6.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    cru-auth-lib (0.1.0)
+      active_model_serializers (>= 0.10.0.rc1)
+      redis (~> 3.3)
     diff-lcs (1.2.5)
     docile (1.1.5)
     dotenv (2.1.0)
@@ -364,7 +358,7 @@ DEPENDENCIES
   carrierwave-aws
   consul
   coveralls
-  cru_lib!
+  cru-auth-lib (~> 0.1.0)
   dotenv-rails
   factory_girl_rails
   fakeredis
@@ -408,4 +402,4 @@ DEPENDENCIES
   xml-simple
 
 BUNDLED WITH
-   1.12.5
+   1.13.7
