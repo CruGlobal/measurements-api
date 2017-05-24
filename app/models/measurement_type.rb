@@ -150,9 +150,9 @@ class MeasurementType < ActiveModelSerializers::Model
     name = "#{english} (#{name_type})" if name_type
 
     perm_link = gen_perm_link(perm_link_prefix || '')
-    json = gr_singleton.post(name: name, frequency: 'monthly', unit: 'People',
-                             description: description, perm_link: perm_link,
-                             related_entity_type_id: related_id)
+    json = gr_singleton.post(measurement_type: { name: name, frequency: 'monthly', unit: 'People',
+                                                 description: description, perm_link: perm_link,
+                                                 related_entity_type_id: related_id })
     json['measurement_type']['id']
   end
 
