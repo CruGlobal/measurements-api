@@ -18,7 +18,7 @@ RSpec.describe 'V5::Churches', type: :request do
     end
 
     it 'gives development stage when looking at past period' do
-      church.update(start_date: 2.months.ago)
+      church.update(start_date: 2.months.ago.beginning_of_day)
 
       get '/v5/churches', { show_all: true, ministry_id: ministry.gr_id, period: 2.months.ago.strftime('%Y-%m') },
           'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
