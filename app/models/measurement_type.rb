@@ -12,8 +12,8 @@ class MeasurementType < ActiveModelSerializers::Model
 
   validate :check_parent_id_valid
 
-  MINISTRY_TYPE_ID = 'a5499c9a-d556-11e3-af5a-12725f8f377c'
-  ASSIGNMENT_TYPE_ID = 'b4c69f8e-db86-11e3-acf9-12725f8f377c'
+  MINISTRY_TYPE_ID = ENV['MINISTRY_TYPE_ID']
+  ASSIGNMENT_TYPE_ID = ENV['ASSIGNMENT_TYPE_ID']
 
   def save
     return false unless valid?
