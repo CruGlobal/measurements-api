@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'sidekiq/web'
+require 'sidekiq/pro/web'
 require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
