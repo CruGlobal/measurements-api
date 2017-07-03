@@ -53,7 +53,8 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
-  config.logger = ActiveSupport::TaggedLogging.new(Logger::Syslog.new("measurements-api-#{ENV['ENVIRONMENT']}", Syslog::LOG_LOCAL7))
+  syslogger = Logger::Syslog.new("measurements-api-#{ENV['ENVIRONMENT']}", Syslog::LOG_LOCAL7)
+  config.logger = ActiveSupport::TaggedLogging.new(syslogger)
   config.log_tags = [lambda { |request| "ReqID:#{request.uuid}" }]
 
   # Use a different cache store in production.
