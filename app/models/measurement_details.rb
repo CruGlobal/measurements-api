@@ -6,6 +6,8 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
 
   delegate :perm_link_stub, to: :measurement
 
+  RELATED_ENTITIES_BATCH_SIZE = 65
+
   def initialize(attributes = {})
     super(attributes)
 
@@ -124,15 +126,26 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def get_from_gr_with_params(type, params)
-    gr_singleton.find(measurement.send("#{type}_id"), params.compact)['measurement_type']['measurements']
+    # if params['filters[related_entity_id][]'] has more that ~73 items this will fail with
+    # HTTPRequestEntityTooLarge so we need to then run multiple requests with 70 related_entity_id each
+    measurements = []
+    measurement_id = measurement.send("#{type}_id")
+    all_related_entity_ids = Array.wrap(params['filters[related_entity_id][]'])
+    all_related_entity_ids.in_groups_of(RELATED_ENTITIES_BATCH_SIZE, false) do |related_entity_ids|
+      batch_params = params.clone
+      batch_params['filters[related_entity_id][]'] = related_entity_ids
+      batch_response = gr_singleton.find(measurement_id, batch_params.compact)
+      measurements.concat(batch_response['measurement_type']['measurements'])
+    end
+    measurements
   end
 
   def gr_request_params(dimension_level, related_id = nil, period = nil)
     {
-      'filters[related_entity_id][]': related_id || ministry_id,
-      'filters[period_from]': period || period_from,
-      'filters[period_to]': period || @period,
-      'filters[dimension]': dimension_filter(dimension_level),
+      'filters[related_entity_id][]' => related_id || ministry_id,
+      'filters[period_from]' => period || period_from,
+      'filters[period_to]' => period || @period,
+      'filters[dimension]' => dimension_filter(dimension_level),
       per_page: 250
     }
   end
