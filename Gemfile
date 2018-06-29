@@ -5,6 +5,7 @@ end
 
 gem 'rake', '~> 11.1.1'
 gem 'rails-api'
+gem 'rails', '~> 4.2.10'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
 gem 'puma'
 gem 'newrelic_rpm'
