@@ -1,13 +1,17 @@
 # frozen_string_literal: true
+require 'redis'
 require 'sidekiq'
 require 'sidekiq/web'
-require Rails.root.join('config', 'initializers', 'redis')
 
-sidekiq_project_name = ENV.fetch('PROJECT_NAME') { Rails.application.class.parent.to_s }
-sidekiq_namespace = [sidekiq_project_name, Rails.env, 'resque'].join(':')
+redis_conf = YAML.safe_load(ERB.new(File.read(Rails.root.join('config', 'redis.yml'))).result, [], [], true)['sidekiq']
+
+Redis.current = Redis.new(redis_conf)
+
+redis_settings = { url: Redis.current.client.id,
+                   namespace: redis_conf['namespace'] }
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: Redis.current.client.id, namespace: sidekiq_namespace }
+  config.redis = redis_settings
 end
 
 if Sidekiq::Client.method_defined? :reliable_push!
@@ -17,7 +21,7 @@ end
 Sidekiq.configure_server do |config|
   config.reliable_fetch!
   config.reliable_scheduler!
-  config.redis = { url: Redis.current.client.id, namespace: sidekiq_namespace }
+  config.redis = redis_settings
 
   config.server_middleware do |chain|
     chain.add SidekiqResetGrClient
