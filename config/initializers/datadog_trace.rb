@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Datadog.configure do |c|
   # Tracer
   c.tracer hostname: ENV['DATADOG_HOST'],
