@@ -2,7 +2,6 @@
 require 'redis'
 require 'sidekiq'
 require 'sidekiq/web'
-require 'datadog/statsd'
 
 redis_conf = YAML.safe_load(ERB.new(File.read(Rails.root.join('config', 'redis.yml'))).result, [], [], true)['sidekiq']
 
@@ -40,7 +39,3 @@ Sidekiq.default_worker_options = {
   log_duplicate_payload: true,
   unique: :until_and_while_executing
 }
-
-unless Rails.env.development? || Rails.env.test?
-  Sidekiq::Pro.dogstatsd = -> { Datadog::Statsd.new(ENV['DATADOG_HOST'], ENV['DATADOG_PORT']) }
-end
