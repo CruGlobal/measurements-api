@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 source 'https://gems.contribsys.com/' do
-  gem 'sidekiq-pro'
+  gem 'sidekiq-pro', '3.1.0'
 end
 
 gem 'rake', '~> 11.1.1'
@@ -19,7 +19,8 @@ gem 'cru-auth-lib', '~> 0.1.0'
 gem 'pg'
 gem 'rubycas-client-rails'
 gem 'xml-simple', require: 'xmlsimple'
-gem 'sidekiq-unique-jobs'
+gem 'sidekiq', '4.1.1'
+gem 'sidekiq-unique-jobs', '4.0.18'
 gem 'sidekiq-cron'
 gem 'redis-rails'
 gem 'redis-namespace'
@@ -32,6 +33,8 @@ gem 'awesome_nested_set'
 gem 'global_registry'
 gem 'carrierwave-aws'
 gem 'will_paginate'
+gem 'ddtrace'
+gem 'dogstatsd-ruby'
 
 group :development, :test do
   gem 'dotenv-rails'
