@@ -7,8 +7,8 @@ COPY Gemfile Gemfile.lock ./
 COPY docker/pagespeed.conf /usr/local/openresty/nginx/conf/pagespeed.conf
 
 RUN bundle config gems.contribsys.com $SIDEKIQ_CREDS
-RUN bundle binstubs bundler --force
 RUN bundle install --jobs 20 --retry 5 --path vendor
+RUN bundle binstubs bundler --force
 RUN bundle binstub puma sidekiq rake
 
 COPY . ./
