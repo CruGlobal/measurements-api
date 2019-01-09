@@ -29,3 +29,6 @@ vendor/ruby
 
 # Carrier wave test files
 public/uploads
+
+# MacOS
+.DS_Store
