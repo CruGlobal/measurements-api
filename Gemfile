@@ -3,13 +3,16 @@ source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro', '3.1.0'
 end
 
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
+  "https://github.com/#{repo_name}.git"
+end
+
 gem 'rake', '~> 11.1.1'
-gem 'rails-api'
-gem 'rails', '~> 4.2.10'
+gem 'rails', '~> 5.0.7'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
-gem 'puma'
+gem 'puma', '~> 3.0'
 gem 'newrelic_rpm'
-gem 'rails-api-newrelic'
 gem 'versionist'
 gem 'rollbar'
 gem 'syslog-logger'

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Area < ActiveRecord::Base
+class Area < ApplicationRecord
   has_many :ministries
 
   class << self

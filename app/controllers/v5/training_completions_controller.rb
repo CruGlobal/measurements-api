@@ -16,7 +16,7 @@ module V5
     def destroy
       load_training_completion
       @completion.destroy
-      render nothing: true, status: 204
+      head 204
     end
 
     private

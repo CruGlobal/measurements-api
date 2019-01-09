@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Training < ActiveRecord::Base
+class Training < ApplicationRecord
   self.inheritance_column = nil
   belongs_to :ministry
   authorize_values_for :ministry

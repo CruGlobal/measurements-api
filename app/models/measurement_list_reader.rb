@@ -23,7 +23,7 @@ class MeasurementListReader
 
   private
 
-  def load_measurements_from_gr
+  def load_measurements_from_gr # rubocop:disable Metrics/MethodLength
     work_q = Queue.new
     params = gr_loading_params
     @measurements.each { |m| work_q.push m }
@@ -31,7 +31,9 @@ class MeasurementListReader
       Thread.new do
         begin
           loop do
-            Measurement::GrValueLoader.new(params.merge(measurement: work_q.pop(true))).load_gr_value
+            Rails.application.reloader.wrap do
+              Measurement::GrValueLoader.new(params.merge(measurement: work_q.pop(true))).load_gr_value
+            end
           end
         rescue ThreadError => e
           # we don't care about thread errors because

@@ -29,7 +29,7 @@ RSpec.describe 'V5::Stories', type: :request do
 
     context 'no assignment' do
       it 'responds successfully' do
-        get '/v5/stories', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        get '/v5/stories', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
         expect(response).to be_success
         expect(response).to have_http_status :ok
@@ -46,7 +46,8 @@ RSpec.describe 'V5::Stories', type: :request do
 
       context 'page and per_page' do
         it 'responds successfully' do
-          get '/v5/stories', { page: 2, per_page: 2 }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get '/v5/stories', params: { page: 2, per_page: 2 },
+                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -61,7 +62,7 @@ RSpec.describe 'V5::Stories', type: :request do
 
       context 'filter by mcc' do
         it 'responds successfully' do
-          get '/v5/stories', { mcc: 'slm' }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get '/v5/stories', params: { mcc: 'slm' }, headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -77,7 +78,8 @@ RSpec.describe 'V5::Stories', type: :request do
 
       context 'filter by church' do
         it 'responds successfully' do
-          get '/v5/stories', { church_id: church.id }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get '/v5/stories', params: { church_id: church.id },
+                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -92,7 +94,8 @@ RSpec.describe 'V5::Stories', type: :request do
 
       context 'filter by training' do
         it 'responds successfully' do
-          get '/v5/stories', { training_id: training.id }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get '/v5/stories', params: { training_id: training.id },
+                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -109,7 +112,8 @@ RSpec.describe 'V5::Stories', type: :request do
     context 'as an author' do
       context 'filter by self_only' do
         it 'responds successfully' do
-          get '/v5/stories', { self_only: 'true' }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          get '/v5/stories', params: { self_only: 'true' },
+                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -127,7 +131,7 @@ RSpec.describe 'V5::Stories', type: :request do
   describe 'GET /v5/stories/:id' do
     context 'unknown story' do
       it 'responds with HTTP 404' do
-        get '/v5/stories/0', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        get '/v5/stories/0', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
         expect(response).to_not be_success
         expect(response).to have_http_status :not_found
@@ -141,7 +145,7 @@ RSpec.describe 'V5::Stories', type: :request do
         end
 
         it 'responds successfully with the story' do
-          get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :ok
@@ -158,7 +162,7 @@ RSpec.describe 'V5::Stories', type: :request do
 
         context 'no assignment' do
           it 'responds with HTTP 404' do
-            get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+            get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
             expect(response).to_not be_success
             expect(response).to have_http_status :not_found
@@ -169,7 +173,7 @@ RSpec.describe 'V5::Stories', type: :request do
           let(:member) { FactoryGirl.create(:person) }
           let!(:assignment) { FactoryGirl.create(:assignment, person: member, ministry: ministry, role: :member) }
           it 'responds successfully with the story' do
-            get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person member}"
+            get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person member}" }
 
             expect(response).to be_success
             expect(response).to have_http_status :ok
@@ -190,7 +194,7 @@ RSpec.describe 'V5::Stories', type: :request do
         end
 
         it 'responds with HTTP 404' do
-          get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status :not_found
@@ -206,7 +210,7 @@ RSpec.describe 'V5::Stories', type: :request do
           let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :member) }
 
           it 'responds with HTTP 404' do
-            get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to_not be_success
             expect(response).to have_http_status :not_found
@@ -217,7 +221,7 @@ RSpec.describe 'V5::Stories', type: :request do
           let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :leader) }
 
           it 'responds successfully with the story' do
-            get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to be_success
             expect(response).to have_http_status :ok
@@ -229,7 +233,7 @@ RSpec.describe 'V5::Stories', type: :request do
 
         context 'as story author' do
           it 'responds successfully with the story' do
-            get "/v5/stories/#{story.id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}"
+            get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}" }
 
             expect(response).to be_success
             expect(response).to have_http_status :ok
@@ -252,7 +256,8 @@ RSpec.describe 'V5::Stories', type: :request do
 
     context 'without an assignment' do
       it 'responds with HTTP 400' do
-        post '/v5/stories', story_attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        post '/v5/stories', params: story_attributes,
+                            headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to_not be_success
         expect(response).to have_http_status :bad_request
@@ -264,7 +269,8 @@ RSpec.describe 'V5::Stories', type: :request do
       context 'draft state' do
         it 'responds successfully with new story' do
           expect do
-            post '/v5/stories', story_attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            post '/v5/stories', params: story_attributes,
+                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to be_success
             expect(response).to have_http_status :created
@@ -276,8 +282,8 @@ RSpec.describe 'V5::Stories', type: :request do
       context 'published state' do
         it 'responds successfully with new story' do
           expect do
-            post '/v5/stories', story_attributes.merge(state: 'published'),
-                 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            post '/v5/stories', params: story_attributes.merge(state: 'published'),
+                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to be_success
             expect(response).to have_http_status :created
@@ -292,8 +298,8 @@ RSpec.describe 'V5::Stories', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :admin) }
       it 'responds successfully with new story' do
         expect do
-          post '/v5/stories', story_attributes.merge(ministry_id: sub_ministry.gr_id),
-               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/stories', params: story_attributes.merge(ministry_id: sub_ministry.gr_id),
+                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status :created
@@ -317,7 +323,8 @@ RSpec.describe 'V5::Stories', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :leader) }
 
       it 'responds successfully with updated story' do
-        put "/v5/stories/#{story.id}", attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        put "/v5/stories/#{story.id}", params: attributes,
+                                       headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(response).to have_http_status :ok
@@ -335,7 +342,8 @@ RSpec.describe 'V5::Stories', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :member) }
 
       it 'responds with HTTP 400' do
-        put "/v5/stories/#{story.id}", attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        put "/v5/stories/#{story.id}", params: attributes,
+                                       headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to_not be_success
         expect(response).to have_http_status :bad_request
@@ -344,7 +352,8 @@ RSpec.describe 'V5::Stories', type: :request do
 
     context 'as story author' do
       it 'responds successfully with updated story' do
-        put "/v5/stories/#{story.id}", attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}"
+        put "/v5/stories/#{story.id}", params: attributes,
+                                       headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}" }
 
         expect(response).to be_success
         expect(response).to have_http_status :ok

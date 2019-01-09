@@ -11,8 +11,8 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     let!(:measurement) { FactoryGirl.create(:measurement, english: 'English Name') }
 
     it 'responds with measurement types' do
-      get '/v5/sys_measurement_types', access_token: authenticate_api, ministry_id: ministry.gr_id,
-                                       locale: 'en'
+      get '/v5/sys_measurement_types', params: { access_token: authenticate_api, ministry_id: ministry.gr_id,
+                                                 locale: 'en' }
 
       expect(response).to be_success
       expect(json.first['id']).to be measurement.id
@@ -26,9 +26,9 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
                           .to_return(status: 200, body: { access: 'granted' }.to_json)
 
-      get '/v5/sys_measurement_types', access_token: token
+      get '/v5/sys_measurement_types', params: { access_token: token }
       travel_to 5.minutes.from_now do
-        get '/v5/sys_measurement_types', access_token: token
+        get '/v5/sys_measurement_types', params: { access_token: token }
       end
       expect(gr_request).to have_been_requested
     end
@@ -40,9 +40,9 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
                           .with(headers: { 'Authorization' => "Bearer #{token}" })
                           .to_return(status: 200, body: { access: 'granted' }.to_json)
 
-      get '/v5/sys_measurement_types', access_token: token
+      get '/v5/sys_measurement_types', params: { access_token: token }
       travel_to 2.days.from_now do
-        get '/v5/sys_measurement_types', access_token: token
+        get '/v5/sys_measurement_types', params: { access_token: token }
       end
       expect(gr_request).to have_been_requested.times(2)
     end
@@ -59,11 +59,11 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
                .to_return(status: 400)
 
         random_token = SecureRandom.uuid
-        get '/v5/sys_measurement_types', access_token: random_token
+        get '/v5/sys_measurement_types', params: { access_token: random_token }
         expect(response).to_not be_success
 
-        get '/v5/sys_measurement_types', {},
-            'HTTP_AUTHORIZATION': "Bearer #{random_token}"
+        get '/v5/sys_measurement_types',
+            headers: { 'HTTP_AUTHORIZATION': "Bearer #{random_token}" }
         expect(response).to_not be_success
       end
     end
@@ -74,16 +74,17 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     let(:json) { JSON.parse(response.body) }
 
     it 'finds measurement based on total_id' do
-      get "/v5/sys_measurement_type/#{measurement.total_id}", { ministry_id: ministry.gr_id },
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+      get "/v5/sys_measurement_type/#{measurement.total_id}",
+          params: { ministry_id: ministry.gr_id },
+          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}" }
 
       expect(response).to be_success
       expect(json['id']).to be measurement.id
     end
 
     it 'finds measurement based on perm_link' do
-      get '/v5/sys_measurement_type/my_string', { ministry_id: ministry.gr_id },
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+      get '/v5/sys_measurement_type/my_string', params: { ministry_id: ministry.gr_id },
+                                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}" }
 
       expect(json['id']).to be measurement.id
     end
@@ -117,7 +118,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
 
     it 'creates a measurement type' do
       expect do
-        post '/v5/sys_measurement_types', attributes, 'HTTP_AUTHORIZATION': "Bearer #{token}"
+        post '/v5/sys_measurement_types', params: attributes, headers: { 'HTTP_AUTHORIZATION': "Bearer #{token}" }
       end.to change(Measurement, :count).by(1).and(change(MeasurementTranslation, :count).by(1))
 
       expect(response.code.to_i).to be 201
@@ -134,8 +135,8 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
 
     it 'creates a core measurement type' do
       expect do
-        post '/v5/sys_measurement_types', attributes.merge(is_core: '1'),
-             'HTTP_AUTHORIZATION': "Bearer #{token}"
+        post '/v5/sys_measurement_types', params: attributes.merge(is_core: '1'),
+                                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{token}" }
       end.to change(Measurement, :count).by(1)
 
       expect(response.code.to_i).to be 201
@@ -152,8 +153,9 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
     let(:attributes) { { english: 'different name', parent_id: parent_meas.total_id, sort_order: 10 } }
 
     it 'updates measurement type without locale params' do
-      put "/v5/sys_measurement_types/#{measurement.total_id}", attributes,
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+      put "/v5/sys_measurement_types/#{measurement.total_id}",
+          params: attributes,
+          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}" }
 
       expect(response.code.to_i).to be 200
       # expect that the object was rendered on the way back

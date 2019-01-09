@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class TrainingCompletion < ActiveRecord::Base
+class TrainingCompletion < ApplicationRecord
   belongs_to :training
   validates :training, presence: { message: "Could not find required field: 'training_id'" }
   attr_readonly :training_id

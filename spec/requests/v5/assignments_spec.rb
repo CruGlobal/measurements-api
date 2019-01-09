@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'V5::Assignments', type: :request do
+RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/BlockLength
   before :all do
     @ministries = FactoryGirl.create(:ministry_hierarchy)
   end
@@ -16,7 +16,7 @@ RSpec.describe 'V5::Assignments', type: :request do
   describe 'GET /v5/assignments' do
     context 'as a user without assignments' do
       it 'responds successfully with an empty array' do
-        get '/v5/assignments', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
         expect(response).to be_success
         expect(json).to be_an(Array).and be_empty
@@ -30,7 +30,7 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
 
       it 'responds successfully with assignments' do
-        get '/v5/assignments', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(json).to contain_exactly(a_hash_including('id' => assignments[1].gr_id, 'team_role' => 'member'),
@@ -44,7 +44,7 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
 
       it 'responds successfully with assignments' do
-        get '/v5/assignments', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(json).to contain_exactly(
@@ -62,7 +62,7 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
 
       it 'responds successfully with assignments' do
-        get '/v5/assignments', nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(json).to contain_exactly(
@@ -77,7 +77,7 @@ RSpec.describe 'V5::Assignments', type: :request do
   describe 'GET /v5/assignments/:id' do
     context 'unknown assignment' do
       it 'responds with an HTTP 401' do
-        get "/v5/assignments/#{SecureRandom.uuid}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+        get "/v5/assignments/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
         expect(response).to_not be_success
         expect(response).to have_http_status(401)
@@ -92,7 +92,8 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
       context 'get my own assignment' do
         it 'responds successfully with my assignment' do
-          get "/v5/assignments/#{assignment.gr_id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          get "/v5/assignments/#{assignment.gr_id}",
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 200
@@ -103,7 +104,7 @@ RSpec.describe 'V5::Assignments', type: :request do
 
       context 'get someone else\'s assignment' do
         it 'responds with an HTTP 401' do
-          get "/v5/assignments/#{assignment.gr_id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          get "/v5/assignments/#{assignment.gr_id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status(401)
@@ -119,7 +120,8 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
       context 'get my own assignment' do
         it 'responds successfully with my assignment' do
-          get "/v5/assignments/#{assignment.gr_id}", nil, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          get "/v5/assignments/#{assignment.gr_id}",
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 200
@@ -135,8 +137,8 @@ RSpec.describe 'V5::Assignments', type: :request do
                                           role: :member, gr_id: SecureRandom.uuid)
         end
         it 'responds successfully with the assignment' do
-          get "/v5/assignments/#{member_assignment.gr_id}", nil,
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          get "/v5/assignments/#{member_assignment.gr_id}",
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 200
@@ -152,8 +154,8 @@ RSpec.describe 'V5::Assignments', type: :request do
                                           role: :member, gr_id: SecureRandom.uuid)
         end
         it 'responds successfully with the assignment' do
-          get "/v5/assignments/#{member_assignment.gr_id}", nil,
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          get "/v5/assignments/#{member_assignment.gr_id}",
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 200
@@ -174,7 +176,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         let!(:request_stub) { gr_create_assignment_request(assignment) }
 
         it 'responds successfully with new assignment' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 201
@@ -190,7 +193,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         let(:attributes) { { person_id: other.gr_id, ministry_id: ministries[:c12].gr_id, team_role: 'self_assigned' } }
 
         it 'responds with HTTP 400' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 400
@@ -208,7 +212,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         end
 
         it 'responds with HTTP 400' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 400
@@ -225,7 +230,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         let!(:request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 201
@@ -247,7 +253,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         let!(:request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 201
@@ -270,7 +277,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         let!(:assignment_request_stub) { gr_create_assignment_request(new_assignment) }
 
         it 'responds successfully with new assignment' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to be_success
           expect(response).to have_http_status 201
@@ -301,7 +309,8 @@ RSpec.describe 'V5::Assignments', type: :request do
 
         it 'responds successfully with new assignment' do
           expect do
-            post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            post '/v5/assignments', params: attributes,
+                                    headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
           end.to change(Person, :count).by(1)
 
           expect(response).to be_success
@@ -323,7 +332,8 @@ RSpec.describe 'V5::Assignments', type: :request do
         end
 
         it 'responds with HTTP 400' do
-          post '/v5/assignments', attributes, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          post '/v5/assignments', params: attributes,
+                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 400
@@ -336,8 +346,8 @@ RSpec.describe 'V5::Assignments', type: :request do
     context 'as a user with no assignment' do
       context 'update unknown assignment' do
         it 'responds with HTTP 401' do
-          put "/v5/assignments/#{SecureRandom.uuid}", { team_role: 'member' },
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          put "/v5/assignments/#{SecureRandom.uuid}", params: { team_role: 'member' },
+                                                      headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 401
@@ -351,8 +361,8 @@ RSpec.describe 'V5::Assignments', type: :request do
                                           gr_id: SecureRandom.uuid)
         end
         it 'responds with HTTP 401' do
-          put "/v5/assignments/#{assignment.gr_id}", { team_role: 'member' },
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
+          put "/v5/assignments/#{assignment.gr_id}", params: { team_role: 'member' },
+                                                     headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 401
@@ -367,8 +377,9 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
       context 'update your assignment' do
         it 'responds with HTTP 401' do
-          put "/v5/assignments/#{assignment.gr_id}", { team_role: 'leader' },
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          put "/v5/assignments/#{assignment.gr_id}",
+              params: { team_role: 'leader' },
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 401
@@ -383,8 +394,9 @@ RSpec.describe 'V5::Assignments', type: :request do
       end
       context 'update your assignment' do
         it 'responds with HTTP 400' do
-          put "/v5/assignments/#{assignment.gr_id}", { team_role: 'admin' },
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+          put "/v5/assignments/#{assignment.gr_id}",
+              params: { team_role: 'admin' },
+              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
           expect(response).to_not be_success
           expect(response).to have_http_status 400
@@ -400,8 +412,9 @@ RSpec.describe 'V5::Assignments', type: :request do
         context 'to a valid input role' do
           let!(:request_stub) { gr_update_assignment_request(member_assignment) }
           it 'responds successfully with updated assignment' do
-            put "/v5/assignments/#{member_assignment.gr_id}", { team_role: 'leader' },
-                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            put "/v5/assignments/#{member_assignment.gr_id}",
+                params: { team_role: 'leader' },
+                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to be_success
             expect(response).to have_http_status 200
@@ -413,8 +426,9 @@ RSpec.describe 'V5::Assignments', type: :request do
 
         context 'to an inherited role' do
           it 'responds with HTTP 400' do
-            put "/v5/assignments/#{member_assignment.gr_id}", { team_role: 'inherited_leader' },
-                'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+            put "/v5/assignments/#{member_assignment.gr_id}",
+                params: { team_role: 'inherited_leader' },
+                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
             expect(response).to_not be_success
             expect(response).to have_http_status 400

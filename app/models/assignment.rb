@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Assignment < ActiveRecord::Base
+class Assignment < ApplicationRecord
   APPROVED_ROLES = %w(leader inherited_leader admin inherited_admin member).freeze
   LOCAL_APPROVED_ROLES = %w(leader admin member).freeze
   LOCAL_LEADER_ROLES = %w(leader admin).freeze

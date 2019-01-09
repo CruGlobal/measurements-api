@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class MeasurementTranslation < ActiveRecord::Base
+class MeasurementTranslation < ApplicationRecord
   belongs_to :measurement
   belongs_to :ministry
 end

@@ -12,8 +12,8 @@ RSpec.describe 'V5::Trainings', type: :request do
     it 'responds with trainings' do
       FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin)
 
-      get '/v5/training', { ministry_id: ministry.gr_id },
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      get '/v5/training', params: { ministry_id: ministry.gr_id },
+                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
       expect(response).to be_success
       expect(json.first['id']).to be training.id
@@ -24,8 +24,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       ministry.update(parent: parent_ministry)
       FactoryGirl.create(:assignment, person: user, ministry: parent_ministry, role: :admin)
 
-      get '/v5/training', { ministry_id: ministry.gr_id },
-          'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+      get '/v5/training', params: { ministry_id: ministry.gr_id },
+                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
       expect(response).to be_success
       expect(json.first['id']).to be training.id
@@ -43,8 +43,8 @@ RSpec.describe 'V5::Trainings', type: :request do
     context 'as admin' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       before do
-        post '/v5/training', attributes,
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        post '/v5/training', params: attributes,
+                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
       end
       it 'creates a training' do
         expect(response).to be_success
@@ -65,8 +65,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'fails to create training' do
         expect do
-          post '/v5/training', attributes,
-               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+          post '/v5/training', params: attributes,
+                               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
           expect(response).to_not be_success
         end.to_not change { Training.count }
@@ -87,8 +87,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       it 'updates training' do
         FactoryGirl.create(:assignment, person: user, ministry: other_ministry, role: :admin)
 
-        put "/v5/training/#{training.id}", attributes,
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        put "/v5/training/#{training.id}", params: attributes,
+                                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to be_success
         training.reload
@@ -99,8 +99,8 @@ RSpec.describe 'V5::Trainings', type: :request do
 
       context 'moving to unapproved ministry' do
         it 'fails to update training' do
-          put "/v5/training/#{training.id}", attributes,
-              'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+          put "/v5/training/#{training.id}", params: attributes,
+                                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
           expect(response).to_not be_success
         end
@@ -111,8 +111,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to update training' do
-        put "/v5/training/#{training.id}", { latitude: 60.7 },
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        put "/v5/training/#{training.id}", params: { latitude: 60.7 },
+                                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to_not be_success
       end
@@ -127,8 +127,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'deletes training' do
         expect do
-          delete "/v5/training/#{training.id}", nil,
-                 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+          delete "/v5/training/#{training.id}",
+                 headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
           expect(response).to be_success
         end.to change(Training, :count).by(-1)
@@ -140,8 +140,8 @@ RSpec.describe 'V5::Trainings', type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it 'fails to delete training' do
-        delete "/v5/training/#{training.id}", nil,
-               'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        delete "/v5/training/#{training.id}",
+               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to_not be_success
       end

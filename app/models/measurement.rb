@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Measurement < ActiveRecord::Base
+class Measurement < ApplicationRecord
   belongs_to :parent, class_name: 'Measurement'
   has_many :children, class_name: 'Measurement', foreign_key: :parent_id
   has_many :measurement_translations

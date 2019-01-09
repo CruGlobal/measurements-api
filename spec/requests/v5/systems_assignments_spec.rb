@@ -15,8 +15,8 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
 
       it 'responds successfully with an assignment' do
         post '/v5/sys_assignments',
-             { username: person.cas_username, ministry_id: ministry.gr_id, team_role: 'admin' },
-             'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
+             params: { username: person.cas_username, ministry_id: ministry.gr_id, team_role: 'admin' },
+             headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
         expect(response).to be_success
         expect(response).to have_http_status 201
@@ -34,8 +34,8 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
 
       it 'responds successfully with an assignment' do
         post '/v5/sys_assignments',
-             { key_guid: person.cas_guid, ministry_id: ministry.gr_id, team_role: 'member' },
-             'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
+             params: { key_guid: person.cas_guid, ministry_id: ministry.gr_id, team_role: 'member' },
+             headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
         expect(response).to be_success
         expect(response).to have_http_status 201
@@ -53,8 +53,8 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
 
       it 'responds successfully with an assignment' do
         post '/v5/sys_assignments',
-             { person_id: leader.gr_id, ministry_id: ministry.gr_id, team_role: 'leader' },
-             'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
+             params: { person_id: leader.gr_id, ministry_id: ministry.gr_id, team_role: 'leader' },
+             headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
         expect(response).to be_success
         expect(response).to have_http_status 201
@@ -73,8 +73,8 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
     context 'update an assignment' do
       let!(:assignment_request) { gr_update_assignment_request(assignment) }
       it 'responds successfully with updated assignment' do
-        put "/v5/sys_assignments/#{assignment.gr_id}", { team_role: 'leader' },
-            'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
+        put "/v5/sys_assignments/#{assignment.gr_id}", params: { team_role: 'leader' },
+                                                       headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
         expect(response).to be_success
         expect(response).to have_http_status 200

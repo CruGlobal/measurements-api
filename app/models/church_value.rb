@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ChurchValue < ActiveRecord::Base
+class ChurchValue < ApplicationRecord
   belongs_to :church
 
   def self.values_for(church_ids, period)
