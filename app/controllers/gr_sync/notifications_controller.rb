@@ -7,7 +7,7 @@ module GrSync
       else
         NotificationWorker.perform_async(notification_params)
       end
-      render nothing: true
+      head :ok
     end
 
     private

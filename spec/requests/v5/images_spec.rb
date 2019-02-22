@@ -18,8 +18,9 @@ RSpec.describe 'V5::Images', type: :request do
       end
 
       it 'responds successfully' do
-        post "/v5/images?story_id=#{story.id}", { 'image-file' => image },
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        post "/v5/images?story_id=#{story.id}",
+             params: { 'image-file' => image },
+             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(response).to have_http_status :created
@@ -37,8 +38,9 @@ RSpec.describe 'V5::Images', type: :request do
       let(:story) { FactoryGirl.create(:story, created_by: person, ministry: ministry, image: image) }
 
       it 'replaces existing image' do
-        post "/v5/images?story_id=#{story.id}", { 'image-file' => other },
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"
+        post "/v5/images?story_id=#{story.id}",
+             params: { 'image-file' => other },
+             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(response).to be_success
         expect(response).to have_http_status :created

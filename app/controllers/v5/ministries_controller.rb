@@ -90,7 +90,7 @@ module V5
       permitted_params = post_params.permit(*::Ministry::PERMITTED_PARAMS)
       # Set nil array fields to an empty array (http://guides.rubyonrails.org/security.html#unsafe-query-generation)
       %i(lmi_show lmi_hide mccs).each do |param|
-        if permitted_params.key(param)
+        if permitted_params.to_h.key(param)
           permitted_params[param] = [] if permitted_params[param].nil?
         end
       end
@@ -102,7 +102,7 @@ module V5
     # convert stings like '1' to booleans
     def bool_value(value)
       value = @filters[value] if value.is_a? Symbol
-      ActiveRecord::Type::Boolean.new.type_cast_from_user(value)
+      ActiveRecord::Type::Boolean.new.cast(value)
     end
 
     protected

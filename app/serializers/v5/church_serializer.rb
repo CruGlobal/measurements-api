@@ -17,16 +17,16 @@ module V5
       object.children_count
     end
 
-    def development
+    def development # rubocop:disable Metrics/AbcSize
       if scope && scope[:period] && scope[:period] != Time.zone.today.strftime('%Y-%m')
-        object.value_at(scope[:period], scope[:values])[:development]
+        Church.developments[object.value_at(scope[:period], scope[:values])[:development]]
       else
-        object[:development]
+        Church.developments[object[:development]]
       end
     end
 
     def security
-      s = object[:security]
+      s = Church.securities[object[:security]]
       s == 0 ? 1 : s
     end
 

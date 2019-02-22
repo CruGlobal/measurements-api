@@ -19,7 +19,7 @@ module V5
     def create
       list = MeasurementListUpdater.new(params['_json'])
       if list.commit
-        render nothing: true, status: :created
+        head :created
       else
         render_error list.error
       end

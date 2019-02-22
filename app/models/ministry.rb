@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
+class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # Valid MCCs (Mission Critical Components)
   MCC_SLM = 'slm'
   MCC_LLM = 'llm'
@@ -85,7 +85,8 @@ class Ministry < ActiveRecord::Base # rubocop:disable Metrics/ClassLength
               !members[assignment.person_id].try(:inherited_role?)
 
       # Keep highest Inherited assignment per person
-      if members[assignment.person_id].blank? || members[assignment.person_id].try(:[], :role) < assignment[:role]
+      if members[assignment.person_id].blank? ||
+         Assignment.roles[members[assignment.person_id].try(:[], :role)] < Assignment.roles[assignment[:role]]
         members[assignment.person_id] = assignment.as_inherited_assignment(id)
       end
     end

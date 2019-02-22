@@ -104,7 +104,7 @@ class MeasurementType < ActiveModelSerializers::Model
   end
 
   def gen_perm_link(perm_link_prefix = 'total')
-    self.is_core = ActiveRecord::Type::Boolean.new.type_cast_from_user(is_core)
+    self.is_core = ActiveRecord::Type::Boolean.new.cast(is_core)
     perm_link_prefix = "#{perm_link_prefix}_" unless perm_link_prefix.blank? || perm_link_prefix.end_with?('_')
     if is_core
       "lmi_#{perm_link_prefix}#{perm_link_stub}"

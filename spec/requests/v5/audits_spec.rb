@@ -18,8 +18,8 @@ RSpec.describe 'V5::Audits', type: :request do
     context 'as admin' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it 'responds with audits' do
-        get '/v5/audit', { ministry_id: ministry.gr_id, number_of_entries: 2 },
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        get '/v5/audit', params: { ministry_id: ministry.gr_id, number_of_entries: 2 },
+                         headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to be_success
         expect(json.count).to be 2
@@ -27,8 +27,8 @@ RSpec.describe 'V5::Audits', type: :request do
         expect(json.last['timestamp']).to eq 1.month.ago.strftime('%Y-%m-%d')
       end
       it 'responds with paged audits' do
-        get '/v5/audit', { ministry_id: ministry.gr_id, per_page: 2, page: 1 },
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        get '/v5/audit', params: { ministry_id: ministry.gr_id, per_page: 2, page: 1 },
+                         headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to be_success
         expect(json['entries'].count).to be 2
@@ -42,8 +42,8 @@ RSpec.describe 'V5::Audits', type: :request do
     context 'as self-assigned' do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it 'fails to fetch audits' do
-        get '/v5/audit', { ministry_id: ministry.gr_id },
-            'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"
+        get '/v5/audit', params: { ministry_id: ministry.gr_id },
+                         headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
         expect(response).to_not be_success
       end

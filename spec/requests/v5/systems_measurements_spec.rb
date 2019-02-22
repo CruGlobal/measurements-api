@@ -43,8 +43,8 @@ RSpec.describe 'V5::Measurements', type: :request do
                              value: 123, assignment_id: assignment.gr_id, mcc: 'gcm' }]
 
       expect do
-        post '/v5/sys_measurements/', { _json: measurements_body },
-             'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"
+        post '/v5/sys_measurements/', params: { _json: measurements_body },
+                                      headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}" }
         expect(response).to be_success
         expect(response).to have_http_status(201)
       end.to change(GrSync::WithGrWorker.jobs, :size).by(3)

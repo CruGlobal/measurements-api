@@ -42,6 +42,6 @@ class TrainingFilter
   # convert stings like '1' to booleans
   def clean_filter(value)
     value = @filters[value] if value.is_a? Symbol
-    ActiveRecord::Type::Boolean.new.type_cast_from_user(value)
+    ActiveRecord::Type::Boolean.new.cast(value)
   end
 end
