@@ -1,4 +1,4 @@
-class CreateTrainings < ActiveRecord::Migration
+class CreateTrainings < ActiveRecord::Migration[4.2]
   def change
     create_table :trainings do |t|
       t.references :ministry, index: true

@@ -1,4 +1,4 @@
-class CreateTrainingCompletions < ActiveRecord::Migration
+class CreateTrainingCompletions < ActiveRecord::Migration[4.2]
   def change
     create_table :training_completions do |t|
       t.integer :phase

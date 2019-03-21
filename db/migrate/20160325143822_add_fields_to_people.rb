@@ -1,4 +1,4 @@
-class AddFieldsToPeople < ActiveRecord::Migration
+class AddFieldsToPeople < ActiveRecord::Migration[4.2]
   def change
     add_column :people, :ea_guid, :uuid
     add_column :people, :email, :string

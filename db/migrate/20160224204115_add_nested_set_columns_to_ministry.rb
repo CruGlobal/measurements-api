@@ -1,4 +1,4 @@
-class AddNestedSetColumnsToMinistry < ActiveRecord::Migration
+class AddNestedSetColumnsToMinistry < ActiveRecord::Migration[4.2]
   def change
     remove_column :ministries, :parent_id
     add_column :ministries, :parent_id, :integer, null: true, index: true
