@@ -4,7 +4,7 @@ class Training < ApplicationRecord
   belongs_to :ministry
   authorize_values_for :ministry
 
-  belongs_to :created_by, class_name: 'Person'
+  belongs_to :created_by, class_name: 'Person', optional: true
 
   validates :name, presence: { message: "Could not find required field: 'name'" }
   validates :ministry, presence: { message: "Could not find required field: 'ministry_id'" }

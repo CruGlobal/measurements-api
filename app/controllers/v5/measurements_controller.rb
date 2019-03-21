@@ -17,7 +17,7 @@ module V5
     end
 
     def create
-      list = MeasurementListUpdater.new(params['_json'])
+      list = MeasurementListUpdater.new(params.permit!['_json'])
       if list.commit
         head :created
       else

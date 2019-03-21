@@ -9,9 +9,9 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rake', '~> 11.1.1'
-gem 'rails', '~> 5.0.7'
+gem 'rails', '~> 5.1.6'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 3.7'
 gem 'newrelic_rpm'
 gem 'versionist'
 gem 'rollbar'

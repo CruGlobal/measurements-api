@@ -39,16 +39,16 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   has_many :user_content_locales, dependent: :destroy
   has_many :stories, dependent: :destroy
-  belongs_to :area
+  belongs_to :area, optional: true
 
   auto_strip_attributes :name
 
   validates :name, presence: true
   validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
-                          unless: 'default_mcc.blank?'
-  validates :min_code, uniqueness: true, on: :create, if: 'min_code.present?'
-  before_validation :generate_min_code, on: :create, if: 'gr_id.blank?'
-  before_create :create_entity, if: 'gr_id.blank?'
+                          unless: -> { default_mcc.blank? }
+  validates :min_code, uniqueness: true, on: :create, if: -> { min_code.present? }
+  before_validation :generate_min_code, on: :create, if: -> { gr_id.blank? }
+  before_create :create_entity, if: -> { gr_id.blank? }
 
   authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
 
