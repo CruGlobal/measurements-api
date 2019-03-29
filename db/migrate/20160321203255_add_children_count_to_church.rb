@@ -1,4 +1,4 @@
-class AddChildrenCountToChurch < ActiveRecord::Migration
+class AddChildrenCountToChurch < ActiveRecord::Migration[4.2]
   def change
     add_column :churches, :children_count, :integer, default: 0, null: false
 

@@ -1,4 +1,4 @@
-class CreateUserMapViews < ActiveRecord::Migration
+class CreateUserMapViews < ActiveRecord::Migration[4.2]
   def change
     create_table :user_map_views do |t|
       t.uuid :person_id

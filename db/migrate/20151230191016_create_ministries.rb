@@ -1,4 +1,4 @@
-class CreateMinistries < ActiveRecord::Migration
+class CreateMinistries < ActiveRecord::Migration[4.2]
   def change
     create_table :ministries do |t|
       t.uuid :ministry_id

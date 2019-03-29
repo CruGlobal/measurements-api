@@ -18,7 +18,7 @@ module V5
       ::ActionController::Parameters.new(request.request_parameters)
     end
 
-    def get_params # rubocop:disable Style/AccessorMethodName
+    def get_params # rubocop:disable Naming/AccessorMethodName
       ::ActionController::Parameters.new(request.query_parameters)
     end
 

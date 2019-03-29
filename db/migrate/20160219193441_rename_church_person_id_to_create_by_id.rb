@@ -1,4 +1,4 @@
-class RenameChurchPersonIdToCreateById < ActiveRecord::Migration
+class RenameChurchPersonIdToCreateById < ActiveRecord::Migration[4.2]
   def change
     remove_foreign_key :churches, :people
     rename_column :churches, :person_id, :created_by_id

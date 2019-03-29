@@ -1,4 +1,4 @@
-class CreateChurchValues < ActiveRecord::Migration
+class CreateChurchValues < ActiveRecord::Migration[4.2]
   def change
     create_table :church_values do |t|
       t.integer :church_id

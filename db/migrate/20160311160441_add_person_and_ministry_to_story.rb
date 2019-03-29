@@ -1,4 +1,4 @@
-class AddPersonAndMinistryToStory < ActiveRecord::Migration
+class AddPersonAndMinistryToStory < ActiveRecord::Migration[4.2]
   def change
     add_reference :stories, :created_by, index: true
     add_reference :stories, :ministry, index: true

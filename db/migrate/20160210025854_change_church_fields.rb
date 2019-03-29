@@ -1,4 +1,4 @@
-class ChangeChurchFields < ActiveRecord::Migration
+class ChangeChurchFields < ActiveRecord::Migration[4.2]
   def change
     remove_column :churches, :church_id
     add_column :churches, :church_id, :uuid

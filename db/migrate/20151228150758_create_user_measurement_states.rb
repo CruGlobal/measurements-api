@@ -1,4 +1,4 @@
-class CreateUserMeasurementStates < ActiveRecord::Migration
+class CreateUserMeasurementStates < ActiveRecord::Migration[4.2]
   def change
     create_table :user_measurement_states do |t|
       t.uuid :person_id

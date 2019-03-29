@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Measurement < ApplicationRecord
-  belongs_to :parent, class_name: 'Measurement'
+  belongs_to :parent, class_name: 'Measurement', optional: true
   has_many :children, class_name: 'Measurement', foreign_key: :parent_id
   has_many :measurement_translations
 

@@ -1,4 +1,4 @@
-class UpdateForeignKeys < ActiveRecord::Migration
+class UpdateForeignKeys < ActiveRecord::Migration[4.2]
   def change
     # Run rake db:reset before this migration
     # Change foreign key columns to integers (can't cast uuid to integer, so set value to null)

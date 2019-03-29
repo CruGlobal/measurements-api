@@ -1,4 +1,4 @@
-class CreateMeasurementsTranslations < ActiveRecord::Migration
+class CreateMeasurementsTranslations < ActiveRecord::Migration[4.2]
   def change
     create_table :measurement_translations do |t|
       t.references :measurement, index: true

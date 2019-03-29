@@ -5,23 +5,24 @@ class Story < ApplicationRecord
 
   belongs_to :ministry
   belongs_to :created_by, class_name: 'Person'
-  belongs_to :church
-  belongs_to :training
+  belongs_to :church, optional: true
+  belongs_to :training, optional: true
 
   mount_uploader :image, ImageUploader
 
   validates :content, presence: true
-  validates :mcc, inclusion: { in: Ministry::MCCS, message: '\'%{value}\' is not a valid MCC' }, unless: 'mcc.blank?'
-  validates :church, presence: true, unless: 'church_id.blank?'
-  validates :training, presence: true, unless: 'training_id.blank?'
+  validates :mcc, inclusion: { in: Ministry::MCCS, message: '\'%{value}\' is not a valid MCC' },
+                  unless: -> { mcc.blank? }
+  validates :church, presence: true, unless: -> { church_id.blank? }
+  validates :training, presence: true, unless: -> { training_id.blank? }
   authorize_values_for :ministry, message: 'INSUFFICIENT_RIGHTS - You must have an approved role for the ministry.'
 
   attr_accessor :location
 
   # Virtual attributes
   attr_accessor :person_gr_id, :ministry_gr_id
-  before_validation :lookup_person, if: 'person_gr_id.present?'
-  before_validation :lookup_ministry, if: 'ministry_gr_id.present?'
+  before_validation :lookup_person, if: -> { person_gr_id.present? }
+  before_validation :lookup_ministry, if: -> { ministry_gr_id.present? }
 
   def location=(value)
     return unless value.is_a? Hash
