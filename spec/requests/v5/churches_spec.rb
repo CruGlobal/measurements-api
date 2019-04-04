@@ -13,7 +13,7 @@ RSpec.describe 'V5::Churches', type: :request do
       get '/v5/churches', params: { show_all: true, ministry_id: ministry.gr_id },
                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['id']).to be church.id
     end
 
@@ -24,7 +24,7 @@ RSpec.describe 'V5::Churches', type: :request do
           params: { show_all: true, ministry_id: ministry.gr_id, period: 2.months.ago.strftime('%Y-%m') },
           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['development']).to be 1
     end
 
@@ -38,7 +38,7 @@ RSpec.describe 'V5::Churches', type: :request do
         get '/v5/churches', params: { ministry_id: child_ministry.gr_id },
                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json.first['id']).to be church.id
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes,
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to change { Church.count }.by(1).and(change { Audit.count }.by(1))
         expect(Church.last.created_by_id).to eq user.id
       end
@@ -72,7 +72,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes.merge(ministry_id: child_ministry.gr_id),
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to change { Church.count }.by(1).and(change { Audit.count }.by(1))
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes.merge(security: 2),
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to change { Church.count }
       end
       it 'fails to create private church' do
@@ -92,7 +92,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes,
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change { Church.count }
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes.merge(security: 2),
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change { Church.count }
       end
     end
@@ -115,7 +115,7 @@ RSpec.describe 'V5::Churches', type: :request do
           post '/v5/churches', params: attributes.merge(security: 2),
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change { Church.count }
       end
     end
@@ -136,7 +136,7 @@ RSpec.describe 'V5::Churches', type: :request do
         put "/v5/churches/#{church.id}", params: attributes,
                                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(church.reload.size).to eq attributes[:size]
         church_value = church.church_values.last
         expect(church_value).to be_present
@@ -170,7 +170,7 @@ RSpec.describe 'V5::Churches', type: :request do
         put "/v5/churches/#{church.id}", params: attributes.merge(ministry_id: child_ministry.gr_id),
                                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(church.reload.size).to eq attributes[:size]
         church_value = church.church_values.last
         expect(church_value).to be_present
@@ -186,7 +186,7 @@ RSpec.describe 'V5::Churches', type: :request do
         put "/v5/churches/#{church.id}", params: { ministry_id: other_ministry.id },
                                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end

@@ -22,7 +22,7 @@ RSpec.describe 'V5::Images', type: :request do
              params: { 'image-file' => image },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status :created
         expect(json).to include(:story_id, :image_url)
       end
@@ -42,7 +42,7 @@ RSpec.describe 'V5::Images', type: :request do
              params: { 'image-file' => other },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status :created
         expect(json).to include(:story_id, :image_url)
         expect(json[:image_url]).to end_with 'image2.jpg'

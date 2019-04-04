@@ -16,7 +16,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
   describe 'GET /v5/sys_ministries' do
     it 'responds with all ministries' do
       get '/v5/sys_ministries', headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.length).to be ministries.length
     end
 
@@ -25,7 +25,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
     #     clear_uniqueness_locks
     #     expect do
     #       get '/v5/sys_ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"
-    #       expect(response).to be_success
+    #       expect(response).to be_successful
     #       expect(response).to have_http_status(202)
     #     end.to change(GrSync::WithGrWorker.jobs, :size).by(1)
     #   end
@@ -37,7 +37,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
       it 'responds with the ministry details' do
         get "/v5/sys_ministries/#{ministries[:a3].gr_id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
         expect(response.body).to include_json(ministry_id: ministries[:a3].gr_id, min_code: ministries[:a3].min_code)
       end
@@ -47,7 +47,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
       it 'responds with the ministry details' do
         get "/v5/sys_ministries/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status(404)
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
              params: { name: nil, lmi_show: true, mccs: nil, ministry_scope: 'Blah', hello: 123 },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status 400
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
              params: { name: 'Test Ministry', ministry_scope: 'National', parent_id: ministries[:a3].gr_id },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status 201
         expect(request_stub).to have_been_requested
         expect(json).to include('ministry_id', 'parent_id', 'min_code')
@@ -95,7 +95,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
 
         expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
           .with(ministry)
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
         expect(json).to include_json(ministry_id: ministry.gr_id, name: 'New Name', ministry_scope: 'Area')
       end
@@ -105,7 +105,7 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
       it 'responds with the ministry details' do
         put "/v5/sys_ministries/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status(404)
       end
     end

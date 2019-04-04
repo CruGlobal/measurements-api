@@ -21,7 +21,7 @@ RSpec.describe 'V5::Tokens', type: :request do
           get '/v5/token', params: { st: 'asdf' }
           json = JSON.parse(response.body)
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(json['session_ticket']).to_not be_nil
         end
       end
@@ -35,7 +35,7 @@ RSpec.describe 'V5::Tokens', type: :request do
           get '/v5/token', params: { st: 'asdf' }
           json = JSON.parse(response.body)
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(json['session_ticket']).to_not be_nil
         end
 
@@ -53,7 +53,7 @@ RSpec.describe 'V5::Tokens', type: :request do
     context 'with no st' do
       it 'renders error' do
         get '/v5/token'
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
 
         json = JSON.parse(response.body)
         expect(json['reason']).to eq "You must pass in a service ticket ('st' parameter)"
@@ -67,7 +67,7 @@ RSpec.describe 'V5::Tokens', type: :request do
           .to_return(body: invalid_ticket_response)
 
         get '/v5/token', params: { st: st }
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
 
         json = JSON.parse(response.body)
         expect(json['reason']).to eq 'denied'

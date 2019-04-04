@@ -15,7 +15,7 @@ RSpec.describe 'V5::Trainings', type: :request do
       get '/v5/training', params: { ministry_id: ministry.gr_id },
                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['id']).to be training.id
     end
 
@@ -27,7 +27,7 @@ RSpec.describe 'V5::Trainings', type: :request do
       get '/v5/training', params: { ministry_id: ministry.gr_id },
                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['id']).to be training.id
     end
   end
@@ -47,7 +47,7 @@ RSpec.describe 'V5::Trainings', type: :request do
                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
       end
       it 'creates a training' do
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(Audit.last.message).to end_with attributes[:name]
         training = Training.last
         expect(training.name).to eq attributes[:name]
@@ -68,7 +68,7 @@ RSpec.describe 'V5::Trainings', type: :request do
           post '/v5/training', params: attributes,
                                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change { Training.count }
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe 'V5::Trainings', type: :request do
         put "/v5/training/#{training.id}", params: attributes,
                                            headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         training.reload
         expect(training.latitude).to eq attributes[:latitude]
         expect(training.ministry).to eq other_ministry
@@ -102,7 +102,7 @@ RSpec.describe 'V5::Trainings', type: :request do
           put "/v5/training/#{training.id}", params: attributes,
                                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end
       end
     end
@@ -114,7 +114,7 @@ RSpec.describe 'V5::Trainings', type: :request do
         put "/v5/training/#{training.id}", params: { latitude: 60.7 },
                                            headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end
@@ -130,7 +130,7 @@ RSpec.describe 'V5::Trainings', type: :request do
           delete "/v5/training/#{training.id}",
                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to change(Training, :count).by(-1)
           .and(change { TrainingCompletion.count }.to(0))
       end
@@ -143,7 +143,7 @@ RSpec.describe 'V5::Trainings', type: :request do
         delete "/v5/training/#{training.id}",
                headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end

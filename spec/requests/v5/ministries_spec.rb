@@ -16,7 +16,7 @@ RSpec.describe 'V5::Ministries', type: :request do
 
     it 'responds with all ministries' do
       get '/v5/ministries', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
-      expect(response).to be_success
+      expect(response).to be_successful
       json = JSON.parse(response.body)
       expect(json.length).to be ministries.length
     end
@@ -26,7 +26,7 @@ RSpec.describe 'V5::Ministries', type: :request do
     #     clear_uniqueness_locks
     #     expect do
     #       get '/v5/ministries', { refresh: true }, 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"
-    #       expect(response).to be_success
+    #       expect(response).to be_successful
     #       expect(response).to have_http_status(202)
     #     end.to change(GrSync::WithGrWorker.jobs, :size).by(1)
     #   end
@@ -36,7 +36,7 @@ RSpec.describe 'V5::Ministries', type: :request do
       it 'responds with whq ministries' do
         get '/v5/ministries', params: { whq_only: 1 },
                               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
-        expect(response).to be_success
+        expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json.length).to be 2
         expect(json[0].keys).to contain_exactly('ministry_id', 'name', 'min_code', 'area_code', 'area_name')
@@ -67,7 +67,7 @@ RSpec.describe 'V5::Ministries', type: :request do
         get "/v5/ministries/#{ministry.gr_id}",
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
         expect(response.body).to include_json(ministry_id: ministry.gr_id, min_code: ministry.min_code)
       end
@@ -84,7 +84,7 @@ RSpec.describe 'V5::Ministries', type: :request do
         get "/v5/ministries/#{sub_ministry.gr_id}",
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
         expect(response.body).to include_json(ministry_id: sub_ministry.gr_id, min_code: sub_ministry.min_code)
       end
@@ -121,7 +121,7 @@ RSpec.describe 'V5::Ministries', type: :request do
             post '/v5/ministries', params: ministry.attributes,
                                    headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status(201)
             expect(gr_request_stub).to have_been_requested
             json = JSON.parse(response.body).with_indifferent_access
@@ -140,7 +140,7 @@ RSpec.describe 'V5::Ministries', type: :request do
           post '/v5/ministries', params: ministry,
                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status(400)
           json = JSON.parse(response.body).with_indifferent_access
           expect(json.keys).to contain_exactly('name', 'min_code')
@@ -172,7 +172,7 @@ RSpec.describe 'V5::Ministries', type: :request do
             post '/v5/ministries', params: attributes,
                                    headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status(201)
             expect(gr_request_stub).to have_been_requested
             expect(gr_new_admin_assignment_stub).to have_been_requested
@@ -192,7 +192,7 @@ RSpec.describe 'V5::Ministries', type: :request do
           post '/v5/ministries', params: attributes,
                                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status(400)
           json = JSON.parse(response.body).with_indifferent_access
           expect(json.keys).to contain_exactly('parent_id')
@@ -213,7 +213,7 @@ RSpec.describe 'V5::Ministries', type: :request do
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
         expect(gr_request_stub).to have_been_requested
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body).with_indifferent_access
         expect(json.keys).to contain_exactly('reason')
@@ -228,7 +228,7 @@ RSpec.describe 'V5::Ministries', type: :request do
             params: ministry.attributes,
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body).with_indifferent_access
         expect(json.keys).to contain_exactly('reason')
@@ -257,7 +257,7 @@ RSpec.describe 'V5::Ministries', type: :request do
 
           expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
             .with(ministry)
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(ministry.attributes.slice(%w(name location_zoom)).merge(changes))
         end
@@ -271,7 +271,7 @@ RSpec.describe 'V5::Ministries', type: :request do
               params: { parent_id: other.gr_id },
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status(400)
         end
       end
@@ -288,7 +288,7 @@ RSpec.describe 'V5::Ministries', type: :request do
               params: { parent_id: other.gr_id },
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(ministry_id: ministry.gr_id, parent_id: other.gr_id)
         end
@@ -311,7 +311,7 @@ RSpec.describe 'V5::Ministries', type: :request do
               params: changes,
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(ministry.attributes.slice(%w(name location_zoom)).merge(changes))
         end
@@ -329,7 +329,7 @@ RSpec.describe 'V5::Ministries', type: :request do
               params: { parent_id: other.gr_id },
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(ministry_id: ministry.gr_id, parent_id: other.gr_id)
         end

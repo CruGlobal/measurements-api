@@ -21,7 +21,7 @@ RSpec.describe 'V5::Audits', type: :request do
         get '/v5/audit', params: { ministry_id: ministry.gr_id, number_of_entries: 2 },
                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json.count).to be 2
         expect(json.first['timestamp']).to eq Time.zone.now.strftime('%Y-%m-%d')
         expect(json.last['timestamp']).to eq 1.month.ago.strftime('%Y-%m-%d')
@@ -30,7 +30,7 @@ RSpec.describe 'V5::Audits', type: :request do
         get '/v5/audit', params: { ministry_id: ministry.gr_id, per_page: 2, page: 1 },
                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json['entries'].count).to be 2
         expect(json['entries'].first['timestamp']).to eq Time.zone.now.strftime('%Y-%m-%d')
         expect(json['entries'].last['timestamp']).to eq 1.month.ago.strftime('%Y-%m-%d')
@@ -45,7 +45,7 @@ RSpec.describe 'V5::Audits', type: :request do
         get '/v5/audit', params: { ministry_id: ministry.gr_id },
                          headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end

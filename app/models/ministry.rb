@@ -210,8 +210,6 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
        :has_slm, :has_llm, :has_gcm, :has_ds, :ministry_scope].concat(super)
     end
 
-    private
-
     # Arel methods
     def inherited_ministry_join
       arel_table

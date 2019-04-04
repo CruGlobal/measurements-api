@@ -14,7 +14,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
       get '/v5/sys_measurement_types', params: { access_token: authenticate_api, ministry_id: ministry.gr_id,
                                                  locale: 'en' }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['id']).to be measurement.id
       expect(json.first['localized_name']).to eq 'English Name'
     end
@@ -51,7 +51,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
       it 'fails when no token is sent' do
         get '/v5/sys_measurement_types'
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
 
       it 'fails when no token is sent' do
@@ -60,11 +60,11 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
 
         random_token = SecureRandom.uuid
         get '/v5/sys_measurement_types', params: { access_token: random_token }
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
 
         get '/v5/sys_measurement_types',
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{random_token}" }
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end
@@ -78,7 +78,7 @@ RSpec.describe 'V5::SystemsMeasurementTypes', type: :request do
           params: { ministry_id: ministry.gr_id },
           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json['id']).to be measurement.id
     end
 

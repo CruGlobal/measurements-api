@@ -18,7 +18,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
       it 'responds successfully with an empty array' do
         get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json).to be_an(Array).and be_empty
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
       it 'responds successfully with assignments' do
         get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json).to contain_exactly(a_hash_including('id' => assignments[1].gr_id, 'team_role' => 'member'),
                                         a_hash_including('id' => assignments[0].gr_id, 'team_role' => 'member'))
       end
@@ -46,7 +46,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
       it 'responds successfully with assignments' do
         get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json).to contain_exactly(
           a_hash_including('id' => assignment.gr_id, 'team_role' => 'leader').and(include('sub_ministries'))
         )
@@ -64,7 +64,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
       it 'responds successfully with assignments' do
         get '/v5/assignments', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json).to contain_exactly(
           a_hash_including('id' => assignments[0].gr_id, 'team_role' => 'leader').and(include('sub_ministries')),
           a_hash_including('id' => assignments[1].gr_id, 'team_role' => 'member').and(exclude('sub_ministries')),
@@ -79,7 +79,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
       it 'responds with an HTTP 401' do
         get "/v5/assignments/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status(401)
         expect(json.keys).to contain_exactly('reason')
       end
@@ -95,7 +95,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           get "/v5/assignments/#{assignment.gr_id}",
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 200
           expect(json).to include('id' => assignment.gr_id, 'team_role' => 'member',
                                   'ministry_id' => ministries[:c12].gr_id).and(exclude('sub_ministries'))
@@ -106,7 +106,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
         it 'responds with an HTTP 401' do
           get "/v5/assignments/#{assignment.gr_id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status(401)
           expect(json.keys).to contain_exactly('reason')
         end
@@ -123,7 +123,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           get "/v5/assignments/#{assignment.gr_id}",
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 200
           expect(json).to include('id' => assignment.gr_id, 'team_role' => 'leader',
                                   'ministry_id' => ministries[:c12].gr_id).and(include('sub_ministries'))
@@ -140,7 +140,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           get "/v5/assignments/#{member_assignment.gr_id}",
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 200
           expect(json).to include('id' => member_assignment.gr_id, 'team_role' => 'member',
                                   'ministry_id' => ministries[:c12].gr_id).and(exclude('sub_ministries'))
@@ -157,7 +157,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           get "/v5/assignments/#{member_assignment.gr_id}",
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 200
           expect(json).to include('id' => member_assignment.gr_id, 'team_role' => 'member',
                                   'ministry_id' => ministries[:c121].gr_id).and(exclude('sub_ministries'))
@@ -179,7 +179,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 201
           expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
@@ -196,7 +196,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 400
         end
       end
@@ -215,7 +215,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 400
         end
       end
@@ -233,7 +233,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 201
           expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
@@ -256,7 +256,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 201
           expect(request_stub).to have_been_requested
           expect(json).to include('ministry_id' => attributes[:ministry_id], 'team_role' => attributes[:team_role])
@@ -280,7 +280,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 201
           expect(request_stub).to have_been_requested
           expect(assignment_request_stub).to have_been_requested
@@ -313,7 +313,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
                                     headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
           end.to change(Person, :count).by(1)
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status 201
           expect(find_person_stub).to have_been_requested
           expect(create_person_stub).to have_been_requested
@@ -335,7 +335,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           post '/v5/assignments', params: attributes,
                                   headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 400
         end
       end
@@ -349,7 +349,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           put "/v5/assignments/#{SecureRandom.uuid}", params: { team_role: 'member' },
                                                       headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 401
         end
       end
@@ -364,7 +364,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
           put "/v5/assignments/#{assignment.gr_id}", params: { team_role: 'member' },
                                                      headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 401
         end
       end
@@ -381,7 +381,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
               params: { team_role: 'leader' },
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 401
         end
       end
@@ -398,7 +398,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
               params: { team_role: 'admin' },
               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status 400
         end
       end
@@ -416,7 +416,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
                 params: { team_role: 'leader' },
                 headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status 200
             expect(json).to include('ministry_id' => ministries[:a21].gr_id, 'team_role' => 'leader',
                                     'id' => member_assignment.gr_id)
@@ -430,7 +430,7 @@ RSpec.describe 'V5::Assignments', type: :request do # rubocop:disable Metrics/Bl
                 params: { team_role: 'inherited_leader' },
                 headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to_not be_success
+            expect(response).to_not be_successful
             expect(response).to have_http_status 400
           end
         end

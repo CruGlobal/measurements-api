@@ -2,16 +2,14 @@ source 'https://rubygems.org'
 source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro', '3.1.0'
 end
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
-  "https://github.com/#{repo_name}.git"
-end
+ruby '2.3.8'
 
 gem 'rake', '~> 11.1.1'
-gem 'rails', '~> 5.1.6'
+gem 'rails', '~> 5.2.3'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers.git'
-gem 'puma', '~> 3.7'
+gem 'puma', '~> 3.11'
 gem 'newrelic_rpm'
 gem 'versionist'
 gem 'rollbar'
@@ -38,6 +36,7 @@ gem 'carrierwave-aws'
 gem 'will_paginate'
 gem 'ddtrace'
 gem 'dogstatsd-ruby'
+gem 'bootsnap', '>= 1.1.0', require: false
 
 group :development, :test do
   gem 'dotenv-rails'

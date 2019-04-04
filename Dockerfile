@@ -2,6 +2,7 @@ FROM 056154071827.dkr.ecr.us-east-1.amazonaws.com/base-image-ruby-version-arg:2.
 MAINTAINER cru.org <wmd@cru.org>
 
 ARG SIDEKIQ_CREDS
+ARG SECRET_KEY_BASE
 
 COPY Gemfile Gemfile.lock ./
 COPY docker/pagespeed.conf /usr/local/openresty/nginx/conf/pagespeed.conf

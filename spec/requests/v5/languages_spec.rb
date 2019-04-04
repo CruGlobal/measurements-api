@@ -6,7 +6,7 @@ RSpec.describe 'V5::Images', type: :request do
     it 'responds with languages' do
       get '/v5/languages'
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status :ok
       json = JSON.parse(response.body)
       expect(json.length).to be 222
