@@ -6,7 +6,6 @@ rvm:
 services:
 - redis-server
 before_install:
-- echo ${SIDEKIQ_CREDS}
 - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:
 - bundle exec rake db:create db:migrate RAILS_ENV=test
