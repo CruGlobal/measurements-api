@@ -18,7 +18,7 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
              params: { username: person.cas_username, ministry_id: ministry.gr_id, team_role: 'admin' },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status 201
         expect(person_request).to have_been_requested
         expect(assignment_request).to have_been_requested
@@ -37,7 +37,7 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
              params: { key_guid: person.cas_guid, ministry_id: ministry.gr_id, team_role: 'member' },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status 201
         expect(person_request).to have_been_requested
         expect(assignment_request).to have_been_requested
@@ -56,7 +56,7 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
              params: { person_id: leader.gr_id, ministry_id: ministry.gr_id, team_role: 'leader' },
              headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status 201
         expect(assignment_request).to have_been_requested
         expect(json).to include('team_role' => 'leader').and(include('id'))
@@ -76,7 +76,7 @@ RSpec.describe 'V5::SystemsAssignments', type: :request do
         put "/v5/sys_assignments/#{assignment.gr_id}", params: { team_role: 'leader' },
                                                        headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status 200
         expect(assignment_request).to have_been_requested
         expect(json).to include('team_role' => 'leader').and(include('id'))

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Story
   class UserCreatedStory < ::Story
-    after_create :write_audit, if: 'published?'
+    after_create :write_audit, if: -> { published? }
 
     validates :title, presence: true
 

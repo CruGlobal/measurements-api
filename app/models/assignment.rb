@@ -78,8 +78,6 @@ class Assignment < ApplicationRecord
   end
 
   class << self
-    private
-
     def ministry_table
       Ministry.arel_table
     end

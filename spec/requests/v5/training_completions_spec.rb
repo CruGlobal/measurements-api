@@ -19,7 +19,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
           post '/v5/training_completion', params: attributes,
                                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to change(TrainingCompletion, :count).by(1)
         expect(json['phase']).to_not be_nil
       end
@@ -31,7 +31,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
           post '/v5/training_completion', params: attributes,
                                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end.to_not change(TrainingCompletion, :count)
         expect(training.completions.last.number_completed).to eq attributes[:number_completed]
       end
@@ -44,7 +44,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
           post '/v5/training_completion', params: attributes,
                                           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change(TrainingCompletion, :count)
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
             params: attributes,
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         completion.reload
         expect(completion.number_completed).to be 50
         expect(json['training_id']).to be training.id
@@ -89,7 +89,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
             params: { number_completed: 30 },
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
       end
     end
   end
@@ -117,7 +117,7 @@ RSpec.describe 'V5::TrainingCompletions', type: :request do
           delete "/v5/training_completion/#{completion.id}",
                  headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
         end.to_not change(TrainingCompletion, :count)
       end
     end

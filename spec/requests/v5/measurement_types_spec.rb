@@ -14,7 +14,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
       get '/v5/measurement_types', params: { ministry_id: ministry.gr_id, locale: 'en' },
                                    headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['id']).to be measurement.id
       expect(json.first['localized_name']).to eq 'English Name'
     end
@@ -29,7 +29,7 @@ RSpec.describe 'V5::MeasurementTypes', type: :request do
           params: { ministry_id: ministry.gr_id },
           headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json['id']).to be measurement.id
       expect(json['english']).to_not be_nil
       expect(json['english']).to eq measurement.english

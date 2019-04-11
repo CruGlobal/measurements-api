@@ -39,7 +39,7 @@ RSpec.describe 'V5::Measurements', type: :request do
       get '/v5/measurements', params: { ministry_id: ministry.gr_id, mcc: 'SLM' },
                               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json.first['name']).to eq 'English Name'
     end
   end
@@ -57,7 +57,7 @@ RSpec.describe 'V5::Measurements', type: :request do
             params: { ministry_id: ministry.gr_id, mcc: 'SLM' },
             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(json['local_breakdown']).to be_a Hash
       end
 
@@ -102,7 +102,7 @@ RSpec.describe 'V5::Measurements', type: :request do
         expect do
           post '/v5/measurements/', params: { _json: measurements_body },
                                     headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}" }
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(201)
         end.to change(GrSync::WithGrWorker.jobs, :size).by(2)
       end

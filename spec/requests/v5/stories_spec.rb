@@ -31,7 +31,7 @@ RSpec.describe 'V5::Stories', type: :request do
       it 'responds successfully' do
         get '/v5/stories', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status :ok
         expect(json).to include(:stories, :meta)
         expect(json[:meta]['total']).to be 6
@@ -49,7 +49,7 @@ RSpec.describe 'V5::Stories', type: :request do
           get '/v5/stories', params: { page: 2, per_page: 2 },
                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json).to include(:stories, :meta)
           expect(json[:meta]['total']).to be 6
@@ -64,7 +64,7 @@ RSpec.describe 'V5::Stories', type: :request do
         it 'responds successfully' do
           get '/v5/stories', params: { mcc: 'slm' }, headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json).to include(:stories, :meta)
           expect(json[:meta]['total']).to be 3
@@ -81,7 +81,7 @@ RSpec.describe 'V5::Stories', type: :request do
           get '/v5/stories', params: { church_id: church.id },
                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json).to include(:stories, :meta)
           expect(json[:meta]['total']).to be 2
@@ -97,7 +97,7 @@ RSpec.describe 'V5::Stories', type: :request do
           get '/v5/stories', params: { training_id: training.id },
                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json).to include(:stories, :meta)
           expect(json[:meta]['total']).to be 2
@@ -115,7 +115,7 @@ RSpec.describe 'V5::Stories', type: :request do
           get '/v5/stories', params: { self_only: 'true' },
                              headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json).to include(:stories, :meta)
           expect(json[:meta]['total']).to be 2
@@ -133,7 +133,7 @@ RSpec.describe 'V5::Stories', type: :request do
       it 'responds with HTTP 404' do
         get '/v5/stories/0', headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status :not_found
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe 'V5::Stories', type: :request do
         it 'responds successfully with the story' do
           get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :ok
           expect(json[:story_id]).to eq story.id
           expect(json[:created_by]).to be_uuid.and(eq person.gr_id)
@@ -164,7 +164,7 @@ RSpec.describe 'V5::Stories', type: :request do
           it 'responds with HTTP 404' do
             get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-            expect(response).to_not be_success
+            expect(response).to_not be_successful
             expect(response).to have_http_status :not_found
           end
         end
@@ -175,7 +175,7 @@ RSpec.describe 'V5::Stories', type: :request do
           it 'responds successfully with the story' do
             get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person member}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status :ok
             expect(json[:story_id]).to eq story.id
             expect(json[:created_by]).to be_uuid.and(eq person.gr_id)
@@ -196,7 +196,7 @@ RSpec.describe 'V5::Stories', type: :request do
         it 'responds with HTTP 404' do
           get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}" }
 
-          expect(response).to_not be_success
+          expect(response).to_not be_successful
           expect(response).to have_http_status :not_found
         end
       end
@@ -212,7 +212,7 @@ RSpec.describe 'V5::Stories', type: :request do
           it 'responds with HTTP 404' do
             get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to_not be_success
+            expect(response).to_not be_successful
             expect(response).to have_http_status :not_found
           end
         end
@@ -223,7 +223,7 @@ RSpec.describe 'V5::Stories', type: :request do
           it 'responds successfully with the story' do
             get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status :ok
             expect(json[:story_id]).to eq story.id
             expect(json[:created_by]).to be_uuid.and(eq author.gr_id)
@@ -235,7 +235,7 @@ RSpec.describe 'V5::Stories', type: :request do
           it 'responds successfully with the story' do
             get "/v5/stories/#{story.id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status :ok
             expect(json[:story_id]).to eq story.id
             expect(json[:created_by]).to be_uuid.and(eq author.gr_id)
@@ -259,7 +259,7 @@ RSpec.describe 'V5::Stories', type: :request do
         post '/v5/stories', params: story_attributes,
                             headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status :bad_request
       end
     end
@@ -272,7 +272,7 @@ RSpec.describe 'V5::Stories', type: :request do
             post '/v5/stories', params: story_attributes,
                                 headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status :created
           end.to change { Story.count }.by(1).and(change { Audit.count }.by(0))
           expect(Story.last.created_by_id).to eq person.id
@@ -285,7 +285,7 @@ RSpec.describe 'V5::Stories', type: :request do
             post '/v5/stories', params: story_attributes.merge(state: 'published'),
                                 headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response).to have_http_status :created
           end.to change { Story.count }.by(1).and(change { Audit.count }.by(1))
           expect(Story.last.created_by_id).to eq person.id
@@ -301,7 +301,7 @@ RSpec.describe 'V5::Stories', type: :request do
           post '/v5/stories', params: story_attributes.merge(ministry_id: sub_ministry.gr_id),
                               headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status :created
         end.to change { Story.count }.by(1).and(change { Audit.count }.by(0))
         expect(Story.last.created_by_id).to eq person.id
@@ -326,7 +326,7 @@ RSpec.describe 'V5::Stories', type: :request do
         put "/v5/stories/#{story.id}", params: attributes,
                                        headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status :ok
         expect(json[:title]).to eq attributes[:title]
         expect(json[:content]).to eq attributes[:content]
@@ -345,7 +345,7 @@ RSpec.describe 'V5::Stories', type: :request do
         put "/v5/stories/#{story.id}", params: attributes,
                                        headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}" }
 
-        expect(response).to_not be_success
+        expect(response).to_not be_successful
         expect(response).to have_http_status :bad_request
       end
     end
@@ -355,7 +355,7 @@ RSpec.describe 'V5::Stories', type: :request do
         put "/v5/stories/#{story.id}", params: attributes,
                                        headers: { 'HTTP_AUTHORIZATION': "Bearer #{authenticate_person author}" }
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status :ok
         expect(json[:title]).to eq attributes[:title]
         expect(json[:content]).to eq attributes[:content]
