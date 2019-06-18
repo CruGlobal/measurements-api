@@ -55,7 +55,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [:request_id]
+  # config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -78,7 +78,7 @@ Rails.application.configure do
   config.active_support.deprecation = :notify
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  # config.log_formatter = ::Logger::Formatter.new
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
@@ -95,5 +95,5 @@ Rails.application.configure do
 
   syslogger = Logger::Syslog.new("measurements-api-#{ENV['ENVIRONMENT']}", Syslog::LOG_LOCAL7)
   config.logger = ActiveSupport::TaggedLogging.new(syslogger)
-  config.log_tags = [lambda { |request| "ReqID:#{request.uuid}" }]
+  # config.log_tags = [lambda { |request| "ReqID:#{request.uuid}" }]
 end

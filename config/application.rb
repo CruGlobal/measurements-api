@@ -16,8 +16,11 @@ require_relative '../app/middleware/rack_reset_gr_client'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require_relative '../lib/log/logger'
 module MeasurementsApi
   class Application < Rails::Application
+    # Enable ougai
+    config.logger = Log::Logger.new(Rails.root.join('log', 'datadog.log'))
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
