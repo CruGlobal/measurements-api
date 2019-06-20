@@ -2,7 +2,7 @@ dist: xenial
 cache: bundler
 language: ruby
 addons:
-- postgresql: "10"
+  postgresql: "10"
 services:
 - redis-server
 env:
