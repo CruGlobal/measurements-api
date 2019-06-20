@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ougai'
 require File.expand_path('logger/formatter', __dir__)
 require File.expand_path('logger/formatter_readable', __dir__)

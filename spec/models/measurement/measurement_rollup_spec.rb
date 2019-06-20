@@ -30,8 +30,8 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
         WebMock.stub_request(:get, %r{#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{measurement.send("#{mt}_id")}})
                .to_return(body: measurements_json(ministry.gr_id).to_json)
       end
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements").
-        to_return(status: 200, headers: {}, body: '{}')
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
+                              .to_return(status: 200, headers: {}, body: '{}')
 
       Measurement::MeasurementRollup.new.run(measurement, ministry.gr_id, '03-2016', 'SLM')
 
@@ -50,8 +50,8 @@ RSpec.describe Measurement::MeasurementRollup, type: :model do
         WebMock.stub_request(:get, url_regex)
                .to_return(body: measurements_json(ministry.gr_id).to_json)
       end
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements").
-        to_return(status: 200, headers: {}, body: '{}')
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
+                              .to_return(status: 200, headers: {}, body: '{}')
 
       Measurement::MeasurementRollup.new.run(child_measurement, ministry.gr_id, '03-2016', 'SLM')
 
