@@ -1,8 +1,8 @@
-sudo: false
+dist: xenial
 cache: bundler
 language: ruby
-rvm:
-  - 2.3.8
+addons:
+- postgresql: "10"
 services:
 - redis-server
 before_install:
