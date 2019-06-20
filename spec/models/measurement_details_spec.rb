@@ -227,6 +227,7 @@ RSpec.describe MeasurementDetails, type: :model do
       stub_measurement_type_gr(meas.local_id, ministry.gr_id)
       stub_measurement_type_gr(meas.person_id, user.gr_id)
       gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
+                              .to_return(status: 200, headers: {}, body: '{}')
 
       details.load_user_from_gr
       details.load_local_from_gr

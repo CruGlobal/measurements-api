@@ -67,3 +67,5 @@ end
 
 # add this at the end so it plays nice with pry
 gem 'marco-polo'
+gem 'lograge'
+gem 'ougai', '~> 1.7'

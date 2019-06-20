@@ -1,10 +1,14 @@
-sudo: false
+dist: xenial
 cache: bundler
 language: ruby
-rvm:
-  - 2.3.8
+addons:
+  postgresql: "10"
 services:
 - redis-server
+env:
+  global:
+    - DB_ENV_POSTGRESQL_USER_TEST=postgres
+    - DB_ENV_POSTGRESQL_PASS_TEST=""
 before_install:
 - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:

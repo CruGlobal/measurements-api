@@ -39,6 +39,7 @@ describe GrSync::EntityUpdatePush do
       allow(Ministry).to receive(:find).with(ministry.id) { ministry }
       url = "#{ENV['GLOBAL_REGISTRY_URL']}/entities/#{ministry.gr_id}"
       request_stub = stub_request(:put, url).with(body: entity.to_json)
+                                            .to_return(status: 200, headers: {}, body: '{}')
       gr_client = GlobalRegistryClient.new
 
       GrSync::EntityUpdatePush.new(gr_client).update_in_gr('Ministry', ministry.id)
