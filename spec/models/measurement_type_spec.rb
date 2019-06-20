@@ -10,11 +10,14 @@ RSpec.describe MeasurementType, type: :model do
       @measurement_type = MeasurementType.new(measurement: @measurement)
 
       @gr_meas_delete_total_stub =
-        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.total_id}")
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.total_id}").
+          to_return(status: 200, headers: {}, body: '{}')
       @gr_meas_delete_local_stub =
-        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.local_id}")
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.local_id}").
+          to_return(status: 200, headers: {}, body: '{}')
       @gr_meas_delete_person_stub =
-        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.person_id}")
+        WebMock.stub_request(:delete, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{@measurement.person_id}").
+          to_return(status: 200, headers: {}, body: '{}')
     end
 
     it 'removes Measurement from the db' do
