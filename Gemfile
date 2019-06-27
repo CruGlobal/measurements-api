@@ -37,6 +37,7 @@ gem 'will_paginate'
 gem 'ddtrace'
 gem 'dogstatsd-ruby'
 gem 'bootsnap', '>= 1.1.0', require: false
+gem 'ougai', '~> 1.7'
 
 group :development, :test do
   gem 'dotenv-rails'
@@ -67,5 +68,3 @@ end
 
 # add this at the end so it plays nice with pry
 gem 'marco-polo'
-gem 'lograge'
-gem 'ougai', '~> 1.7'
