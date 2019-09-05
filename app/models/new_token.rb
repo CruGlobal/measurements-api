@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 class NewToken
   include ActiveModel::Model
   include ActiveRecord::AttributeAssignment
 
   attr_accessor :st, :redirect_url
 
-  validates :st, presence: { message: "You must pass in a service ticket ('st' parameter)" }
+  validates :st, presence: {message: "You must pass in a service ticket ('st' parameter)"}
   validate :validate_service_ticket, :person?
 
   def save
@@ -17,7 +18,7 @@ class NewToken
   # Validate Service Ticket
   def validate_service_ticket
     return if errors.any? || checked_ticket.is_valid?
-    errors.add(:st, 'denied')
+    errors.add(:st, "denied")
   end
 
   def checked_ticket
@@ -34,7 +35,7 @@ class NewToken
     return if errors.any?
     store_service_ticket(checked_ticket, access_token)
     return if person.present?
-    errors.add(:st, 'denied')
+    errors.add(:st, "denied")
   end
 
   def person
@@ -43,8 +44,8 @@ class NewToken
 
   # Generate Access Token
   def generate_access_token(st)
-    map = { guid: 'ssoGuid', email: 'email', key_guid: 'theKeyGuid',
-            relay_guid: '', first_name: 'firstName', last_name: 'lastName' }
+    map = {guid: "ssoGuid", email: "email", key_guid: "theKeyGuid",
+           relay_guid: "", first_name: "firstName", last_name: "lastName",}
     attributes = {}
     map.each do |k, v|
       attributes[k] = st.extra_attributes[v] if st.extra_attributes.key?(v)
@@ -59,6 +60,6 @@ class NewToken
   end
 
   def redis_ticket_key(ticket)
-    ['measurements_api:service_ticket', ticket].join(':')
+    ["measurements_api:service_ticket", ticket].join(":")
   end
 end

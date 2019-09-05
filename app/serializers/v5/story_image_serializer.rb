@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class StoryImageSerializer < ActiveModel::Serializer
     attributes :story_id,

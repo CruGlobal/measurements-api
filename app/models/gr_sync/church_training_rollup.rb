@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class ChurchTrainingRollup
     def initialize(gr_client)

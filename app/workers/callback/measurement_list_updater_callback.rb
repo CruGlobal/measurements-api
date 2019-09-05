@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Callback
   class MeasurementListUpdaterCallback
     def on_success(_status, options)

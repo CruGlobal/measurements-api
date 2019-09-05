@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module V5
   class MinistriesController < V5::BaseUserController
     power :ministries, map: {
       [:show] => :show_ministry,
       [:update] => :update_ministry,
-      [:create] => :create_ministry
+      [:create] => :create_ministry,
     }, as: :ministry_scope
 
     def index
@@ -15,7 +16,7 @@ module V5
     end
 
     def show
-      load_ministry or render_not_found
+      load_ministry || render_not_found
       render_ministry
     end
 
@@ -28,7 +29,7 @@ module V5
     end
 
     def update
-      load_ministry or render_not_found && return
+      load_ministry || render_not_found && return
       if build_ministry
         render_ministry
       else
@@ -58,12 +59,12 @@ module V5
     end
 
     def refresh_ministries
-      if params.key?(:refresh) && params[:refresh] == 'true'
+      if params.key?(:refresh) && params[:refresh] == "true"
         # Always sync the ministries using the root global registry key so that
         # a the /v5/sys_ministries endpoint wiht a refresh won't make our logal
         # ministries list be different.
         GrSync::WithGrWorker.queue_call_with_root(GrSync::MinistriesSync, :sync_all)
-        render status: :accepted, plain: 'Accepted'
+        render status: :accepted, plain: "Accepted"
         return true
       end
       false
@@ -89,13 +90,15 @@ module V5
     def ministry_params
       permitted_params = post_params.permit(*::Ministry::PERMITTED_PARAMS)
       # Set nil array fields to an empty array (http://guides.rubyonrails.org/security.html#unsafe-query-generation)
-      %i(lmi_show lmi_hide mccs).each do |param|
+      %i[lmi_show lmi_hide mccs].each do |param|
         if permitted_params.to_h.key(param)
           permitted_params[param] = [] if permitted_params[param].nil?
         end
       end
-      permitted_params[:parent_id] =
-        Ministry.ministry(permitted_params[:parent_id]).try(:id) if permitted_params.key? :parent_id
+      if permitted_params.key? :parent_id
+        permitted_params[:parent_id] =
+          Ministry.ministry(permitted_params[:parent_id]).try(:id)
+      end
       permitted_params
     end
 
@@ -117,15 +120,15 @@ module V5
                       params[:parent_id]
                     else
                       return super
-                    end
+      end
       Power.new(current_user, ministry_id)
     end
 
     def render_consul_powerless(exception)
       case params[:action].to_sym
       when :show, :update
-        api_error 'INSUFFICIENT_RIGHTS - You must be a member of one of the following roles: ' \
-         "#{Assignment::LEADER_ROLES.join(', ')}.", status: :unauthorized
+        api_error "INSUFFICIENT_RIGHTS - You must be a member of one of the following roles: " \
+         "#{Assignment::LEADER_ROLES.join(", ")}.", status: :unauthorized
       else
         super
       end

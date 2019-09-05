@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include GrSync::EntityMethods
 
-  GR_FIELDS = 'first_name,last_name,key_username,authentication,email_address.email'
+  GR_FIELDS = "first_name,last_name,key_username,authentication,email_address.email"
 
   has_many :user_content_locales, dependent: :destroy
   has_many :user_map_views, dependent: :destroy
@@ -21,9 +22,9 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
     when :id
       nil
     when :authentication
-      { key_guid: cas_guid } if cas_guid.present?
+      {key_guid: cas_guid} if cas_guid.present?
     when :email_address
-      [{ email: email, client_integration_id: email }] if email.present?
+      [{email: email, client_integration_id: email}] if email.present?
     else
       super
     end
@@ -46,7 +47,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
       self.ea_guid = auth[:ea_guid] if auth.key? :ea_guid
     when :email_address
       email_address = Array.wrap(value).first
-      self.email = email_address['email'] if email_address.key? 'email'
+      self.email = email_address["email"] if email_address.key? "email"
     else
       super
     end
@@ -62,11 +63,11 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
     ministry = ministry_param ministry
     return unless ministry.present?
     ancestor = ministry.self_and_ancestors.joins(:assignments)
-                       .where(assignments: { person_id: id }.merge(Assignment.local_leader_condition))
-                       .order('assignments.role DESC').first
+      .where(assignments: {person_id: id}.merge(Assignment.local_leader_condition))
+      .order("assignments.role DESC").first
     return unless ancestor
     assignment = assignment_for_ministry(ancestor)
-    assignment.as_inherited_assignment(ministry.id) if assignment
+    assignment&.as_inherited_assignment(ministry.id)
   end
 
   def role_for_ministry(ministry)
@@ -96,13 +97,13 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   class << self
     def entity_type
-      'person'
+      "person"
     end
 
     # Global Registry Entity Properties to sync
     def entity_properties
       [:first_name, :last_name, :key_username, :authentication,
-       :email_address, :preferred_name].concat(super)
+       :email_address, :preferred_name,].concat(super)
     end
 
     def person(cas_guid, refresh = false)
@@ -122,7 +123,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
           'filters[key_username]': username
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity["person"]["id"]) if person.nil?
         person.from_entity entity
         person.save
       end
@@ -138,7 +139,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
           'filters[email_address][email]': email
         )
         return person if entity.nil?
-        person = Person.find_or_initialize_by(gr_id: entity['person']['id']) if person.nil?
+        person = Person.find_or_initialize_by(gr_id: entity["person"]["id"]) if person.nil?
         person.from_entity entity
         person.save
       end
@@ -149,7 +150,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
       return if gr_id.blank?
       person = Person.find_by(gr_id: gr_id)
       if person.nil? || refresh
-        entity = Person.find_entity(gr_id, entity_type: 'person', fields: GR_FIELDS)
+        entity = Person.find_entity(gr_id, entity_type: "person", fields: GR_FIELDS)
         person = Person.find_or_initialize_by(gr_id: gr_id)
         person.from_entity(entity)
         person.save
@@ -167,7 +168,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
       entity = find_entity_by_auth_guid(gr_auth_prefix, guid)
       return if entity.nil?
-      person = find_or_initialize_by(gr_id: entity['person']['id'])
+      person = find_or_initialize_by(gr_id: entity["person"]["id"])
       person.send("#{guid_field}=", guid)
       person.from_entity entity
       person.save
@@ -176,9 +177,9 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     def find_entity_by_auth_guid(gr_auth_prefix, guid)
       # When using authentication, we find by posting
-      client.post({ entity: { person: { authentication: { "#{gr_auth_prefix}_guid" => guid },
-                                        client_integration_id: guid } } },
-                  params: { fields: GR_FIELDS, full_response: 'true' })['entity']
+      client.post({entity: {person: {authentication: {"#{gr_auth_prefix}_guid" => guid},
+                                     client_integration_id: guid,}}},
+                  params: {fields: GR_FIELDS, full_response: "true"})["entity"]
     end
   end
 end

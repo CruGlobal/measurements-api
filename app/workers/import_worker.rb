@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'import'
+
+require "import"
 
 # Console command to re-run import. This will delete all existing data.
 # def rerun_import

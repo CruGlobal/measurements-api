@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class MinistrySerializer < BaseMinistrySerializer
     has_many :team_members, serializer: TeamMemberSerializer

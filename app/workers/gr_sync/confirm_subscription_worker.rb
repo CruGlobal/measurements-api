@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class ConfirmSubscriptionWorker
     include Sidekiq::Worker

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Powers
   module MeasurementPowers
     extend ActiveSupport::Concern

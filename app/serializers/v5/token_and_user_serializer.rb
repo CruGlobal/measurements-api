@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class TokenAndUserSerializer < ActiveModel::Serializer
     attributes :status, :session_ticket, :assignments
@@ -12,7 +13,7 @@ module V5
         last_name: object.access_token.last_name,
         cas_username: object.access_token.email,
         person_id: object.person.gr_id,
-        key_guid: object.person.cas_guid
+        key_guid: object.person.cas_guid,
       }
     end
 
@@ -22,10 +23,10 @@ module V5
 
     def assignments
       # We need to serialize ourselves, AMS doesn't serialize nested assignments (by design), we need deep nesting
-      object.person.try(:assignments).map do |assignment|
+      object.person.try(:assignments).map { |assignment|
         serializer = V5::AssignmentSerializer.new(assignment)
         ::ActiveModelSerializers::Adapter.create(serializer).as_json
-      end.compact
+      }.compact
     end
   end
 end

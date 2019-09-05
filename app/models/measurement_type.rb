@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class MeasurementType < ActiveModelSerializers::Model
   include ActiveModel::Model
   include ActiveSupport::Callbacks
@@ -7,13 +8,13 @@ class MeasurementType < ActiveModelSerializers::Model
   define_callbacks :save
 
   ATTRIBUTES = [:english, :perm_link_stub, :description, :section, :column, :sort_order, :parent_id,
-                :localized_name, :localized_description, :ministry_id, :locale, :measurement, :is_core].freeze
+                :localized_name, :localized_description, :ministry_id, :locale, :measurement, :is_core,].freeze
   attr_accessor(*ATTRIBUTES)
 
   validate :check_parent_id_valid
 
-  MINISTRY_TYPE_ID = ENV['MINISTRY_TYPE_ID']
-  ASSIGNMENT_TYPE_ID = ENV['ASSIGNMENT_TYPE_ID']
+  MINISTRY_TYPE_ID = ENV["MINISTRY_TYPE_ID"]
+  ASSIGNMENT_TYPE_ID = ENV["ASSIGNMENT_TYPE_ID"]
 
   def save
     return false unless valid?
@@ -24,7 +25,7 @@ class MeasurementType < ActiveModelSerializers::Model
       return false unless measurement.valid?
       build_translation if can_build_trans
       measurement.save!
-      @translation.save! if @translation
+      @translation&.save!
       true
     end
   rescue
@@ -56,7 +57,7 @@ class MeasurementType < ActiveModelSerializers::Model
 
   def destroy
     return unless measurement
-    raise 'measurements with children can not be destroyed' if measurement.children.any?
+    raise "measurements with children can not be destroyed" if measurement.children.any?
 
     gr_singleton.delete(measurement.total_id)
     gr_singleton.delete(measurement.local_id)
@@ -82,10 +83,10 @@ class MeasurementType < ActiveModelSerializers::Model
   def build_measurement
     self.measurement ||= Measurement.new
     measurement.attributes = if measurement.new_record?
-                               measurement_attributes
-                             else
-                               measurement_attributes.except(:perm_link)
-                             end
+      measurement_attributes
+    else
+      measurement_attributes.except(:perm_link)
+    end
   end
 
   def measurement_attributes
@@ -97,15 +98,15 @@ class MeasurementType < ActiveModelSerializers::Model
       total_id: @total_id,
       local_id: @local_id,
       person_id: @person_id,
-      section: section || 'other',
-      column: column || 'other',
-      parent_id: parent_id
+      section: section || "other",
+      column: column || "other",
+      parent_id: parent_id,
     }.compact
   end
 
-  def gen_perm_link(perm_link_prefix = 'total')
+  def gen_perm_link(perm_link_prefix = "total")
     self.is_core = ActiveRecord::Type::Boolean.new.cast(is_core)
-    perm_link_prefix = "#{perm_link_prefix}_" unless perm_link_prefix.blank? || perm_link_prefix.end_with?('_')
+    perm_link_prefix = "#{perm_link_prefix}_" unless perm_link_prefix.blank? || perm_link_prefix.end_with?("_")
     if is_core
       "lmi_#{perm_link_prefix}#{perm_link_stub}"
     else
@@ -126,7 +127,7 @@ class MeasurementType < ActiveModelSerializers::Model
       name: localized_name,
       description: localized_description,
       language: locale,
-      ministry_id: ministry_id
+      ministry_id: ministry_id,
     }.compact
   end
 
@@ -140,20 +141,20 @@ class MeasurementType < ActiveModelSerializers::Model
   def send_gr_measurement_types
     return unless measurement.blank? || measurement.new_record?
 
-    @total_id = send_gr_measurement_type(nil, 'total', MINISTRY_TYPE_ID)
-    @local_id = send_gr_measurement_type('Local', 'local', MINISTRY_TYPE_ID)
-    @person_id = send_gr_measurement_type('Person', nil, ASSIGNMENT_TYPE_ID)
+    @total_id = send_gr_measurement_type(nil, "total", MINISTRY_TYPE_ID)
+    @local_id = send_gr_measurement_type("Local", "local", MINISTRY_TYPE_ID)
+    @person_id = send_gr_measurement_type("Person", nil, ASSIGNMENT_TYPE_ID)
   end
 
   def send_gr_measurement_type(name_type, perm_link_prefix, related_id)
     name = english
     name = "#{english} (#{name_type})" if name_type
 
-    perm_link = gen_perm_link(perm_link_prefix || '')
-    json = gr_singleton.post(measurement_type: { name: name, frequency: 'monthly', unit: 'People',
-                                                 description: description, perm_link: perm_link,
-                                                 related_entity_type_id: related_id })
-    json['measurement_type']['id']
+    perm_link = gen_perm_link(perm_link_prefix || "")
+    json = gr_singleton.post(measurement_type: {name: name, frequency: "monthly", unit: "People",
+                                                description: description, perm_link: perm_link,
+                                                related_entity_type_id: related_id,})
+    json["measurement_type"]["id"]
   end
 
   def ensure_type_ids_present

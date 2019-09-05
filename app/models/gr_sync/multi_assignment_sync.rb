@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class MultiAssignmentSync
     def initialize(ministry, entity)
@@ -7,7 +8,7 @@ module GrSync
     end
 
     def sync
-      relationship = @entity.dig('person:relationship')
+      relationship = @entity.dig("person:relationship")
       return unless relationship.present?
       # relationship will only be an array if there is more than one
       Array.wrap(relationship).each(&method(:sync_relationship))

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class UserPreferencesSerializer < ActiveModel::Serializer
     attributes :default_map_views, :default_measurement_states, :content_locales
@@ -23,9 +24,9 @@ module V5
           ministry_id: view.ministry.gr_id,
           location: {
             latitude: view.lat,
-            longitude: view.long
+            longitude: view.long,
           },
-          location_zoom: view.zoom
+          location_zoom: view.zoom,
         }
       end
     end

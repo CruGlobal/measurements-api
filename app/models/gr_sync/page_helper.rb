@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class PageHelper
     def initialize(gr_client)
@@ -7,7 +8,7 @@ module GrSync
 
     # Find Entities (internally uses find_entities_in_batches)
     def find_entities_each(params = {})
-      raise 'block required' unless block_given?
+      raise "block required" unless block_given?
       find_entities_in_batches(params) do |entities|
         entities.each do |entity|
           next unless entity.key?(params[:entity_type])
@@ -18,14 +19,14 @@ module GrSync
 
     # Find Entities in paged batches
     def find_entities_in_batches(params = {})
-      raise 'block required' unless block_given?
-      params['page'] = 1 unless params.key? 'page'
-      params['per_page'] = 50 unless params.key? 'per_page'
+      raise "block required" unless block_given?
+      params["page"] = 1 unless params.key? "page"
+      params["per_page"] = 50 unless params.key? "per_page"
       loop do
         response = @gr_client.entities.get(params)
-        yield response['entities'] if response.key? 'entities'
-        break if response.key?('meta') && (response['meta']['next_page'] == false)
-        params['page'] += 1
+        yield response["entities"] if response.key? "entities"
+        break if response.key?("meta") && (response["meta"]["next_page"] == false)
+        params["page"] += 1
       end
     end
   end

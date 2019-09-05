@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class ChurchArraySerializer
     def self.serializer_for(resource)

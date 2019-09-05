@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class SidekiqResetGrClient
   def call(_worker, _job, _queue)
     # The GlobalRegistryClient uses a thread store so reset it before every

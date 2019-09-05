@@ -1,11 +1,14 @@
 # frozen_string_literal: true
+
 module ModelHelpers
   def flatten_assignment(assignment)
     assignment = assignment.with_indifferent_access
     assignments = [assignment]
-    assignment[:sub_ministries].each do |a|
-      assignments << flatten_assignment(a)
-    end if assignment.key?(:sub_ministries)
+    if assignment.key?(:sub_ministries)
+      assignment[:sub_ministries].each do |a|
+        assignments << flatten_assignment(a)
+      end
+    end
     assignments.flatten
   end
 end

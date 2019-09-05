@@ -1,7 +1,8 @@
 # frozen_string_literal: true
-require 'rails_helper'
 
-RSpec.describe 'V5::SystemsMinistries', type: :request do
+require "rails_helper"
+
+RSpec.describe "V5::SystemsMinistries", type: :request do
   before :all do
     @ministries = FactoryGirl.create(:ministry_hierarchy)
   end
@@ -13,9 +14,9 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
   let(:json) { JSON.parse(response.body) }
   let(:gr_access_toke) { authenticate_api }
 
-  describe 'GET /v5/sys_ministries' do
-    it 'responds with all ministries' do
-      get '/v5/sys_ministries', headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+  describe "GET /v5/sys_ministries" do
+    it "responds with all ministries" do
+      get "/v5/sys_ministries", headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
       expect(response).to be_successful
       expect(json.length).to be ministries.length
     end
@@ -32,10 +33,10 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
     # end
   end
 
-  describe 'GET /v5/sys_ministries/:id' do
-    context 'valid ministry id' do
-      it 'responds with the ministry details' do
-        get "/v5/sys_ministries/#{ministries[:a3].gr_id}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+  describe "GET /v5/sys_ministries/:id" do
+    context "valid ministry id" do
+      it "responds with the ministry details" do
+        get "/v5/sys_ministries/#{ministries[:a3].gr_id}", headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status(200)
@@ -43,9 +44,9 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
       end
     end
 
-    context 'unknown ministry id' do
-      it 'responds with the ministry details' do
-        get "/v5/sys_ministries/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+    context "unknown ministry id" do
+      it "responds with the ministry details" do
+        get "/v5/sys_ministries/#{SecureRandom.uuid}", headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to_not be_successful
         expect(response).to have_http_status(404)
@@ -53,57 +54,57 @@ RSpec.describe 'V5::SystemsMinistries', type: :request do
     end
   end
 
-  describe 'POST /v5/sys_ministries' do
-    context 'missing required params' do
-      it 'responds with HTTP 400' do
-        post '/v5/sys_ministries',
-             params: { name: nil, lmi_show: true, mccs: nil, ministry_scope: 'Blah', hello: 123 },
-             headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+  describe "POST /v5/sys_ministries" do
+    context "missing required params" do
+      it "responds with HTTP 400" do
+        post "/v5/sys_ministries",
+             params: {name: nil, lmi_show: true, mccs: nil, ministry_scope: "Blah", hello: 123},
+             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to_not be_successful
         expect(response).to have_http_status 400
       end
     end
 
-    context 'with required params' do
+    context "with required params" do
       let(:ministry) { FactoryGirl.build(:ministry) }
       let!(:request_stub) { gr_create_ministry_request(ministry) }
 
-      it 'responds successfully with new ministry' do
-        post '/v5/sys_ministries',
-             params: { name: 'Test Ministry', ministry_scope: 'National', parent_id: ministries[:a3].gr_id },
-             headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+      it "responds successfully with new ministry" do
+        post "/v5/sys_ministries",
+             params: {name: "Test Ministry", ministry_scope: "National", parent_id: ministries[:a3].gr_id},
+             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status 201
         expect(request_stub).to have_been_requested
-        expect(json).to include('ministry_id', 'parent_id', 'min_code')
-        expect(json['ministry_id']).to be_uuid.and(eq ministry.gr_id)
+        expect(json).to include("ministry_id", "parent_id", "min_code")
+        expect(json["ministry_id"]).to be_uuid.and(eq ministry.gr_id)
       end
     end
   end
 
-  describe 'PUT /v5/sys_ministries/:id' do
+  describe "PUT /v5/sys_ministries/:id" do
     let(:ministry) { FactoryGirl.create(:ministry) }
-    context 'valid ministry id' do
-      it 'responds with the updated ministry details' do
+    context "valid ministry id" do
+      it "responds with the updated ministry details" do
         allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
 
         put "/v5/sys_ministries/#{ministry.gr_id}",
-            params: { name: 'New Name', mccs: ['gcm'], ministry_scope: 'Area' },
-            headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+            params: {name: "New Name", mccs: ["gcm"], ministry_scope: "Area"},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
           .with(ministry)
         expect(response).to be_successful
         expect(response).to have_http_status(200)
-        expect(json).to include_json(ministry_id: ministry.gr_id, name: 'New Name', ministry_scope: 'Area')
+        expect(json).to include_json(ministry_id: ministry.gr_id, name: "New Name", ministry_scope: "Area")
       end
     end
 
-    context 'unknown ministry id' do
-      it 'responds with the ministry details' do
-        put "/v5/sys_ministries/#{SecureRandom.uuid}", headers: { 'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}" }
+    context "unknown ministry id" do
+      it "responds with the ministry details" do
+        put "/v5/sys_ministries/#{SecureRandom.uuid}", headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to_not be_successful
         expect(response).to have_http_status(404)

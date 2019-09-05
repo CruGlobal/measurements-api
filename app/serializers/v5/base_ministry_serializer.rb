@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module V5
   class BaseMinistrySerializer < ActiveModel::Serializer
-    MINISTRY_ATTRIBUTES = %i(name
+    MINISTRY_ATTRIBUTES = %i[name
                              min_code
                              ministry_scope
                              location
@@ -10,8 +11,7 @@ module V5
                              lmi_hide
                              mccs
                              default_mcc
-                             hide_reports_tab
-                             ).freeze
+                             hide_reports_tab].freeze
 
     attributes :ministry_id, :parent_id, :content_locales
     attributes(*self::MINISTRY_ATTRIBUTES)

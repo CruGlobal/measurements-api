@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class SystemsMinistriesController < V5::MinistriesController
     include V5::BaseSystemsController

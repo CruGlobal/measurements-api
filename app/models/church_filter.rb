@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ChurchFilter
   def initialize(filters)
     # strip extra spaces from filters
@@ -15,10 +16,10 @@ class ChurchFilter
 
   def filter_by_development(churches)
     include_devs = []
-    include_devs << Church.developments['target'] unless clean_filter(:hide_target_point)
-    include_devs << Church.developments['group_stage'] unless clean_filter(:hide_group)
-    include_devs << Church.developments['church'] unless clean_filter(:hide_church)
-    include_devs << Church.developments['multiplying_church'] unless clean_filter(:hide_mult_church)
+    include_devs << Church.developments["target"] unless clean_filter(:hide_target_point)
+    include_devs << Church.developments["group_stage"] unless clean_filter(:hide_group)
+    include_devs << Church.developments["church"] unless clean_filter(:hide_church)
+    include_devs << Church.developments["multiplying_church"] unless clean_filter(:hide_mult_church)
     churches.where(development: include_devs)
   end
 
@@ -54,7 +55,7 @@ class ChurchFilter
     rescue ArgumentError
       period_date = Date.parse("#{@filters[:period]}-01")
     end
-    churches.where('start_date <= ?', period_date.end_of_month).where('end_date > ? OR end_date IS NULL', period_date)
+    churches.where("start_date <= ?", period_date.end_of_month).where("end_date > ? OR end_date IS NULL", period_date)
   end
 
   private
@@ -80,7 +81,7 @@ class ChurchFilter
 
   # arel methods
   def public
-    table[:security].gteq(Church.securities['registered_public_church'])
+    table[:security].gteq(Church.securities["registered_public_church"])
   end
 
   def in_tree(min_tree_ids)
@@ -89,10 +90,10 @@ class ChurchFilter
 
   def local_security
     secure_level = if Power.current
-                     Power.current.visiable_local_churches_security
-                   else
-                     Church.securities['local_private_church']
-                   end
+      Power.current.visiable_local_churches_security
+    else
+      Church.securities["local_private_church"]
+    end
     table[:ministry_id].eq(root_ministry.try(:id)).and(table[:security].gteq(secure_level))
   end
 

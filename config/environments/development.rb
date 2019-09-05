@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -15,12 +16,12 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join('tmp', 'caching-dev.txt').exist?
+  if Rails.root.join("tmp", "caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
+      "Cache-Control" => "public, max-age=#{2.days.to_i}",
     }
   else
     config.action_controller.perform_caching = false
@@ -66,16 +67,16 @@ Rails.application.configure do
   HttpLogger.ignore = [/newrelic\.com/]
 
   # Allows us to turn on logging of body and resopnse when wanted
-  HttpLogger.log_request_body  = ENV['LOG_REQUEST_BODY'].present?
-  HttpLogger.log_response_body = ENV['LOG_RESPONSE_BODY'].present?
+  HttpLogger.log_request_body = ENV["LOG_REQUEST_BODY"].present?
+  HttpLogger.log_response_body = ENV["LOG_RESPONSE_BODY"].present?
 
   # Allow us to turn off HTTP logging with an env var
-  HttpLogger.logger.level = Logger::Severity::UNKNOWN if ENV['NO_HTTP_LOGGER']
+  HttpLogger.logger.level = Logger::Severity::UNKNOWN if ENV["NO_HTTP_LOGGER"]
 
   config.middleware.insert_before 0, Rack::Cors do
     allow do
-      origins '*'
-      resource '*',
+      origins "*"
+      resource "*",
                headers: :any,
                methods: [:get, :post, :delete, :put, :patch, :options, :head],
                max_age: 0

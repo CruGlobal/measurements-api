@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class MinistrySubMinistrySerializer < ActiveModel::Serializer
     attributes :min_id, :name, :min_code

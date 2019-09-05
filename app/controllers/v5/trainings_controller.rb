@@ -1,19 +1,20 @@
 # frozen_string_literal: true
+
 module V5
   class TrainingsController < V5::BaseUserController
     power :trainings, map: {
-      [:create, :update, :destroy] => :edit_training
+      [:create, :update, :destroy] => :edit_training,
     }, as: :training_scope
 
     def index
       render json: filtered_trainings,
              each_serializer: V5::TrainingSerializer,
-             scope: { period: params[:period] }
+             scope: {period: params[:period]}
     end
 
     def create
       build_training
-      save_training or render_errors
+      save_training || render_errors
     end
 
     def update
@@ -30,11 +31,11 @@ module V5
     private
 
     def request_power
-      ministry_id = if params[:action] == 'update' || params[:action] == 'destroy'
-                      Training.find_by(id: params[:id]).try(:ministry).try(:gr_id)
-                    else
-                      params[:ministry_id]
-                    end
+      ministry_id = if params[:action] == "update" || params[:action] == "destroy"
+        Training.find_by(id: params[:id]).try(:ministry).try(:gr_id)
+      else
+        params[:ministry_id]
+      end
       Power.new(current_user, ministry_id)
     end
 

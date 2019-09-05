@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class BaseUserController < BaseController
     include V5::AccessTokenProtectedConcern
@@ -14,7 +15,7 @@ module V5
     protected
 
     def redis_ticket_key(ticket)
-      ['measurements_api:service_ticket', ticket].join(':')
+      ["measurements_api:service_ticket", ticket].join(":")
     end
 
     def current_user
@@ -31,7 +32,7 @@ module V5
     end
 
     def render_not_found
-      api_error 'Not Found', status: :not_found
+      api_error "Not Found", status: :not_found
     end
   end
 end

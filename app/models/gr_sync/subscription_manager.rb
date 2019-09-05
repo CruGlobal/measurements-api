@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class SubscriptionManager
     def initialize(entity_type_ids, endpoint)
@@ -15,14 +16,14 @@ module GrSync
 
     def subscribed_entity_type_ids
       subscription_client.get_all_pages
-                         .select { |sub| sub['endpoint'] == @endpoint }
-                         .map { |sub| sub['entity_type_id'] }
+        .select { |sub| sub["endpoint"] == @endpoint }
+        .map { |sub| sub["entity_type_id"] }
     end
 
     def subscribe(entity_type_id)
       subscription_client.post(
         subscription: {
-          entity_type_id: entity_type_id, endpoint: @endpoint
+          entity_type_id: entity_type_id, endpoint: @endpoint,
         }
       )
     end

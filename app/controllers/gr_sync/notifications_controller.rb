@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class NotificationsController < ApplicationController
     def create

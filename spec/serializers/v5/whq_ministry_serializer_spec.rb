@@ -1,15 +1,16 @@
 # frozen_string_literal: true
-require 'rails_helper'
+
+require "rails_helper"
 
 RSpec.describe V5::WHQMinistrySerializer do
-  describe 'a ministry' do
-    let(:area) { FactoryGirl.create(:area, name: 'Testing Area', code: 'TEST') }
-    let(:ministry) { FactoryGirl.create(:ministry, ministry_scope: 'National', area: area) }
+  describe "a ministry" do
+    let(:area) { FactoryGirl.create(:area, name: "Testing Area", code: "TEST") }
+    let(:ministry) { FactoryGirl.create(:ministry, ministry_scope: "National", area: area) }
     let(:serializer) { V5::WHQMinistrySerializer.new(ministry) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
-    it 'has properties' do
+    it "has properties" do
       expect(json.keys).to contain_exactly(:ministry_id, :name, :min_code, :area_name, :area_code)
       expect(json[:ministry_id]).to be_uuid.and(eq ministry.gr_id)
       expect(json[:name]).to be_a(String).and(eq ministry.name)

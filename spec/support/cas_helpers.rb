@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module CASHelpers
   def validate_ticket_request(person, ticket = nil)
     person ||= FactoryGirl.build(:person)
-    ticket ||= 'asdf'
+    ticket ||= "asdf"
     WebMock
-      .stub_request(:get, "#{ENV['CAS_BASE_URL']}/proxyValidate")
-      .with(query: { service: 'http://www.example.com/v5/token', ticket: ticket })
+      .stub_request(:get, "#{ENV["CAS_BASE_URL"]}/proxyValidate")
+      .with(query: {service: "http://www.example.com/v5/token", ticket: ticket})
       .to_return(status: 200, body: validate_ticket_response(person))
   end
 

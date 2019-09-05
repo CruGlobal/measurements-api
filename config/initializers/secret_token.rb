@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Be sure to restart your server when you modify this file.
 
 # Your secret key for verifying the integrity of signed cookies.
@@ -17,4 +18,4 @@
 # Using secret_token for rails3 compatibility. Change to secret_key_base
 # to avoid deprecation warning.
 # Can be safely removed in a rails3 api-only application.
-MeasurementsApi::Application.config.secret_key_base = ENV.fetch('SECRET_KEY_BASE', '1234567890abcdef')
+MeasurementsApi::Application.config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "1234567890abcdef")
