@@ -1,0 +1,42 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "b5d2a595055ea80a71cae59c143a89bbff941ca2b5fab8e273395910639faf2e",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/models/person.rb",
+      "line": 165,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "find_by(\"#{guid_field_prefix}_guid\" => guid)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Person",
+        "method": "person_for_auth_guid"
+      },
+      "user_input": "guid_field_prefix",
+      "confidence": "Medium",
+      "note": ""
+    },
+    {
+      "warning_type": "Remote Code Execution",
+      "warning_code": 110,
+      "fingerprint": "d882f63ce96c28fb6c6e0982f2a171460e4b933bfd9b9a5421dca21eef3f76da",
+      "check_name": "CookieSerialization",
+      "message": "Use of unsafe cookie serialization strategy `:marshal` might lead to remote code execution",
+      "file": "config/initializers/cookies_serializer.rb",
+      "line": 7,
+      "link": "https://brakemanscanner.org/docs/warning_types/unsafe_deserialization",
+      "code": "Rails.application.config.action_dispatch.cookies_serializer = :marshal",
+      "render_path": null,
+      "location": null,
+      "user_input": null,
+      "confidence": "Medium",
+      "note": ""
+    }
+  ],
+  "updated": "2019-09-06 00:13:01 +0200",
+  "brakeman_version": "4.6.1"
+}

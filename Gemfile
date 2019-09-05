@@ -40,6 +40,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'ougai', '~> 1.7'
 
 group :development, :test do
+  gem 'brakeman'
+  gem 'bundler-audit'
   gem 'dotenv-rails'
   gem 'guard-rubocop'
   gem 'guard-rspec'
@@ -51,6 +53,7 @@ group :development, :test do
   gem 'http_logger'
   gem 'awesome_print'
   gem 'rack-cors', require: 'rack/cors'
+  gem 'standard'
 end
 
 group :test do
