@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Assignment
   class UserCreatedAssignment < ::Assignment
     # Virtual attributes
@@ -28,14 +29,14 @@ class Assignment
 
     def assign_person
       self.person = Person.person_for_gr_id(person_gr_id) ||
-                    person_for_key_guid || Person.person_for_ea_guid(ea_guid) ||
-                    person_by_username
+        person_for_key_guid || Person.person_for_ea_guid(ea_guid) ||
+        person_by_username
     end
 
     def person_for_key_guid
       return if key_guid.blank?
       # Legacy GMA identities saved user login as guid
-      if key_guid.include?('@')
+      if key_guid.include?("@")
         self.email = key_guid.strip
         self.key_guid = nil
         person_by_email
@@ -57,7 +58,8 @@ class Assignment
     def create_person_from_params
       person = Person.create(
         cas_username: username, first_name: first_name, last_name: last_name,
-        email: email, preferred_name: preferred_name)
+        email: email, preferred_name: preferred_name
+      )
       person.create_entity
       person.save!
       person

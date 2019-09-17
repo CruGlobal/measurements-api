@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class AssignmentSerializer < BaseMinistrySerializer
     attributes :id, :team_role, :sub_ministries
@@ -29,10 +30,12 @@ module V5
     end
 
     def sub_ministries
-      object.ministry.children.collect do |ministry|
-        serializer = V5::AssignmentSerializer.new(object.as_inherited_assignment(ministry.id))
-        ::ActiveModelSerializers::Adapter.create(serializer).as_json
-      end.compact if object.leader_role?
+      if object.leader_role?
+        object.ministry.children.collect { |ministry|
+          serializer = V5::AssignmentSerializer.new(object.as_inherited_assignment(ministry.id))
+          ::ActiveModelSerializers::Adapter.create(serializer).as_json
+        }.compact
+      end
     end
   end
 end

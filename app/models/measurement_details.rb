@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metrics/ClassLength
   attr_accessor :id, :ministry_id, :mcc, :period
   attr_reader :measurement, :total, :local, :local_breakdown, :self_breakdown, :my_measurements,
@@ -12,7 +13,7 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     super(attributes)
 
     # default values
-    @period ||= Time.zone.today.strftime('%Y-%m')
+    @period ||= Time.zone.today.strftime("%Y-%m")
     if @id
       @measurement = Measurement.find_by(total_id: id) || Measurement.find_by_perm_link(id)
     end
@@ -27,10 +28,10 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     validate!
 
     tasks = [:load_local_from_gr, :load_total_from_gr, :load_user_from_gr, :load_sub_mins_from_gr,
-             :load_team_from_gr, :load_split_measurements]
-    threads = tasks.map do |method|
+             :load_team_from_gr, :load_split_measurements,]
+    threads = tasks.map { |method|
       Thread.new { send(method) }
-    end
+    }
     threads.each(&:join)
 
     update_total_in_gr
@@ -70,14 +71,14 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
 
   def load_sub_mins_from_gr
     submin_data = load_measurements_of_type(:total, :total, ministry.children.collect(&:gr_id), period)
-    @sub_ministries = ministry.children.map do |child_min|
-      measurement_for_child = submin_data.find { |m| m['related_entity_id'] == child_min.gr_id }
+    @sub_ministries = ministry.children.map { |child_min|
+      measurement_for_child = submin_data.find { |m| m["related_entity_id"] == child_min.gr_id }
       {
         name: child_min.name,
         ministry_id: child_min.gr_id,
-        total: measurement_for_child.try(:[], 'value').to_f
+        total: measurement_for_child.try(:[], "value").to_f,
       }
-    end
+    }
   end
 
   def load_team_from_gr
@@ -95,11 +96,11 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
 
   def load_split_measurements
     return if measurement.children.none?
-    @split_measurements = measurement.children.each_with_object({}) do |child, hash|
+    @split_measurements = measurement.children.each_with_object({}) { |child, hash|
       params = gr_request_params(:total, nil, period)
-      resp = gr_singleton.find(child.total_id, params)['measurement_type']['measurements']
-      hash[child.perm_link_stub] = resp.first['value'].to_i if resp.any?
-    end
+      resp = gr_singleton.find(child.total_id, params)["measurement_type"]["measurements"]
+      hash[child.perm_link_stub] = resp.first["value"].to_i if resp.any?
+    }
   end
 
   def update_total_in_gr
@@ -130,69 +131,69 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
     # HTTPRequestEntityTooLarge so we need to then run multiple requests with 70 related_entity_id each
     measurements = []
     measurement_id = measurement.send("#{type}_id")
-    all_related_entity_ids = Array.wrap(params['filters[related_entity_id][]'])
+    all_related_entity_ids = Array.wrap(params["filters[related_entity_id][]"])
     all_related_entity_ids.in_groups_of(RELATED_ENTITIES_BATCH_SIZE, false) do |related_entity_ids|
       batch_params = params.clone
-      batch_params['filters[related_entity_id][]'] = related_entity_ids
+      batch_params["filters[related_entity_id][]"] = related_entity_ids
       batch_response = gr_singleton.find(measurement_id, batch_params.compact)
-      measurements.concat(batch_response['measurement_type']['measurements'])
+      measurements.concat(batch_response["measurement_type"]["measurements"])
     end
     measurements
   end
 
   def gr_request_params(dimension_level, related_id = nil, period = nil)
     {
-      'filters[related_entity_id][]' => related_id || ministry_id,
-      'filters[period_from]' => period || period_from,
-      'filters[period_to]' => period || @period,
-      'filters[dimension]' => dimension_filter(dimension_level),
-      per_page: 250
+      "filters[related_entity_id][]" => related_id || ministry_id,
+      "filters[period_from]" => period || period_from,
+      "filters[period_to]" => period || @period,
+      "filters[dimension]" => dimension_filter(dimension_level),
+      :per_page => 250,
     }
   end
 
   def build_monthly_hash(gr_resp)
     monthly_hash = {}
     i_period = period_from
-    gr_resp = gr_resp.select { |m| m['dimension'] == @mcc }
+    gr_resp = gr_resp.select { |m| m["dimension"] == @mcc }
     loop do
-      monthly_hash[i_period] = gr_resp.find { |m| m['period'] == i_period }.try(:[], 'value').to_f
+      monthly_hash[i_period] = gr_resp.find { |m| m["period"] == i_period }.try(:[], "value").to_f
       break if i_period == period
-      i_period = (Date.parse("#{i_period}-01") + 1.month).strftime('%Y-%m')
+      i_period = (Date.parse("#{i_period}-01") + 1.month).strftime("%Y-%m")
     end
     monthly_hash
   end
 
   def build_breakdown_hash(gr_resp)
-    measurements = gr_resp.select { |m| m['period'] == @period && m['dimension'].start_with?("#{@mcc}_") }
-    this_period_sum = measurements.sum { |m| m['value'].to_f }
-    breakdown = measurements.each_with_object({}) do |meas, hash|
-      dimension = meas['dimension'].sub("#{@mcc}_", '')
-      hash[dimension] = meas['value'].to_f
-    end
-    breakdown['total'] = this_period_sum
+    measurements = gr_resp.select { |m| m["period"] == @period && m["dimension"].start_with?("#{@mcc}_") }
+    this_period_sum = measurements.sum { |m| m["value"].to_f }
+    breakdown = measurements.each_with_object({}) { |meas, hash|
+      dimension = meas["dimension"].sub("#{@mcc}_", "")
+      hash[dimension] = meas["value"].to_f
+    }
+    breakdown["total"] = this_period_sum
     [breakdown, this_period_sum]
   end
 
   def team_member_hash(assignment, gr_data)
-    total = gr_data.select { |m| m['related_entity_id'] == assignment.gr_id }.sum { |m| m['value'].to_f }
+    total = gr_data.select { |m| m["related_entity_id"] == assignment.gr_id }.sum { |m| m["value"].to_f }
     {
       assignment_id: assignment.gr_id,
       team_role: assignment.role,
       first_name: assignment.person.first_name,
       last_name: assignment.person.last_name,
       person_id: assignment.person.gr_id,
-      total: total
+      total: total,
     }
   end
 
   def push_measurement_to_gr(value, related_id, type_id)
     GlobalRegistryClient.client(:measurement).post(measurement: {
-                                                     period: period,
-                                                     value: value,
-                                                     related_entity_id: related_id,
-                                                     measurement_type_id: type_id,
-                                                     dimension: @mcc
-                                                   })
+      period: period,
+      value: value,
+      related_entity_id: related_id,
+      measurement_type_id: type_id,
+      dimension: @mcc,
+    })
   end
 
   def count_total
@@ -203,7 +204,7 @@ class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metri
   end
 
   def period_from
-    @period_from ||= (Date.parse("#{period}-01") - 5.months).strftime('%Y-%m')
+    @period_from ||= (Date.parse("#{period}-01") - 5.months).strftime("%Y-%m")
   end
 
   def dimension_filter(level)

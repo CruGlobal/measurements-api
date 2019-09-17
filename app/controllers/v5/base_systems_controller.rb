@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   module BaseSystemsController
     extend ActiveSupport::Concern
@@ -15,7 +16,7 @@ module V5
     end
 
     def with_token(&_)
-      GlobalRegistryClient.parameters = { access_token: @access_token, xff: request.headers['HTTP_X_FORWARDED_FOR'] }
+      GlobalRegistryClient.parameters = {access_token: @access_token, xff: request.headers["HTTP_X_FORWARDED_FOR"]}
       yield
     ensure
       GlobalRegistryClient.parameters = nil

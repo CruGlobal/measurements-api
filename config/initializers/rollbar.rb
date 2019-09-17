@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 Rollbar.configure do |config|
   # Without configuration, Rollbar is enabled in all environments.
   # To disable in specific environments, set config.enabled=false.
 
-  config.access_token = ENV.fetch('ROLLBAR_ACCESS_TOKEN')
+  config.access_token = ENV.fetch("ROLLBAR_ACCESS_TOKEN")
 
   # Here we'll disable in test and development:
   config.enabled = false if Rails.env.test? || Rails.env.development?
@@ -29,7 +30,7 @@ Rollbar.configure do |config|
   # config.exception_level_filters.merge!('MyCriticalException' => 'critical')
   #
   # You can also specify a callable, which will be called with the exception instance.
-  config.exception_level_filters.merge!('ActionController::RoutingError' => 'ignore')
+  config.exception_level_filters.merge!("ActionController::RoutingError" => "ignore")
 
   # Enable asynchronous reporting (uses girl_friday or Threading if girl_friday
   # is not installed)

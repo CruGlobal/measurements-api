@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class MeasurementListReader
   include ActiveModel::Model
 
@@ -8,8 +9,8 @@ class MeasurementListReader
     super(attributes)
 
     # default values
-    @period ||= Time.zone.today.strftime('%Y-%m')
-    @source ||= 'gma-app'
+    @period ||= Time.zone.today.strftime("%Y-%m")
+    @source ||= "gma-app"
   end
 
   def load
@@ -27,7 +28,7 @@ class MeasurementListReader
     work_q = Queue.new
     params = gr_loading_params
     @measurements.each { |m| work_q.push m }
-    workers = (1..thread_count).map do
+    workers = (1..thread_count).map {
       Thread.new do
         begin
           loop do
@@ -37,10 +38,10 @@ class MeasurementListReader
           end
         rescue ThreadError => e
           # we don't care about thread errors because
-          raise e unless e.message == 'queue empty'
+          raise e unless e.message == "queue empty"
         end
       end
-    end
+    }
     workers.each(&:join)
   end
 
@@ -53,7 +54,7 @@ class MeasurementListReader
       mcc: @mcc,
       period: @period,
       source: @source,
-      historical: @historical
+      historical: @historical,
     }
   end
 
@@ -76,7 +77,7 @@ class MeasurementListReader
   # core measurements to hide
   def hide_filter
     perm_links = ministry.lmi_hide.map { |lmi| "lmi_total_#{lmi}" }
-    query = table[:perm_link].does_not_match('%_custom_%')
+    query = table[:perm_link].does_not_match("%_custom_%")
     query = query.and(table[:perm_link].not_in(perm_links)) if perm_links.any?
     query
   end
@@ -95,6 +96,6 @@ class MeasurementListReader
   end
 
   def thread_count
-    ENV.fetch('MEASUREMENT_THREAD_COUNT').to_i
+    ENV.fetch("MEASUREMENT_THREAD_COUNT").to_i
   end
 end

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # Valid MCCs (Mission Critical Components)
-  MCC_SLM = 'slm'
-  MCC_LLM = 'llm'
-  MCC_GCM = 'gcm'
-  MCC_DS = 'ds'
+  MCC_SLM = "slm"
+  MCC_LLM = "llm"
+  MCC_GCM = "gcm"
+  MCC_DS = "ds"
   MCCS = [MCC_SLM, MCC_LLM, MCC_GCM, MCC_DS].freeze
 
   # Map global registry mcc property names to MCC value
@@ -12,14 +13,14 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
     has_slm: MCC_SLM,
     has_llm: MCC_LLM,
     has_gcm: MCC_GCM,
-    has_ds: MCC_DS
+    has_ds: MCC_DS,
   }.freeze
 
   # WHQ Scopes
-  SCOPES = %w(National Area Global National\ Region).freeze
+  SCOPES = %w[National Area Global National\ Region].freeze
 
   PERMITTED_PARAMS = [:name, :parent_id, :min_code, :ministry_scope, :default_mcc, :hide_reports_tab,
-                      :location_zoom, location: [:latitude, :longitude], lmi_show: [], lmi_hide: [], mccs: []].freeze
+                      :location_zoom, location: [:latitude, :longitude], lmi_show: [], lmi_hide: [], mccs: [],].freeze
 
   include GrSync::EntityMethods
 
@@ -28,7 +29,7 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :inherited_ministries, lambda { |person|
     joins(inherited_ministry_join)
       .joins(assignment_join)
-      .where(assignments: { person_id: person.id })
+      .where(assignments: {person_id: person.id})
       .where(assignments: Assignment.local_leader_condition)
       .distinct
   }
@@ -44,20 +45,20 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   auto_strip_attributes :name
 
   validates :name, presence: true
-  validates :default_mcc, inclusion: { in: MCCS, message: '\'%{value}\' is not a valid MCC' },
+  validates :default_mcc, inclusion: {in: MCCS, message: "'%{value}' is not a valid MCC"},
                           unless: -> { default_mcc.blank? }
   validates :min_code, uniqueness: true, on: :create, if: -> { min_code.present? }
   before_validation :generate_min_code, on: :create, if: -> { gr_id.blank? }
   before_create :create_entity, if: -> { gr_id.blank? }
 
-  authorize_values_for :parent_id, message: 'Only leaders of both ministries may move a ministry'
+  authorize_values_for :parent_id, message: "Only leaders of both ministries may move a ministry"
 
   # Find Ministry by gr_id, update from Global Registry if nil or refresh is true
   def self.ministry(gr_id, refresh = false)
     ministry = find_by(gr_id: gr_id)
     if ministry.nil? || refresh
       ministry = new(gr_id: gr_id) if ministry.nil?
-      entity = ministry.update_from_entity(fields: '*,area:relationship')
+      entity = ministry.update_from_entity(fields: "*,area:relationship")
       return nil if entity.nil?
       ministry.save
       ministry.sync_assignments
@@ -66,8 +67,8 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def sync_assignments
-    entity = Ministry.find_entity(gr_id, 'fields' => 'person:relationship',
-                                         'filters[owned_by]' => ENV.fetch('GLOBAL_REGISTRY_SYSTEM_ID'))
+    entity = Ministry.find_entity(gr_id, "fields" => "person:relationship",
+                                         "filters[owned_by]" => ENV.fetch("GLOBAL_REGISTRY_SYSTEM_ID"))
                &.dig(self.class.entity_type)
     GrSync::MultiAssignmentSync.new(self, entity).sync
   rescue Net::HTTPGatewayTimeOut
@@ -82,11 +83,11 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
       members[assignment.person_id] = assignment if assignment.ministry_id == id
       # Next if direct assignment and it's not inherited
       next if members[assignment.person_id].try(:ministry_id) == id &&
-              !members[assignment.person_id].try(:inherited_role?)
+        !members[assignment.person_id].try(:inherited_role?)
 
       # Keep highest Inherited assignment per person
       if members[assignment.person_id].blank? ||
-         Assignment.roles[members[assignment.person_id].try(:[], :role)] < Assignment.roles[assignment[:role]]
+          Assignment.roles[members[assignment.person_id].try(:[], :role)] < Assignment.roles[assignment[:role]]
         members[assignment.person_id] = assignment.as_inherited_assignment(id)
       end
     end
@@ -102,9 +103,9 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def generate_min_code
     self.min_code = name if min_code.blank?
     return unless min_code.is_a? String
-    self.min_code = min_code.downcase.gsub(/\s+/, '_')
+    self.min_code = min_code.downcase.gsub(/\s+/, "_")
     ministry = parent_whq_ministry
-    self.min_code = [ministry.min_code, min_code].join('_') unless ministry.nil?
+    self.min_code = [ministry.min_code, min_code].join("_") unless ministry.nil?
   end
 
   def from_entity(entity = {})
@@ -121,16 +122,16 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def location
     # TODO: walk parent ministries to find lat/lng if missing
-    { latitude: latitude, longitude: longitude }
+    {latitude: latitude, longitude: longitude}
   end
 
   def lmi_show=(lmi)
-    lmi = lmi.split(',') if lmi.is_a? String
+    lmi = lmi.split(",") if lmi.is_a? String
     super lmi
   end
 
   def lmi_hide=(lmi)
-    lmi = lmi.split(',') if lmi.is_a? String
+    lmi = lmi.split(",") if lmi.is_a? String
     super lmi
   end
 
@@ -151,9 +152,9 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
       mcc = ENTITY_MCCS[property]
       mccs.include? mcc
     when :lmi_show
-      lmi_show.empty? ? nil : lmi_show.join(',')
+      lmi_show.empty? ? nil : lmi_show.join(",")
     when :lmi_hide
-      lmi_hide.empty? ? nil : lmi_hide.join(',')
+      lmi_hide.empty? ? nil : lmi_hide.join(",")
     when :location
       loc = location
       loc.delete_if { |_k, v| v.nil? }
@@ -187,13 +188,13 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def assign_area_from_entity(entity)
-    relationship = entity&.dig('area:relationship')
+    relationship = entity&.dig("area:relationship")
     # area:relationship could be an array in the rare case of an ministry that
     # is in two ares. We are choosing not to model that case in our
     # application (just assuming all ministries have one area), but to prevent
     # an error, just take the first of multiople possible areas from global
     # registry.
-    area_gr_id = Array.wrap(relationship).first&.dig('area')
+    area_gr_id = Array.wrap(relationship).first&.dig("area")
     return unless area_gr_id
     self.area = Area.for_gr_id(area_gr_id)
   end
@@ -201,35 +202,35 @@ class Ministry < ApplicationRecord # rubocop:disable Metrics/ClassLength
   class << self
     # Global Registry Entity type
     def entity_type
-      'ministry'
+      "ministry"
     end
 
     # Global Registry Entity Properties to sync
     def entity_properties
       [:name, :parent_id, :min_code, :location, :location_zoom, :lmi_hide, :lmi_show,
-       :has_slm, :has_llm, :has_gcm, :has_ds, :ministry_scope].concat(super)
+       :has_slm, :has_llm, :has_gcm, :has_ds, :ministry_scope,].concat(super)
     end
 
     # Arel methods
     def inherited_ministry_join
       arel_table
-        .join(arel_table.alias('self'))
+        .join(arel_table.alias("self"))
         .on(inherited_left_condition.and(inherited_right_condition))
         .join_sources
     end
 
     def inherited_left_condition
-      arel_table.alias('self')[left_column_name].lteq(arel_table[left_column_name])
+      arel_table.alias("self")[left_column_name].lteq(arel_table[left_column_name])
     end
 
     def inherited_right_condition
-      arel_table.alias('self')[right_column_name].gteq(arel_table[right_column_name])
+      arel_table.alias("self")[right_column_name].gteq(arel_table[right_column_name])
     end
 
     def assignment_join
       arel_table
         .join(Assignment.arel_table)
-        .on(Assignment.arel_table[:ministry_id].eq(arel_table.alias('self')[:id]))
+        .on(Assignment.arel_table[:ministry_id].eq(arel_table.alias("self")[:id]))
         .join_sources
     end
   end

@@ -1,18 +1,19 @@
 # frozen_string_literal: true
+
 class Power
   include Consul::Power
 
   def initialize(user, ministry = nil)
     # Power requires a valid user, ministry optional
-    raise(Consul::Error, 'User required') unless user.present?
+    raise(Consul::Error, "User required") unless user.present?
     @user = user
     @ministry = if ministry.is_a? Integer
-                  Ministry.find_by(id: ministry)
-                elsif Uuid.uuid? ministry
-                  Ministry.ministry(ministry)
-                elsif ministry.is_a? Ministry
-                  ministry
-                end
+      Ministry.find_by(id: ministry)
+    elsif Uuid.uuid? ministry
+      Ministry.ministry(ministry)
+    elsif ministry.is_a? Ministry
+      ministry
+    end
   end
 
   include Powers::AssignmentPowers

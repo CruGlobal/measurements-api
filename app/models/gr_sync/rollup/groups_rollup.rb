@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module GrSync
   module Rollup
     class GroupsRollup < ::GrSync::MeasurementRollup
-      LMI = 'lmi_total_gcm_nbr_of_groups'
+      LMI = "lmi_total_gcm_nbr_of_groups"
 
       def gr_measurement_type_filters
-        super.merge('filters[dimension:like]' => 'gcm_churches')
+        super.merge("filters[dimension:like]" => "gcm_churches")
       end
 
       def stats_for_period(period)
@@ -24,11 +25,11 @@ module GrSync
         values = ::ChurchValue.arel_table
 
         query = base_query(period)
-                .join(values, ::Arel::Nodes::OuterJoin)
-                .on(values[:church_id].eq(church[:id])
+          .join(values, ::Arel::Nodes::OuterJoin)
+          .on(values[:church_id].eq(church[:id])
                         .and(values[:period].lteq(period.strftime(PERIOD_FORMAT))))
-                .where(church[:development].eq(::Church.developments[:group_stage]))
-                .where(values[:id].eq(nil))
+          .where(church[:development].eq(::Church.developments[:group_stage]))
+          .where(values[:id].eq(nil))
         execute(query.to_sql).rows.to_h
       end
 
@@ -39,13 +40,13 @@ module GrSync
         values = ::ChurchValue.arel_table
 
         subquery = values.project(values[:church_id], values[:period].maximum)
-                         .where(values[:period].lteq(period.strftime(PERIOD_FORMAT)))
-                         .group(values[:church_id])
+          .where(values[:period].lteq(period.strftime(PERIOD_FORMAT)))
+          .group(values[:church_id])
 
         query = base_query(period)
-                .join(values).on(values[:church_id].eq(church[:id]))
-                .where(values[:development].eq(::Church.developments[:group_stage]))
-                .where(::Arel.sql('(church_id, period)').in(::Arel.sql("(#{subquery.to_sql})")))
+          .join(values).on(values[:church_id].eq(church[:id]))
+          .where(values[:development].eq(::Church.developments[:group_stage]))
+          .where(::Arel.sql("(church_id, period)").in(::Arel.sql("(#{subquery.to_sql})")))
         execute(query.to_sql).rows.to_h
       end
 
@@ -54,11 +55,11 @@ module GrSync
         ministry = ::Ministry.arel_table
 
         church.project(ministry[:gr_id], church[:id].count)
-              .join(ministry).on(ministry[:id].eq(church[:ministry_id]))
-              .where(church[:ministry_id].not_eq(nil))
-              .where(church[:start_date].lteq(period.end_of_month))
-              .where(church[:end_date].eq(nil).or(church[:end_date].gteq(period.months_since(1).beginning_of_month)))
-              .group(ministry[:gr_id])
+          .join(ministry).on(ministry[:id].eq(church[:ministry_id]))
+          .where(church[:ministry_id].not_eq(nil))
+          .where(church[:start_date].lteq(period.end_of_month))
+          .where(church[:end_date].eq(nil).or(church[:end_date].gteq(period.months_since(1).beginning_of_month)))
+          .group(ministry[:gr_id])
       end
     end
   end

@@ -21,7 +21,7 @@ class CreateMinistries < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    add_index :ministries, [:ministry_id], name: 'index_ministries_on_ministry_id', unique: true, using: :btree
-    add_index :ministries, [:min_code], name: 'index_ministries_on_min_code', unique: true, using: :btree
+    add_index :ministries, [:ministry_id], name: "index_ministries_on_ministry_id", unique: true, using: :btree
+    add_index :ministries, [:min_code], name: "index_ministries_on_min_code", unique: true, using: :btree
   end
 end

@@ -1,0 +1,8 @@
+ignore:
+    - app/models/global_registry_client.rb:
+        - Style/MethodMissingSuper
+        - Style/MissingRespondToMissing
+    - app/models/story.rb:
+        - Lint/DuplicateMethods
+    - spec/models/gr_sync/entity_type_finder_spec.rb:
+        - Performance/UnfreezeString

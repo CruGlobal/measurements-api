@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class StorySerializer < ActiveModel::Serializer
     attributes :story_id,
@@ -61,24 +62,24 @@ module V5
 
     def location
       return nil unless object.latitude.present? && object.longitude.present?
-      { latitude: object.latitude, longitude: object.longitude }
+      {latitude: object.latitude, longitude: object.longitude}
     end
 
     def privacy
       case object.privacy.to_sym
       when :everyone
-        'public'
+        "public"
       when :team_only
-        'team_only'
+        "team_only"
       end
     end
 
     def created_at
-      object.created_at.strftime('%Y-%m-%d')
+      object.created_at.strftime("%Y-%m-%d")
     end
 
     def updated_at
-      object.updated_at.strftime('%Y-%m-%d')
+      object.updated_at.strftime("%Y-%m-%d")
     end
   end
 end

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-require 'rails_helper'
+
+require "rails_helper"
 
 RSpec.describe V5::MinistrySerializer do
-  describe 'a ministry' do
+  describe "a ministry" do
     let(:parent) { FactoryGirl.create(:ministry) }
     let(:ministry) do
       FactoryGirl.create(:ministry, parent: parent, default_mcc: Ministry::MCCS.sample,
@@ -11,12 +12,12 @@ RSpec.describe V5::MinistrySerializer do
     let!(:sub_ministries) do
       [FactoryGirl.create(:ministry, parent: ministry),
        FactoryGirl.create(:ministry, parent: ministry),
-       FactoryGirl.create(:ministry, parent: ministry)]
+       FactoryGirl.create(:ministry, parent: ministry),]
     end
     let!(:assignments) do
       [FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),
        FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),
-       FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person))]
+       FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),]
     end
     let!(:content_locales) do
       assignments.each do |assignment|
@@ -27,7 +28,7 @@ RSpec.describe V5::MinistrySerializer do
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
-    it 'has attributes' do
+    it "has attributes" do
       expect(json[:ministry_id]).to be_uuid
       expect(json[:name]).to_not be_nil
       expect(json[:min_code]).to_not be_nil
@@ -46,7 +47,7 @@ RSpec.describe V5::MinistrySerializer do
       expect(json).to include(:default_mcc, :ministry_scope)
     end
 
-    it 'has correct attribute values' do
+    it "has correct attribute values" do
       expect(json[:ministry_id]).to eq(ministry.gr_id)
       expect(json[:parent_id]).to eq(parent.gr_id)
       expect(json[:name]).to eq(ministry.name)

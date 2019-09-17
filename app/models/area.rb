@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Area < ApplicationRecord
   has_many :ministries
 
@@ -25,13 +26,13 @@ class Area < ApplicationRecord
     end
 
     def create_from_gr_for_id(gr_id)
-      entity = gr_client.find(gr_id)['entity']['area']
+      entity = gr_client.find(gr_id)["entity"]["area"]
       create_from_entity(entity)
     end
 
     def gr_entity_for_code(code)
-      response = gr_client.get(entity_type: 'area', 'filters[area_code]' => code)
-      response['entities'].first['area']
+      response = gr_client.get(:entity_type => "area", "filters[area_code]" => code)
+      response["entities"].first["area"]
     end
 
     def gr_client
@@ -39,8 +40,8 @@ class Area < ApplicationRecord
     end
 
     def create_from_entity(entity)
-      Area.create!(gr_id: entity['id'], code: entity['area_code'],
-                   name: entity['area_name'], active: entity['is_active'])
+      Area.create!(gr_id: entity["id"], code: entity["area_code"],
+                   name: entity["area_name"], active: entity["is_active"])
     end
   end
 end

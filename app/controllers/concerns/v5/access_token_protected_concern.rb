@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   module AccessTokenProtectedConcern
     extend ActiveSupport::Concern
@@ -17,7 +18,7 @@ module V5
 
     # grabs access_token from header if one is present
     def oauth_access_token_from_header
-      auth_header = request.env['HTTP_AUTHORIZATION'] || ''
+      auth_header = request.env["HTTP_AUTHORIZATION"] || ""
       match = auth_header.match(/^Bearer\s(.*)/)
       return match[1] if match.present?
       false
@@ -29,9 +30,9 @@ module V5
     end
 
     def render_unauthorized
-      headers['WWW-Authenticate'] =
-        %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
-      api_error 'Bad token', status: 401
+      headers["WWW-Authenticate"] =
+        %(CAS realm="Application", casUrl="#{ENV["CAS_BASE_URL"]}", service="#{v5_token_index_url}")
+      api_error "Bad token", status: 401
     end
 
     def check_token(token)

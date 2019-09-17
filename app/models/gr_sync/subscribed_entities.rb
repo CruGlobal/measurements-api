@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class SubscribedEntities
     # We don't subscribe to changes from Assignment to prevent another system

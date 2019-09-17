@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class ChurchSerializer < ActiveModel::Serializer
     attributes :name, :latitude, :longitude, :jf_contrib, :cluster_count, :id, :gr_id, :development,
@@ -18,7 +19,7 @@ module V5
     end
 
     def development # rubocop:disable Metrics/AbcSize
-      if scope && scope[:period] && scope[:period] != Time.zone.today.strftime('%Y-%m')
+      if scope && scope[:period] && scope[:period] != Time.zone.today.strftime("%Y-%m")
         Church.developments[object.value_at(scope[:period], scope[:values])[:development]]
       else
         Church.developments[object[:development]]

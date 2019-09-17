@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'rails_helper'
+
+require "rails_helper"
 
 RSpec.describe ChurchClusterer, type: :model do
   let!(:nearby_church1) { FactoryGirl.build_stubbed(:church, latitude: 0, longitude: 1) }
@@ -15,9 +16,9 @@ RSpec.describe ChurchClusterer, type: :model do
     [distant_church, nearby_church1, nearby_church2, distant_orphan_church]
   end
 
-  context 'cluster by lat/long' do
-    it 'clusters some but not all' do
-      filters = { lat_min: 0, lat_max: 20, long_min: 0, long_max: 20 }
+  context "cluster by lat/long" do
+    it "clusters some but not all" do
+      filters = {lat_min: 0, lat_max: 20, long_min: 0, long_max: 20}
       filtered = ChurchClusterer.new(filters).cluster(church_array)
 
       cluster = filtered.find { |e| e.is_a? Array }

@@ -2,21 +2,21 @@ class UpdateForeignKeys < ActiveRecord::Migration[4.2]
   def change
     # Run rake db:reset before this migration
     # Change foreign key columns to integers (can't cast uuid to integer, so set value to null)
-    change_column :user_preferences, :person_id, 'integer USING null'
-    change_column :user_measurement_states, :person_id, 'integer USING null'
-    change_column :user_map_views, :person_id, 'integer USING null'
-    change_column :user_map_views, :ministry_id, 'integer USING null'
-    change_column :user_content_locales, :person_id, 'integer USING null'
-    change_column :user_content_locales, :ministry_id, 'integer USING null'
-    change_column :ministries, :parent_id, 'integer USING null'
+    change_column :user_preferences, :person_id, "integer USING null"
+    change_column :user_measurement_states, :person_id, "integer USING null"
+    change_column :user_map_views, :person_id, "integer USING null"
+    change_column :user_map_views, :ministry_id, "integer USING null"
+    change_column :user_content_locales, :person_id, "integer USING null"
+    change_column :user_content_locales, :ministry_id, "integer USING null"
+    change_column :ministries, :parent_id, "integer USING null"
     rename_column :churches, :target_area_id, :ministry_id
-    change_column :churches, :ministry_id, 'integer USING null'
+    change_column :churches, :ministry_id, "integer USING null"
     rename_column :churches, :created_by_id, :person_id
-    change_column :churches, :person_id, 'integer USING null'
-    change_column :audits, :person_id, 'integer USING null'
-    change_column :audits, :ministry_id, 'integer USING null'
-    change_column :assignments, :person_id, 'integer USING null'
-    change_column :assignments, :ministry_id, 'integer USING null'
+    change_column :churches, :person_id, "integer USING null"
+    change_column :audits, :person_id, "integer USING null"
+    change_column :audits, :ministry_id, "integer USING null"
+    change_column :assignments, :person_id, "integer USING null"
+    change_column :assignments, :ministry_id, "integer USING null"
 
     # Rename Global Registry id columns
     rename_column :people, :person_id, :gr_id

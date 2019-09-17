@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Allows you to decorate an Assignment instance to indicate that it has been
 # changed by a user and so should be synced to global registry.
 class Assignment
@@ -12,7 +13,7 @@ class Assignment
     private
 
     def update_gr_relationship
-      root_gr_client.put(gr_id, entity: { ministry_membership: { team_role: role } })
+      root_gr_client.put(gr_id, entity: {ministry_membership: {team_role: role}})
     end
 
     def root_gr_client

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
-require 'csv'
-require 'tree_order'
-require 'import_mappings'
+
+require "csv"
+require "tree_order"
+require "import_mappings"
 
 # For importing from the old SQL Server database that has been dumped to CSV,
 # and uploaded to S3 in the folder sql_server_csv_dump.
@@ -97,14 +98,14 @@ class Import
   end
 
   def csv_text(table)
-    s3.get_object(key: "sql_server_csv_dump/#{table}.csv", bucket: ENV.fetch('S3_BUCKET')).body
+    s3.get_object(key: "sql_server_csv_dump/#{table}.csv", bucket: ENV.fetch("S3_BUCKET")).body
   end
 
   def s3
     @s3 ||= Aws::S3::Client.new(
-      access_key_id: ENV.fetch('S3_ACCESS_KEY_ID'),
-      secret_access_key: ENV.fetch('S3_SECRET_ACCESS_KEY'),
-      region: 'us-east-1'
+      access_key_id: ENV.fetch("S3_ACCESS_KEY_ID"),
+      secret_access_key: ENV.fetch("S3_SECRET_ACCESS_KEY"),
+      region: "us-east-1"
     )
   end
 

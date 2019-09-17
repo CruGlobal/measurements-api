@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StoryFilter
   DEFAULT_PAGE = 1
   DEFAULT_PER_PAGE = 5

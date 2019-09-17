@@ -1,13 +1,14 @@
 # frozen_string_literal: true
+
 module V5
   class UserPreferencesController < V5::BaseUserController
     def index
-      load_person or render_not_found
+      load_person || render_not_found
       render_preferences
     end
 
     def create
-      load_person or render_not_found
+      load_person || render_not_found
       update_preferences
       render_preferences
     end

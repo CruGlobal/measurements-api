@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   force_ssl(if: :ssl_configured?, except: :lb)
 

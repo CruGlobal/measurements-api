@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module V5
   class TrainingCompletionsController < V5::BaseUserController
     power :training_completions, as: :training_completion_scope
 
     def create
       build_training_completion
-      save_training_completion or render_errors
+      save_training_completion || render_errors
     end
 
     def update
@@ -22,11 +23,11 @@ module V5
     private
 
     def request_power
-      training = if params[:action] == 'update' || params[:action] == 'destroy'
-                   TrainingCompletion.find_by(id: params[:id]).try(:training)
-                 else
-                   Training.find_by(id: params[:training_id])
-                 end
+      training = if params[:action] == "update" || params[:action] == "destroy"
+        TrainingCompletion.find_by(id: params[:id]).try(:training)
+      else
+        Training.find_by(id: params[:training_id])
+      end
       Power.new(current_user, training.try(:ministry))
     end
 

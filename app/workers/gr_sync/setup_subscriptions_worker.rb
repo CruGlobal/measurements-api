@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class SetupSubscriptionsWorker
     include Sidekiq::Worker
@@ -10,7 +11,7 @@ module GrSync
     private
 
     def endpoint
-      Rails.application.routes.url_helpers.gr_sync_notifications_url(host: ENV.fetch('SITE_HOST'), protocol: 'https')
+      Rails.application.routes.url_helpers.gr_sync_notifications_url(host: ENV.fetch("SITE_HOST"), protocol: "https")
     end
   end
 end

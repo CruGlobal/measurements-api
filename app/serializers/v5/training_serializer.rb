@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class TrainingSerializer < ActiveModel::Serializer
     attributes :id,
@@ -20,11 +21,11 @@ module V5
     end
 
     def date
-      object.date.strftime('%Y-%m-%d')
+      object.date.strftime("%Y-%m-%d")
     end
 
     def last_updated
-      object.updated_at.strftime('%Y-%m-%d')
+      object.updated_at.strftime("%Y-%m-%d")
     end
 
     def created_by

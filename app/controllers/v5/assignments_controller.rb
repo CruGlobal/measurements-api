@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module V5
   class AssignmentsController < V5::BaseUserController
     power :assignments, map: {
       [:show] => :showable_assignments,
-      [:update] => :updateable_assignments
+      [:update] => :updateable_assignments,
     }, as: :assignment_scope
 
     def index
@@ -13,12 +14,12 @@ module V5
 
     def show
       load_assignment
-      render_assignment or api_error('Invalid assignment id')
+      render_assignment || api_error("Invalid assignment id")
     end
 
     def create
-      permit_params %i(username key_guid person_id ministry_id team_role
-                       first_name last_name email preferred_name ea_guid)
+      permit_params %i[username key_guid person_id ministry_id team_role
+                       first_name last_name email preferred_name ea_guid]
       if build_assignment
         render_assignment :created
       else
@@ -27,8 +28,8 @@ module V5
     end
 
     def update
-      permit_params %i(team_role)
-      load_assignment or api_error('Invalid assignment id') && return
+      permit_params %i[team_role]
+      load_assignment || api_error("Invalid assignment id") && return
       if build_assignment
         render_assignment :ok
       else
@@ -44,7 +45,7 @@ module V5
                       Assignment.find_by(gr_id: params[:id]).try(:ministry).try(:gr_id)
                     else
                       params[:ministry_id]
-                    end
+      end
       Power.new(current_user, ministry_id)
     end
 
@@ -89,7 +90,7 @@ module V5
       @permitted_params ||= {}
       attributes = post_params.permit(@permitted_params)
       # Rename and delete uuid params
-      { person_id: :person_gr_id, ministry_id: :ministry_gr_id }.each do |k, v|
+      {person_id: :person_gr_id, ministry_id: :ministry_gr_id}.each do |k, v|
         attributes[v] = attributes[k] if attributes.key?(k) && Uuid.uuid?(attributes[k])
         attributes.delete(k)
       end
@@ -99,10 +100,10 @@ module V5
     def render_consul_powerless(exception)
       message = case params[:action].to_sym
                 when :show
-                  '\'ministry_id\' missing or invalid'
+                  "'ministry_id' missing or invalid"
                 else
                   exception.message
-                end
+      end
       api_error(message, status: :unauthorized)
     end
   end

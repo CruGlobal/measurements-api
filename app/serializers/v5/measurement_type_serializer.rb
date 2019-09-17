@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class MeasurementTypeSerializer < ActiveModel::Serializer
     attributes :perm_link_stub,
@@ -32,7 +33,7 @@ module V5
     end
 
     def custom?
-      perm_link.sub('lmi_total_', '').starts_with?('custom_')
+      perm_link.sub("lmi_total_", "").starts_with?("custom_")
     end
 
     def localized_name

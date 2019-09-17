@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class MeasurementPush
     attr_reader :gr_client
@@ -31,7 +32,7 @@ module GrSync
     private
 
     def determine_mcc(mcc)
-      mcc[0..mcc.index('_') - 1] if mcc.include?('_')
+      mcc[0..mcc.index("_") - 1] if mcc.include?("_")
       mcc
     end
 

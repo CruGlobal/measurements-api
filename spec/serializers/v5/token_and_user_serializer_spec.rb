@@ -1,14 +1,15 @@
 # frozen_string_literal: true
-require 'rails_helper'
+
+require "rails_helper"
 
 describe V5::TokenAndUserSerializer do
-  describe 'token request' do
+  describe "token request" do
     let(:resource) do
       token = CruAuthLib::AccessToken.new(
-        key_guid: 'asdf-1234',
-        email: 'email@email.com',
-        first_name: 'Tony',
-        last_name: 'Stark'
+        key_guid: "asdf-1234",
+        email: "email@email.com",
+        first_name: "Tony",
+        last_name: "Stark"
       )
       TokenAndUser.new(access_token: token, person: Person.create(
         gr_id: SecureRandom.uuid,
@@ -22,20 +23,20 @@ describe V5::TokenAndUserSerializer do
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:hash) { serialization.as_json }
 
-    it 'has attributes' do
-      expect(hash[:status]).to eq 'success'
+    it "has attributes" do
+      expect(hash[:status]).to eq "success"
       expect(hash[:session_ticket]).to_not be_nil
       expect(hash[:assignments]).to_not be_nil
       expect(hash[:user_preferences]).to_not be_nil
       expect(hash[:user_preferences][:content_locales]).to_not be_nil
       expect(hash[:user]).to_not be_nil
-      expect(hash[:user][:first_name]).to eq 'Tony'
-      expect(hash[:user][:last_name]).to eq 'Stark'
+      expect(hash[:user][:first_name]).to eq "Tony"
+      expect(hash[:user][:last_name]).to eq "Stark"
       expect(hash[:user][:cas_username]).to eq resource.access_token.email
       expect(hash[:user][:person_id]).to eq resource.person.gr_id
     end
 
-    it 'has assignments' do
+    it "has assignments" do
       assignments = hash[:assignments]
       expect(assignments).to be_an Array
     end
