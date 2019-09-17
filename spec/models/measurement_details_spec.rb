@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'rails_helper'
+
+require "rails_helper"
 
 RSpec.describe MeasurementDetails, type: :model do
   let(:user) { FactoryGirl.create(:person) }
@@ -7,50 +8,50 @@ RSpec.describe MeasurementDetails, type: :model do
 
   def measurement_json(period_date, value, related_id, dimension = nil)
     {
-      id: SecureRandom.uuid, period: period_date.strftime('%Y-%m'),
-      value: value, related_entity_id: related_id, dimension: dimension
+      id: SecureRandom.uuid, period: period_date.strftime("%Y-%m"),
+      value: value, related_entity_id: related_id, dimension: dimension,
     }
   end
 
   def measurements_json(related_entity_id = nil)
     {
       measurement_type: {
-        perm_link: 'LMI',
+        perm_link: "LMI",
         measurements: [
-          measurement_json(Time.zone.today, 3, related_entity_id, 'DS'),
-          measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf'),
-          measurement_json(Time.zone.today - 1.month, 1, related_entity_id)
-        ]
-      }
+          measurement_json(Time.zone.today, 3, related_entity_id, "DS"),
+          measurement_json(Time.zone.today, 3, related_entity_id, "DS_asdf"),
+          measurement_json(Time.zone.today - 1.month, 1, related_entity_id),
+        ],
+      },
     }
   end
 
   def stub_measurement_type_gr(type_id, related_entity_id)
-    WebMock.stub_request(:get, "#{ENV['GLOBAL_REGISTRY_URL']}/measurement_types/#{type_id}")
-           .with(query: hash_including)
-           .to_return(body: measurements_json(related_entity_id).to_json)
+    WebMock.stub_request(:get, "#{ENV["GLOBAL_REGISTRY_URL"]}/measurement_types/#{type_id}")
+      .with(query: hash_including)
+      .to_return(body: measurements_json(related_entity_id).to_json)
   end
 
-  describe '#new' do
-    it 'has default values' do
+  describe "#new" do
+    it "has default values" do
       details = MeasurementDetails.new
-      expect(details.period).to eq Time.zone.today.strftime('%Y-%m')
+      expect(details.period).to eq Time.zone.today.strftime("%Y-%m")
     end
 
-    it 'loads measurement by total_id' do
+    it "loads measurement by total_id" do
       meas = FactoryGirl.create(:measurement)
       details = MeasurementDetails.new(id: meas.total_id)
       expect(details.measurement.id).to eq meas.id
     end
 
-    it 'loads measurement by perm_link' do
-      meas = FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown')
-      details = MeasurementDetails.new(id: 'shown')
+    it "loads measurement by perm_link" do
+      meas = FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown")
+      details = MeasurementDetails.new(id: "shown")
       expect(details.measurement.id).to eq meas.id
     end
   end
 
-  describe '#load' do
+  describe "#load" do
     before do
       stub_measurement_type_gr(meas.total_id, ministry.gr_id)
       stub_measurement_type_gr(meas.local_id, ministry.gr_id)
@@ -59,45 +60,45 @@ RSpec.describe MeasurementDetails, type: :model do
       allow(details).to receive(:update_total_in_gr)
     end
 
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
-    it 'loads the total GR values' do
+    it "loads the total GR values" do
       details.load
       expect(details.total).to be_a Hash
-      expect(details.total[Time.zone.today.strftime('%Y-%m')]).to eq 3
+      expect(details.total[Time.zone.today.strftime("%Y-%m")]).to eq 3
     end
 
-    it 'loads the local breakdown' do
+    it "loads the local breakdown" do
       details.load
       expect(details.local_breakdown).to be_a Hash
-      expect(details.local_breakdown['total']).to eq 3
-      expect(details.local_breakdown['asdf']).to eq 3
+      expect(details.local_breakdown["total"]).to eq 3
+      expect(details.local_breakdown["asdf"]).to eq 3
     end
 
-    it 'loads the local monthly values' do
+    it "loads the local monthly values" do
       details.load
       expect(details.local).to be_a Hash
-      expect(details.local[Time.zone.today.strftime('%Y-%m')]).to eq 3
+      expect(details.local[Time.zone.today.strftime("%Y-%m")]).to eq 3
     end
   end
 
-  describe '#load_user_from_gr' do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+  describe "#load_user_from_gr" do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
     let(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader) }
 
     def measurements_json(related_entity_id = nil)
       {
         measurement_type: {
-          perm_link: 'LMI',
+          perm_link: "LMI",
           measurements: [
-            measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf'),
-            measurement_json(Time.zone.today, 2, related_entity_id, 'DS'),
-            measurement_json(Time.zone.today - 1.month, 5, related_entity_id, 'DS_asdf'),
-            measurement_json(Time.zone.today - 1.month, 1, related_entity_id, 'DS')
-          ]
-        }
+            measurement_json(Time.zone.today, 3, related_entity_id, "DS_asdf"),
+            measurement_json(Time.zone.today, 2, related_entity_id, "DS"),
+            measurement_json(Time.zone.today - 1.month, 5, related_entity_id, "DS_asdf"),
+            measurement_json(Time.zone.today - 1.month, 1, related_entity_id, "DS"),
+          ],
+        },
       }
     end
 
@@ -105,32 +106,32 @@ RSpec.describe MeasurementDetails, type: :model do
       stub_measurement_type_gr(meas.person_id, assignment.gr_id)
     end
 
-    it 'loads self_breakdown' do
+    it "loads self_breakdown" do
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
       expect(details.self_breakdown).to be_a Hash
-      expect(details.self_breakdown['total']).to eq 3
+      expect(details.self_breakdown["total"]).to eq 3
     end
 
-    it 'loads my_measurements monthly values' do
+    it "loads my_measurements monthly values" do
       Power.with_power(Power.new(user, ministry)) do
         details.load_user_from_gr
       end
 
       expect(details.my_measurements).to be_a Hash
-      expect(details.my_measurements[Time.zone.today.strftime('%Y-%m')]).to eq 3
-      expect(details.my_measurements[(Time.zone.today - 1.month).strftime('%Y-%m')]).to eq 1
+      expect(details.my_measurements[Time.zone.today.strftime("%Y-%m")]).to eq 3
+      expect(details.my_measurements[(Time.zone.today - 1.month).strftime("%Y-%m")]).to eq 1
     end
   end
 
-  describe '#load_sub_mins_from_gr' do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+  describe "#load_sub_mins_from_gr" do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
-    it 'loads sub_ministries gr measurements' do
-      child_min1 = FactoryGirl.create(:ministry, parent: ministry, name: 'something unique')
-      FactoryGirl.create(:ministry, parent: ministry, name: 'another unique')
+    it "loads sub_ministries gr measurements" do
+      child_min1 = FactoryGirl.create(:ministry, parent: ministry, name: "something unique")
+      FactoryGirl.create(:ministry, parent: ministry, name: "another unique")
       stub_measurement_type_gr(meas.total_id, child_min1.gr_id)
 
       details.load_sub_mins_from_gr
@@ -142,23 +143,23 @@ RSpec.describe MeasurementDetails, type: :model do
     end
   end
 
-  describe '#load_team_members_from_gr' do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+  describe "#load_team_members_from_gr" do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     def measurements_json(related_entity_id = nil)
       {
         measurement_type: {
-          perm_link: 'LMI',
+          perm_link: "LMI",
           measurements: [
-            measurement_json(Time.zone.today, 3, related_entity_id[0], 'DS_asdf'),
-            measurement_json(Time.zone.today, 2, related_entity_id[1], 'DS_asdf')
-          ]
-        }
+            measurement_json(Time.zone.today, 3, related_entity_id[0], "DS_asdf"),
+            measurement_json(Time.zone.today, 2, related_entity_id[1], "DS_asdf"),
+          ],
+        },
       }
     end
 
-    it 'loads team members gr measurements' do
+    it "loads team members gr measurements" do
       teammate1 = FactoryGirl.create(:person)
       teammate2 = FactoryGirl.create(:person)
       team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
@@ -169,12 +170,12 @@ RSpec.describe MeasurementDetails, type: :model do
       subject = details.team
 
       expect(subject.count).to be 2
-      expect(subject.first[:team_role]).to eq 'leader'
+      expect(subject.first[:team_role]).to eq "leader"
       expect(subject.first[:total]).to eq 3
       expect(subject.last[:total]).to eq 2
     end
 
-    it 'does not include self in team' do
+    it "does not include self in team" do
       FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader)
       teammate1 = FactoryGirl.create(:person)
       team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
@@ -189,23 +190,23 @@ RSpec.describe MeasurementDetails, type: :model do
     end
   end
 
-  describe '#load_split_measurements' do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+  describe "#load_split_measurements" do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     def measurements_json(related_entity_id = nil)
       {
         measurement_type: {
-          perm_link: 'LMI',
+          perm_link: "LMI",
           measurements: [
-            measurement_json(Time.zone.today, 3, related_entity_id, 'DS_asdf')
-          ]
-        }
+            measurement_json(Time.zone.today, 3, related_entity_id, "DS_asdf"),
+          ],
+        },
       }
     end
 
-    it 'loads sub measurements gr measurements' do
-      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: 'lmi_total_custom_asdf')
+    it "loads sub measurements gr measurements" do
+      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
       child2 = FactoryGirl.create(:measurement, parent: meas)
       stub_measurement_type_gr(child1.total_id, ministry.gr_id)
       stub_measurement_type_gr(child2.total_id, ministry.gr_id)
@@ -214,20 +215,20 @@ RSpec.describe MeasurementDetails, type: :model do
       subject = details.split_measurements
 
       expect(subject.count).to be 2
-      expect(subject['asdf']).to be 3
+      expect(subject["asdf"]).to be 3
     end
   end
 
-  describe '#update_total_in_gr' do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: 'lmi_total_custom_shown', mcc_filter: nil) }
-    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: 'DS') }
+  describe "#update_total_in_gr" do
+    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
-    it 'posts to GR if it has something new' do
+    it "posts to GR if it has something new" do
       stub_measurement_type_gr(meas.total_id, ministry.gr_id)
       stub_measurement_type_gr(meas.local_id, ministry.gr_id)
       stub_measurement_type_gr(meas.person_id, user.gr_id)
-      gr_update_stub = WebMock.stub_request(:post, "#{ENV['GLOBAL_REGISTRY_URL']}/measurements")
-                              .to_return(status: 200, headers: {}, body: '{}')
+      gr_update_stub = WebMock.stub_request(:post, "#{ENV["GLOBAL_REGISTRY_URL"]}/measurements")
+        .to_return(status: 200, headers: {}, body: "{}")
 
       details.load_user_from_gr
       details.load_local_from_gr
@@ -238,7 +239,7 @@ RSpec.describe MeasurementDetails, type: :model do
 
       expect(gr_update_stub).to_not have_been_requested
 
-      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: 'lmi_total_custom_asdf')
+      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
       stub_measurement_type_gr(child1.total_id, ministry.gr_id)
 
       details.load_split_measurements

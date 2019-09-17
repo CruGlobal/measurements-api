@@ -1,21 +1,22 @@
 # frozen_string_literal: true
+
 class Story < ApplicationRecord
-  enum privacy: { everyone: 0, team_only: 1 }
-  enum state: { draft: 0, published: 1, removed: 2 }
+  enum privacy: {everyone: 0, team_only: 1}
+  enum state: {draft: 0, published: 1, removed: 2}
 
   belongs_to :ministry
-  belongs_to :created_by, class_name: 'Person'
+  belongs_to :created_by, class_name: "Person"
   belongs_to :church, optional: true
   belongs_to :training, optional: true
 
   mount_uploader :image, ImageUploader
 
   validates :content, presence: true
-  validates :mcc, inclusion: { in: Ministry::MCCS, message: '\'%{value}\' is not a valid MCC' },
+  validates :mcc, inclusion: {in: Ministry::MCCS, message: "'%{value}' is not a valid MCC"},
                   unless: -> { mcc.blank? }
   validates :church, presence: true, unless: -> { church_id.blank? }
   validates :training, presence: true, unless: -> { training_id.blank? }
-  authorize_values_for :ministry, message: 'INSUFFICIENT_RIGHTS - You must have an approved role for the ministry.'
+  authorize_values_for :ministry, message: "INSUFFICIENT_RIGHTS - You must have an approved role for the ministry."
 
   attr_accessor :location
 

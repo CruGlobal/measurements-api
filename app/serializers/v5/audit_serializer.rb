@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class AuditSerializer < ActiveModel::Serializer
     attributes :timestamp, :message, :type, :person_id, :ministry_id, :ministry_name
@@ -8,7 +9,7 @@ module V5
     end
 
     def timestamp
-      object.created_at.strftime('%Y-%m-%d')
+      object.created_at.strftime("%Y-%m-%d")
     end
 
     def person_id

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # There are two ways to use the GlobalRegistry client class:
 #
 # 1. As a thread-global store of the global registry config. To do that, assign
@@ -33,7 +34,7 @@ class GlobalRegistryClient
 
   class << self
     def thread_key
-      [to_s, 'parameters'].join('.')
+      [to_s, "parameters"].join(".")
     end
 
     def parameters

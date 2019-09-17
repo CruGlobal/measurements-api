@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   module SystemAccessTokenProtectedConcern
     extend ActiveSupport::Concern
@@ -19,16 +20,16 @@ module V5
 
     # grabs access_token from header if one is present
     def oauth_access_token_from_header
-      auth_header = request.env['HTTP_AUTHORIZATION'] || ''
+      auth_header = request.env["HTTP_AUTHORIZATION"] || ""
       match = auth_header.match(/^Bearer\s(.*)/)
       return match[1] if match.present?
       nil
     end
 
     def render_unauthorized
-      headers['WWW-Authenticate'] =
-        %(CAS realm="Application", casUrl="#{ENV['CAS_BASE_URL']}", service="#{v5_token_index_url}")
-      api_error 'Bad token', status: 401
+      headers["WWW-Authenticate"] =
+        %(CAS realm="Application", casUrl="#{ENV["CAS_BASE_URL"]}", service="#{v5_token_index_url}")
+      api_error "Bad token", status: 401
     end
 
     def access_token_from_url
@@ -39,13 +40,13 @@ module V5
       return token if token_has_auth(token)
 
       resp = GlobalRegistry::System.new(
-        base_url: ENV['GLOBAL_REGISTRY_BACKEND_URL'],
+        base_url: ENV["GLOBAL_REGISTRY_BACKEND_URL"],
         access_token: token,
-        xff: request.headers['HTTP_X_FORWARDED_FOR']
+        xff: request.headers["HTTP_X_FORWARDED_FOR"]
       ).get(limit: 1)
       return unless resp.present?
 
-      Rails.cache.write(cache_key(token), '1', expires_in: SYSTEM_TOKEN_AUTH_TIMEOUT)
+      Rails.cache.write(cache_key(token), "1", expires_in: SYSTEM_TOKEN_AUTH_TIMEOUT)
 
       token
     rescue RestClient::BadRequest, RuntimeError

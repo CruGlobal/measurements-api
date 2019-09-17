@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class PaginatedSerializer < ActiveModel::Serializer
     attributes :meta
@@ -9,7 +10,7 @@ module V5
         from: from,
         to: to,
         page: instance_options[:page],
-        total_pages: total_pages
+        total_pages: total_pages,
       }
     end
 

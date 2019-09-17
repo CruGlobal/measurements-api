@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module V5
   class StoriesController < V5::BaseUserController
     power :stories, map: {
       [:show] => :show_stories,
       [:update] => :update_stories,
-      [:create] => :create_story
+      [:create] => :create_story,
     }, as: :story_scope
 
     def index
@@ -13,7 +14,7 @@ module V5
     end
 
     def show
-      load_story or render_not_found
+      load_story || render_not_found
       render_story
     end
 
@@ -26,7 +27,7 @@ module V5
     end
 
     def update
-      render_error('Invalid story id') and return unless load_story
+      render_error("Invalid story id") && return unless load_story
       if build_story
         render_story
       else
@@ -69,9 +70,9 @@ module V5
     def story_params
       permitted_params = post_params.permit(:title, :content, :ministry_id, :image_url, :mcc, :church_id, :training_id,
                                             :location, :language, :privacy, :video_url, :state, :created_by)
-      permitted_params[:privacy] = :everyone if permitted_params[:privacy] == 'public'
+      permitted_params[:privacy] = :everyone if permitted_params[:privacy] == "public"
       # Rename and delete uuid params
-      { created_by: :person_gr_id, ministry_id: :ministry_gr_id }.each do |k, v|
+      {created_by: :person_gr_id, ministry_id: :ministry_gr_id}.each do |k, v|
         permitted_params[v] = permitted_params[k] if Uuid.uuid?(permitted_params[k])
         permitted_params.delete(k)
       end
@@ -86,7 +87,7 @@ module V5
                       Story.find_by(id: params[:id]).try(:ministry).try(:gr_id)
                     else
                       params[:ministry_id]
-                    end
+      end
       Power.new(current_user, ministry_id)
     end
   end

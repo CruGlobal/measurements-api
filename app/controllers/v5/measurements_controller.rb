@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module V5
   class MeasurementsController < V5::BaseUserController
-    power :measurements, map: { show: :showing_measurement }
+    power :measurements, map: {show: :showing_measurement}
 
     def index
       load_measurements
-      render json: @measurements, scope: { locale: params[:locale], ministry: ministry },
+      render json: @measurements, scope: {locale: params[:locale], ministry: ministry},
              each_serializer: V5::MeasurementSerializer
     end
 
@@ -17,7 +18,7 @@ module V5
     end
 
     def create
-      list = MeasurementListUpdater.new(params.permit!['_json'])
+      list = MeasurementListUpdater.new(params.permit!["_json"])
       if list.commit
         head :created
       else
@@ -29,8 +30,8 @@ module V5
 
     def load_measurements
       @measurements ||= MeasurementListReader
-                        .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
-                        .load
+        .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
+        .load
     end
 
     def load_measurement

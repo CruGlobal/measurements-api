@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Ministry
   class UserCreatedMinistry < ::Ministry
     # Virtual Attribute
@@ -14,7 +15,7 @@ class Ministry
 
     def create_admin_assignment
       return unless created_by.present?
-      assignment = Assignment.new(ministry_id: id, person_id: created_by.id, role: 'admin')
+      assignment = Assignment.new(ministry_id: id, person_id: created_by.id, role: "admin")
       assignment.create_gr_relationship
       assignment.save!
     end

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+
 module V5
   class ImagesController < V5::BaseUserController
     power :stories, map: {
-      [:create] => :update_stories
+      [:create] => :update_stories,
     }, as: :story_scope
 
     def create
-      render_error('Invalid story id') and return unless load_story
+      render_error("Invalid story id") && return unless load_story
       render_image if update_image
     end
 
@@ -25,13 +26,13 @@ module V5
     end
 
     def image_params
-      post_params.require('image-file')
+      post_params.require("image-file")
     end
 
     def request_power
       ministry_id = if params[:action].to_sym == :create
-                      Story.find_by(id: params[:story_id]).try(:ministry).try(:gr_id)
-                    end
+        Story.find_by(id: params[:story_id]).try(:ministry).try(:gr_id)
+      end
       Power.new(current_user, ministry_id)
     end
   end

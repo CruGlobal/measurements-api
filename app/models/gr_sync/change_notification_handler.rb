@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module GrSync
   class ChangeNotificationHandler
     def initialize(entity_type_name, entity_id)

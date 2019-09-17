@@ -1,26 +1,27 @@
 # frozen_string_literal: true
-require_relative 'boot'
+
+require_relative "boot"
 
 # require 'rails/all'
-require 'active_model/railtie'
+require "active_model/railtie"
 # require 'active_job/railtie'
-require 'active_record/railtie'
-require 'action_controller/railtie'
+require "active_record/railtie"
+require "action_controller/railtie"
 # require 'action_mailer/railtie'
 # require 'action_view/railtie'
 # require 'sprockets/railtie'
 
-require_relative '../app/middleware/rack_reset_gr_client'
+require_relative "../app/middleware/rack_reset_gr_client"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require_relative '../lib/log/logger'
+require_relative "../lib/log/logger"
 module MeasurementsApi
   class Application < Rails::Application
     # Enable ougai
-    config.logger = Log::Logger.new(Rails.root.join('log', 'datadog.log'))
+    config.logger = Log::Logger.new(Rails.root.join("log", "datadog.log"))
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
@@ -31,7 +32,7 @@ module MeasurementsApi
       g.template_engine false
       g.stylesheets false
       g.javascripts false
-      g.fixture_replacement :factory_girl, dir: 'spec/factories'
+      g.fixture_replacement :factory_girl, dir: "spec/factories"
     end
 
     config.middleware.use RackResetGrClient
@@ -39,7 +40,7 @@ module MeasurementsApi
     config.log_formatter = ::Logger::Formatter.new
 
     # RubyCAS config
-    config.rubycas.cas_base_url = ENV.fetch('CAS_BASE_URL')
+    config.rubycas.cas_base_url = ENV.fetch("CAS_BASE_URL")
     config.rubycas.logger = Rails.logger
   end
 end

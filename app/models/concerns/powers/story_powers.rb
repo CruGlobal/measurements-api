@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Powers
   module StoryPowers
     extend ActiveSupport::Concern
@@ -17,15 +18,15 @@ module Powers
       power :show_stories do
         table = Story.arel_table
         query = if inherited_assignment.try(:leader_role?)
-                  # Leader Roles can see all stories at the ministry
-                  table[:ministry_id].eq(ministry.id)
-                elsif assignment.try(:approved_role?)
-                  # Approved roles can see published stories
-                  table[:ministry_id].eq(ministry.id).and(table[:state].eq(Story.states[:published]))
-                else
-                  # Everyone else can see public, published stories
-                  table[:privacy].eq(Story.privacies[:everyone]).and(table[:state].eq(Story.states[:published]))
-                end
+          # Leader Roles can see all stories at the ministry
+          table[:ministry_id].eq(ministry.id)
+        elsif assignment.try(:approved_role?)
+          # Approved roles can see published stories
+          table[:ministry_id].eq(ministry.id).and(table[:state].eq(Story.states[:published]))
+        else
+          # Everyone else can see public, published stories
+          table[:privacy].eq(Story.privacies[:everyone]).and(table[:state].eq(Story.states[:published]))
+        end
         # User can see stories they created
         query = query.or(table[:created_by_id].eq(user.id))
         Story.where(query)

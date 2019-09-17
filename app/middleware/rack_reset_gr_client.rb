@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class RackResetGrClient
   def initialize(app)
     @app = app

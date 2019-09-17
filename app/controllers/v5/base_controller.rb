@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class BaseController < ApplicationController
     protected
@@ -31,7 +32,7 @@ module V5
     end
 
     def save_status_code(create = false)
-      return :created if create || params[:action] == 'create'
+      return :created if create || params[:action] == "create"
       :ok
     end
   end

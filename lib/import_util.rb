@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'uri'
+
+require "uri"
 
 class ImportUtil
   class << self
@@ -20,7 +21,7 @@ class ImportUtil
     def person_id_by_gr_id(gr_id)
       person = Person.find_by(gr_id: gr_id)
       return person.id if person
-      entity = Person.find_entity(gr_id, entity_type: 'person')
+      entity = Person.find_entity(gr_id, entity_type: "person")
       unless entity
         @missing_person_gr_ids ||= {}
         Sidekiq.logger.info("No person entity found for gr_id: #{gr_id}") unless @missing_person_gr_ids[gr_id]
@@ -35,7 +36,7 @@ class ImportUtil
 
     def update_person_from_gr(person)
       return unless person.gr_id.present?
-      entity = Person.find_entity(person.gr_id, entity_type: 'person', fields: Person::GR_FIELDS)
+      entity = Person.find_entity(person.gr_id, entity_type: "person", fields: Person::GR_FIELDS)
       return unless entity
       person.from_entity(entity)
     end

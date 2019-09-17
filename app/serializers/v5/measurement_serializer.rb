@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class MeasurementSerializer < ActiveModel::Serializer
     attributes :column,
@@ -26,7 +27,7 @@ module V5
     end
 
     def custom?
-      object.perm_link.sub('lmi_total_', '').starts_with?('custom_')
+      object.perm_link.sub("lmi_total_", "").starts_with?("custom_")
     end
 
     def locale
@@ -43,9 +44,9 @@ module V5
 
     def measurement_type_ids
       type_ids = {}
-      type_ids['total'] = object.total_id if object.total.present?
-      type_ids['local'] = object.local_id if object.local.present?
-      type_ids['person'] = object.person_id if object.person.present?
+      type_ids["total"] = object.total_id if object.total.present?
+      type_ids["local"] = object.local_id if object.local.present?
+      type_ids["person"] = object.person_id if object.person.present?
       type_ids
     end
   end

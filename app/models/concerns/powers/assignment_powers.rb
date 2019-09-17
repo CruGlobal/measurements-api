@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Powers
   module AssignmentPowers
     extend ActiveSupport::Concern
@@ -31,8 +32,10 @@ module Powers
         # POWER is current_user and ministry of updated assignment
         # You may not change your own assignment
         # Leaders may update assignments
-        Assignment.where.not(person_id: user.id)
-                  .where(ministry_id: inherited_assignment.ministry_id) if inherited_assignment.try(:leader_role?)
+        if inherited_assignment.try(:leader_role?)
+          Assignment.where.not(person_id: user.id)
+            .where(ministry_id: inherited_assignment.ministry_id)
+        end
       end
 
       def direct_assignments
@@ -51,7 +54,7 @@ module Powers
         return [] if inherited_assignment.try(:leader_role?)
 
         # Anyone can self-assign themselves
-        ['self_assigned']
+        ["self_assigned"]
       else
         # Leaders can create assignments for others
         return Assignment::VALID_INPUT_ROLES if inherited_assignment.try(:leader_role?)

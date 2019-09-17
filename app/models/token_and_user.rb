@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class TokenAndUser < ActiveModelSerializers::Model
   attr_accessor :access_token, :person
 
@@ -7,7 +8,7 @@ class TokenAndUser < ActiveModelSerializers::Model
   end
 
   def attributes
-    super.merge(status: 'success',
+    super.merge(status: "success",
                 session_ticket: @access_token.attributes[:token],
                 assignments: assignments)
   end

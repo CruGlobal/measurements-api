@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :church do
     sequence(:name) { |n| "test church #{n}" }

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Training
   class UserCreatedTraining < ::Training
     after_create :write_audit

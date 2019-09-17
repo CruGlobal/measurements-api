@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Powers
   module ChurchPowers
     extend ActiveSupport::Concern
@@ -10,7 +11,7 @@ module Powers
         break nil if blocked?
         churches = Church.where(ministry: fallback_assignment.ministry)
         break churches unless assignment.try(:self_assigned?)
-        churches.where('security >= ?', Church.securities[:registered_public_church])
+        churches.where("security >= ?", Church.securities[:registered_public_church])
       end
 
       power :churches do
@@ -22,7 +23,7 @@ module Powers
       if blocked?
         []
       elsif assignment.try(:self_assigned?)
-        %w(registered_public_church global_public_church)
+        %w[registered_public_church global_public_church]
       else
         Church.securities.keys
       end
@@ -31,8 +32,8 @@ module Powers
     def assignable_church_ministries
       # this should only be called in the context of a user update
       return Ministry.all.pluck(:id) if user.blank?
-      Ministry.includes(:assignments).where(assignments: { person: user })
-              .where(assignments: Assignment.leader_condition)
+      Ministry.includes(:assignments).where(assignments: {person: user})
+        .where(assignments: Assignment.leader_condition)
     end
 
     def assignable_church_user_created_church_ministries
@@ -42,11 +43,11 @@ module Powers
 
     def visiable_local_churches_security
       if blocked?
-        Church.securities['registered_public_church']
+        Church.securities["registered_public_church"]
       elsif assignment.blank? || assignment.self_assigned?
-        Church.securities['private_church']
+        Church.securities["private_church"]
       else
-        Church.securities['local_private_church']
+        Church.securities["local_private_church"]
       end
     end
 

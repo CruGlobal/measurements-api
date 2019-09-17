@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Story
   class UserCreatedStory < ::Story
     after_create :write_audit, if: -> { published? }

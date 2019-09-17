@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module V5
   class TokenController < V5::BaseUserController
     skip_before_action :authenticate_request, only: :index
@@ -6,20 +7,20 @@ module V5
 
     def index
       build_token
-      render_error and return unless @new_token.valid?
+      render_error && return unless @new_token.valid?
       render json: @new_token.save, serializer: V5::TokenAndUserSerializer
     end
 
     def destroy
       CruAuthLib::AccessToken.del(@access_token.token)
-      render status: :ok, plain: 'OK'
+      render status: :ok, plain: "OK"
     end
 
     protected
 
     def build_token
       @new_token ||= NewToken.new
-      @new_token.attributes = { st: params[:st], redirect_url: v5_token_index_url }
+      @new_token.attributes = {st: params[:st], redirect_url: v5_token_index_url}
     end
 
     def render_error

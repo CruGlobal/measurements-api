@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class TrainingFilter
   def initialize(filters)
     # strip extra spaces from filters
@@ -19,9 +20,9 @@ class TrainingFilter
     return trainings if clean_filter(:show_all)
     # where date is within the last year or a completion within the last year
     trainings.includes(:completions).references(:training_completions)
-             .where('trainings.date > ? or training_completions.date > ?', 1.year.ago, 1.year.ago)
+      .where("trainings.date > ? or training_completions.date > ?", 1.year.ago, 1.year.ago)
     # but we can't return that yet since training completions aren't there
-    trainings.where('date > ?', 1.year.ago)
+    trainings.where("date > ?", 1.year.ago)
   end
 
   private

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 class Measurement < ApplicationRecord
-  belongs_to :parent, class_name: 'Measurement', optional: true
-  has_many :children, class_name: 'Measurement', foreign_key: :parent_id
+  belongs_to :parent, class_name: "Measurement", optional: true
+  has_many :children, class_name: "Measurement", foreign_key: :parent_id
   has_many :measurement_translations
 
   validates :person_id, presence: true
@@ -16,7 +17,7 @@ class Measurement < ApplicationRecord
   end
 
   def perm_link_stub
-    perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
+    perm_link.sub("lmi_total_custom_", "").sub("lmi_total_", "")
   end
 
   def localized_name(language, ministry)
@@ -33,7 +34,7 @@ class Measurement < ApplicationRecord
 
   def locale(language, ministry)
     return language if translation_for language, ministry
-    'en'
+    "en"
   end
 
   def translation_for(language, ministry)
@@ -44,12 +45,12 @@ class Measurement < ApplicationRecord
     ministry = Ministry.find_by(id: ministry) unless ministry.is_a? Ministry
     return @translations[key] = nil unless ministry
     ministry = ministry.self_and_ancestors.joins(:measurement_translations).reorder(lft: :desc)
-                       .find_by(measurement_translations: { language: language, measurement_id: id })
+      .find_by(measurement_translations: {language: language, measurement_id: id})
     @translations[key] = measurement_translations.find_by(language: language, ministry: ministry)
   end
 
   def self.find_by_perm_link(perm_link)
-    perm_link = perm_link.sub('lmi_total_custom_', '').sub('lmi_total_', '')
+    perm_link = perm_link.sub("lmi_total_custom_", "").sub("lmi_total_", "")
     find_by(perm_link: ["lmi_total_#{perm_link}", "lmi_total_custom_#{perm_link}"])
   end
 end

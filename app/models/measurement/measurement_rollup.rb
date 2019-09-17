@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Measurement
   class MeasurementRollup
     def run(measurement, ministry_gr_id, period, mcc, gr_client = nil)
@@ -23,7 +24,7 @@ class Measurement
     private
 
     def process_local_measurements
-      local_measurement_params = { 'filters[dimension:like]': "#{@mcc}_" }
+      local_measurement_params = {'filters[dimension:like]': "#{@mcc}_"}
       process_measurement_level(@measurement.local_id, @ministry_gr_id, local_measurement_params)
     end
 
@@ -35,7 +36,7 @@ class Measurement
 
     def process_team_measurements
       team_members = @ministry.assignments.local_approved.pluck(:gr_id)
-      team_measurement_params = { 'filters[dimension:like]': "#{@mcc}_" }
+      team_measurement_params = {'filters[dimension:like]': "#{@mcc}_"}
       process_measurement_level(@measurement.person_id, team_members, team_measurement_params)
     end
 
@@ -48,7 +49,7 @@ class Measurement
 
     def process_total_measurements
       total_measurements = load_measurements(@measurement.total_id, @ministry_gr_id, @period, mcc_filter)
-      total_in_gr = total_measurements.find { |m| m['dimension'] == @mcc }.try(:[], 'value')
+      total_in_gr = total_measurements.find { |m| m["dimension"] == @mcc }.try(:[], "value")
       if total_in_gr != @running_total
         push_measurement_to_gr(@running_total, @ministry_gr_id, @measurement.total_id)
       end
@@ -58,7 +59,7 @@ class Measurement
 
     def process_measurement_level(measurement_type_id, related_ids, params)
       totals = load_measurements(measurement_type_id, related_ids, @period, params)
-      @running_total += totals.sum { |m| m['value'].to_f }
+      @running_total += totals.sum { |m| m["value"].to_f }
     end
 
     def recurse_up
@@ -71,27 +72,27 @@ class Measurement
         request_params = {
           'filters[related_entity_id][]': ids,
           'filters[period_from]': period,
-          'filters[period_to]': period
+          'filters[period_to]': period,
         }
         request_params = request_params.merge(params) if params
 
-        measurements.concat(@gr_client.find(measurement_id, request_params)['measurement_type']['measurements'])
+        measurements.concat(@gr_client.find(measurement_id, request_params)["measurement_type"]["measurements"])
       end
       measurements
     end
 
     def push_measurement_to_gr(value, related_id, type_id)
       GlobalRegistry::Measurement.new.post(measurement: {
-                                             period: @period,
-                                             value: value,
-                                             related_entity_id: related_id,
-                                             measurement_type_id: type_id,
-                                             dimension: @mcc
-                                           })
+        period: @period,
+        value: value,
+        related_entity_id: related_id,
+        measurement_type_id: type_id,
+        dimension: @mcc,
+      })
     end
 
     def mcc_filter
-      { 'filters[dimension]': @mcc }
+      {'filters[dimension]': @mcc}
     end
   end
 end

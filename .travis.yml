@@ -14,5 +14,7 @@ before_install:
 before_script:
 - bundle exec rake db:create db:migrate RAILS_ENV=test
 script:
-- bundle exec rubocop -R
+- bundle exec standardrb
 - bundle exec rspec spec
+- bundle exec bundle audit check
+- bundle exec brakeman -A -q --no-pager --ensure-latest
