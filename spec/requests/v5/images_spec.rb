@@ -20,8 +20,8 @@ RSpec.describe "V5::Images", type: :request do
 
       it "responds successfully" do
         post "/v5/images?story_id=#{story.id}",
-             params: {"image-file" => image},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          params: {"image-file" => image},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status :created
@@ -40,8 +40,8 @@ RSpec.describe "V5::Images", type: :request do
 
       it "replaces existing image" do
         post "/v5/images?story_id=#{story.id}",
-             params: {"image-file" => other},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          params: {"image-file" => other},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status :created

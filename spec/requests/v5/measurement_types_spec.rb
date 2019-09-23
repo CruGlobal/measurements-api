@@ -27,8 +27,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
     it "finds measurement based on total_id" do
       get "/v5/measurement_type/#{measurement.total_id}",
-          params: {ministry_id: ministry.gr_id},
-          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+        params: {ministry_id: ministry.gr_id},
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
       expect(response).to be_successful
       expect(json["id"]).to be measurement.id
@@ -89,8 +89,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
     it "updates measurement type without locale params" do
       put "/v5/measurement_types/#{measurement.total_id}",
-          params: attributes,
-          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+        params: attributes,
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
       old_m_attributes = measurement.attributes
       measurement.reload
@@ -113,8 +113,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
       expect {
         put "/v5/measurement_types/#{measurement.total_id}",
-            params: attributes,
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: attributes,
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
       }.to_not change { measurement.reload.perm_link }
     end
 
@@ -124,8 +124,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
       expect {
         put "/v5/measurement_types/#{measurement.total_id}",
-            params: {locale: "fr", ministry_id: ministry.gr_id, localized_name: "Totally different"},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: {locale: "fr", ministry_id: ministry.gr_id, localized_name: "Totally different"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
       }.to change(MeasurementTranslation, :count).by(0)
       translation.reload
       expect(translation.name).to eq "Totally different"
@@ -134,8 +134,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
     it "creates measurement translation" do
       expect {
         put "/v5/measurement_types/#{measurement.total_id}",
-            params: {locale: "fr", ministry_id: ministry.gr_id, localized_name: "Totally different"},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: {locale: "fr", ministry_id: ministry.gr_id, localized_name: "Totally different"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
       }.to change(MeasurementTranslation, :count).by(1)
 
       translation = measurement.measurement_translations.last

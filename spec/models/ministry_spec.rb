@@ -101,8 +101,8 @@ describe Ministry, type: :model do
         expect(subject.length).to eq 3
         assignments = subject.collect { |member| [member.person_id, member.role] }
         expect(assignments).to include([team_members[:A].id, :leader.to_s],
-                                       [team_members[:B].id, :leader.to_s],
-                                       [team_members[:C].id, :member.to_s])
+          [team_members[:B].id, :leader.to_s],
+          [team_members[:C].id, :member.to_s])
       end
     end
 
@@ -113,8 +113,8 @@ describe Ministry, type: :model do
         expect(subject.length).to eq 3
         assignments = subject.collect { |member| [member.person_id, member.role] }
         expect(assignments).to include([team_members[:A].id, :inherited_leader.to_s],
-                                       [team_members[:B].id, :inherited_admin.to_s],
-                                       [team_members[:E].id, :admin.to_s])
+          [team_members[:B].id, :inherited_admin.to_s],
+          [team_members[:E].id, :admin.to_s])
       end
     end
 
@@ -125,8 +125,8 @@ describe Ministry, type: :model do
         expect(subject.length).to eq 3
         assignments = subject.collect { |member| [member.person_id, member.role] }
         expect(assignments).to include([team_members[:A].id, :admin.to_s],
-                                       [team_members[:B].id, :member.to_s],
-                                       [team_members[:D].id, :member.to_s])
+          [team_members[:B].id, :member.to_s],
+          [team_members[:D].id, :member.to_s])
       end
     end
 
@@ -137,7 +137,7 @@ describe Ministry, type: :model do
         expect(subject.length).to eq 2
         assignments = subject.collect { |member| [member.person_id, member.role] }
         expect(assignments).to include([team_members[:A].id, :inherited_admin.to_s],
-                                       [team_members[:B].id, :inherited_admin.to_s])
+          [team_members[:B].id, :inherited_admin.to_s])
       end
     end
 
@@ -148,8 +148,8 @@ describe Ministry, type: :model do
         expect(subject.length).to eq 3
         assignments = subject.collect { |member| [member.person_id, member.role] }
         expect(assignments).to include([team_members[:A].id, :inherited_admin.to_s],
-                                       [team_members[:B].id, :inherited_admin.to_s],
-                                       [team_members[:C].id, :leader.to_s])
+          [team_members[:B].id, :inherited_admin.to_s],
+          [team_members[:C].id, :leader.to_s])
       end
     end
 

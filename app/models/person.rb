@@ -179,7 +179,7 @@ class Person < ApplicationRecord # rubocop:disable Metrics/ClassLength
       # When using authentication, we find by posting
       client.post({entity: {person: {authentication: {"#{gr_auth_prefix}_guid" => guid},
                                      client_integration_id: guid,}}},
-                  params: {fields: GR_FIELDS, full_response: "true"})["entity"]
+        params: {fields: GR_FIELDS, full_response: "true"})["entity"]
     end
   end
 end

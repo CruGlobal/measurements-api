@@ -64,7 +64,7 @@ RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
         expect(response).to_not be_successful
 
         get "/v5/sys_measurement_types",
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{random_token}"}
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{random_token}"}
         expect(response).to_not be_successful
       end
     end
@@ -76,8 +76,8 @@ RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
 
     it "finds measurement based on total_id" do
       get "/v5/sys_measurement_type/#{measurement.total_id}",
-          params: {ministry_id: ministry.gr_id},
-          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"}
+        params: {ministry_id: ministry.gr_id},
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"}
 
       expect(response).to be_successful
       expect(json["id"]).to be measurement.id
@@ -155,8 +155,8 @@ RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
 
     it "updates measurement type without locale params" do
       put "/v5/sys_measurement_types/#{measurement.total_id}",
-          params: attributes,
-          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"}
+        params: attributes,
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_api}"}
 
       expect(response.code.to_i).to be 200
       # expect that the object was rendered on the way back

@@ -7,7 +7,7 @@ class Measurement
     include ActiveModel::Model
 
     attr_accessor :gr_client, :measurement, :levels, :ministry_id, :assignment_id,
-                  :mcc, :period, :source, :historical
+      :mcc, :period, :source, :historical
 
     def load_gr_value
       return load_historic_gr_values if @historical

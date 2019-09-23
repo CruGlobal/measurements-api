@@ -43,17 +43,17 @@ RSpec.describe "V5::UserPreferences", type: :request do
     let!(:other) { FactoryGirl.create(:ministry) }
     it "responds successfully with updated preferences" do
       post "/v5/user_preferences",
-           params: {custom_property: "value",
-                    preferred_mcc: "slm",
-                    preferred_ministry: nil,
-                    default_map_views: [{ministry_id: other.gr_id,
-                                         location: {latitude: 98.7654321, longitude: -98.7654321},
-                                         location_zoom: 12,}],
-                    content_locales: {other.gr_id => "fr-FR"},
-                    default_measurement_states: {slm: {build_disciples: 1},
-                                                 gcm: {build_holyspirit: 0},
-                                                 ds: {send_mult_disc: 1},},},
-           headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+        params: {custom_property: "value",
+                 preferred_mcc: "slm",
+                 preferred_ministry: nil,
+                 default_map_views: [{ministry_id: other.gr_id,
+                                      location: {latitude: 98.7654321, longitude: -98.7654321},
+                                      location_zoom: 12,}],
+                 content_locales: {other.gr_id => "fr-FR"},
+                 default_measurement_states: {slm: {build_disciples: 1},
+                                              gcm: {build_holyspirit: 0},
+                                              ds: {send_mult_disc: 1},},},
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
       expect(response).to be_successful
       expect(response).to have_http_status :ok

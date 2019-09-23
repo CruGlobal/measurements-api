@@ -58,8 +58,8 @@ RSpec.describe "V5::SystemsMinistries", type: :request do
     context "missing required params" do
       it "responds with HTTP 400" do
         post "/v5/sys_ministries",
-             params: {name: nil, lmi_show: true, mccs: nil, ministry_scope: "Blah", hello: 123},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {name: nil, lmi_show: true, mccs: nil, ministry_scope: "Blah", hello: 123},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to_not be_successful
         expect(response).to have_http_status 400
@@ -72,8 +72,8 @@ RSpec.describe "V5::SystemsMinistries", type: :request do
 
       it "responds successfully with new ministry" do
         post "/v5/sys_ministries",
-             params: {name: "Test Ministry", ministry_scope: "National", parent_id: ministries[:a3].gr_id},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {name: "Test Ministry", ministry_scope: "National", parent_id: ministries[:a3].gr_id},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status 201
@@ -91,8 +91,8 @@ RSpec.describe "V5::SystemsMinistries", type: :request do
         allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
 
         put "/v5/sys_ministries/#{ministry.gr_id}",
-            params: {name: "New Name", mccs: ["gcm"], ministry_scope: "Area"},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {name: "New Name", mccs: ["gcm"], ministry_scope: "Area"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
           .with(ministry)

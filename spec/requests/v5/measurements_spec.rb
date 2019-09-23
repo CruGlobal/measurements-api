@@ -55,8 +55,8 @@ RSpec.describe "V5::Measurements", type: :request do
         stub_gr_measurement_calls(measurement)
 
         get "/v5/measurements/#{measurement.total_id}",
-            params: {ministry_id: ministry.gr_id, mcc: "SLM"},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: {ministry_id: ministry.gr_id, mcc: "SLM"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
         expect(response).to be_successful
         expect(json["local_breakdown"]).to be_a Hash
@@ -65,8 +65,8 @@ RSpec.describe "V5::Measurements", type: :request do
       context "with invalid id" do
         it "response with 404" do
           get "/v5/measurements/missing_perm_link",
-              params: {ministry_id: ministry.gr_id, mcc: "SLM"},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+            params: {ministry_id: ministry.gr_id, mcc: "SLM"},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
           expect(response.code.to_i).to eq 404
         end
@@ -78,8 +78,8 @@ RSpec.describe "V5::Measurements", type: :request do
 
       it "responds with 401" do
         get "/v5/measurements/#{measurement.total_id}",
-            params: {ministry_id: ministry.gr_id, mcc: "SLM"},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: {ministry_id: ministry.gr_id, mcc: "SLM"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
         expect(response.code.to_i).to eq 401
       end

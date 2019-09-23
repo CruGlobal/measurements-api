@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   namespace :gr_sync do
     post "/#{ENV.fetch("GR_NOTIFICATION_URL_SECRET")}/notifications",
-         to: "notifications#create", as: :notifications
+      to: "notifications#create", as: :notifications
   end
 
   api_version(module: "V5", path: {value: "v5"}) do

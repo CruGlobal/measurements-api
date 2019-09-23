@@ -17,7 +17,7 @@ describe GrSync::EntityUpdatePush do
     it "works correctly to call update_in_gr when run" do
       record = build_stubbed(:ministry, id: 1)
       entity_update_push = instance_double(GrSync::EntityUpdatePush,
-                                           update_in_gr: nil)
+        update_in_gr: nil)
       allow(GrSync::EntityUpdatePush).to receive(:new) { entity_update_push }
       gr_client = double
       allow(GlobalRegistryClient).to receive(:new).with({}) { gr_client }

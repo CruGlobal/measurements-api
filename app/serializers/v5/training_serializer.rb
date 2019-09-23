@@ -3,16 +3,16 @@
 module V5
   class TrainingSerializer < ActiveModel::Serializer
     attributes :id,
-               :ministry_id,
-               :name,
-               :date,
-               :type,
-               :mcc,
-               :latitude,
-               :longitude,
-               :last_updated,
-               :created_by,
-               :created_by_email
+      :ministry_id,
+      :name,
+      :date,
+      :type,
+      :mcc,
+      :latitude,
+      :longitude,
+      :last_updated,
+      :created_by,
+      :created_by_email
 
     has_many :completions, key: :gcm_training_completions, serializer: TrainingCompletionSerializer
 

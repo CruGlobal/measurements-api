@@ -9,11 +9,11 @@ class MeasurementListUpdater
     return unless valid?
     batch = Sidekiq::Batch.new
     batch.on(:success, Callback::MeasurementListUpdaterCallback,
-             json: @json_array, gr_client_params: GlobalRegistryClient.parameters)
+      json: @json_array, gr_client_params: GlobalRegistryClient.parameters)
     batch.jobs do
       @json_array.each do |measurement|
         GrSync::WithGrWorker.queue_call(GlobalRegistryClient.parameters,
-                                        GrSync::MeasurementPush, :push_to_gr, measurement)
+          GrSync::MeasurementPush, :push_to_gr, measurement)
       end
     end
   end
@@ -34,8 +34,8 @@ class MeasurementListUpdater
 
   def validate_measurement_type(measurement)
     current_measurement = Measurement.find_by("person_id = ? OR local_id = ?",
-                                              measurement[:measurement_type_id],
-                                              measurement[:measurement_type_id])
+      measurement[:measurement_type_id],
+      measurement[:measurement_type_id])
     if current_measurement.blank?
       @error = "You can only post measurements for local and person_assignment measurements. "\
                  "measurement_type_id: #{measurement[:measurement_type_id]} is not permitted"

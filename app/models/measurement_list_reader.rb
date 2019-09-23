@@ -30,16 +30,14 @@ class MeasurementListReader
     @measurements.each { |m| work_q.push m }
     workers = (1..thread_count).map {
       Thread.new do
-        begin
-          loop do
-            Rails.application.reloader.wrap do
-              Measurement::GrValueLoader.new(params.merge(measurement: work_q.pop(true))).load_gr_value
-            end
+        loop do
+          Rails.application.reloader.wrap do
+            Measurement::GrValueLoader.new(params.merge(measurement: work_q.pop(true))).load_gr_value
           end
-        rescue ThreadError => e
-          # we don't care about thread errors because
-          raise e unless e.message == "queue empty"
         end
+      rescue ThreadError => e
+        # we don't care about thread errors because
+        raise e unless e.message == "queue empty"
       end
     }
     workers.each(&:join)

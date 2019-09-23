@@ -4,14 +4,14 @@ class Assignment
   class UserCreatedAssignment < ::Assignment
     # Virtual attributes
     attr_accessor :username,
-                  :key_guid,
-                  :person_gr_id,
-                  :ministry_gr_id,
-                  :first_name,
-                  :last_name,
-                  :email,
-                  :preferred_name,
-                  :ea_guid
+      :key_guid,
+      :person_gr_id,
+      :ministry_gr_id,
+      :first_name,
+      :last_name,
+      :email,
+      :preferred_name,
+      :ea_guid
 
     before_validation :assign_ministry, on: :create
     before_validation :assign_person, on: :create

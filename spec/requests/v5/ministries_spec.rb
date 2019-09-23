@@ -66,7 +66,7 @@ RSpec.describe "V5::Ministries", type: :request do
 
       it "responds with the ministry details" do
         get "/v5/ministries/#{ministry.gr_id}",
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status(200)
@@ -83,7 +83,7 @@ RSpec.describe "V5::Ministries", type: :request do
 
       it "responds with the ministry details" do
         get "/v5/ministries/#{sub_ministry.gr_id}",
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status(200)
@@ -94,14 +94,14 @@ RSpec.describe "V5::Ministries", type: :request do
     context "with a non admin/leader assignment" do
       let!(:assignment) do
         FactoryGirl.create(:assignment,
-                           person_id: person.id,
-                           ministry_id: ministry.id,
-                           role: %i[blocked former_member self_assigned member].sample)
+          person_id: person.id,
+          ministry_id: ministry.id,
+          role: %i[blocked former_member self_assigned member].sample)
       end
 
       it "responds with HTTP 401" do
         get "/v5/ministries/#{ministry.gr_id}",
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
         expect(response).to have_http_status(401)
         json = JSON.parse(response.body)
         expect(json.keys).to contain_exactly("reason")
@@ -210,8 +210,8 @@ RSpec.describe "V5::Ministries", type: :request do
 
       it "responds with HTTP 401" do
         put "/v5/ministries/#{ministry.gr_id}",
-            params: ministry.attributes,
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          params: ministry.attributes,
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(gr_request_stub).to have_been_requested
         expect(response).to_not be_successful
@@ -226,8 +226,8 @@ RSpec.describe "V5::Ministries", type: :request do
       it "responds with HTTP 401" do
         ministry.attributes = {name: "Blah"}
         put "/v5/ministries/#{ministry.gr_id}",
-            params: ministry.attributes,
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+          params: ministry.attributes,
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
         expect(response).to_not be_successful
         expect(response).to have_http_status(401)
@@ -253,8 +253,8 @@ RSpec.describe "V5::Ministries", type: :request do
           allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
 
           put "/v5/ministries/#{ministry.gr_id}",
-              params: changes,
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: changes,
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(GrSync::EntityUpdatePush).to have_received(:queue_with_root_gr)
             .with(ministry)
@@ -269,8 +269,8 @@ RSpec.describe "V5::Ministries", type: :request do
 
         it "responds with HTTP 400" do
           put "/v5/ministries/#{ministry.gr_id}",
-              params: {parent_id: other.gr_id},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: {parent_id: other.gr_id},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to_not be_successful
           expect(response).to have_http_status(400)
@@ -286,8 +286,8 @@ RSpec.describe "V5::Ministries", type: :request do
 
         it "responds successfully with updated ministry" do
           put "/v5/ministries/#{ministry.gr_id}",
-              params: {parent_id: other.gr_id},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: {parent_id: other.gr_id},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status(200)
@@ -309,8 +309,8 @@ RSpec.describe "V5::Ministries", type: :request do
 
         it "responds successfully with updated ministry" do
           put "/v5/ministries/#{ministry.gr_id}",
-              params: changes,
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: changes,
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status(200)
@@ -327,8 +327,8 @@ RSpec.describe "V5::Ministries", type: :request do
 
         it "responds successfully with updated ministry" do
           put "/v5/ministries/#{ministry.gr_id}",
-              params: {parent_id: other.gr_id},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: {parent_id: other.gr_id},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status(200)

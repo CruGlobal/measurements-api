@@ -3,7 +3,7 @@
 class MeasurementDetails < ActiveModelSerializers::Model # rubocop:disable Metrics/ClassLength
   attr_accessor :id, :ministry_id, :mcc, :period
   attr_reader :measurement, :total, :local, :local_breakdown, :self_breakdown, :my_measurements,
-              :sub_ministries, :team, :self_assigned, :split_measurements
+    :sub_ministries, :team, :self_assigned, :split_measurements
 
   delegate :perm_link_stub, to: :measurement
 
