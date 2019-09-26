@@ -69,7 +69,7 @@ module V5
 
     def story_params
       permitted_params = post_params.permit(:title, :content, :ministry_id, :image_url, :mcc, :church_id, :training_id,
-                                            :location, :language, :privacy, :video_url, :state, :created_by)
+        :location, :language, :privacy, :video_url, :state, :created_by)
       permitted_params[:privacy] = :everyone if permitted_params[:privacy] == "public"
       # Rename and delete uuid params
       {created_by: :person_gr_id, ministry_id: :ministry_gr_id}.each do |k, v|

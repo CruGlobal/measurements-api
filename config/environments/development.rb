@@ -77,9 +77,9 @@ Rails.application.configure do
     allow do
       origins "*"
       resource "*",
-               headers: :any,
-               methods: [:get, :post, :delete, :put, :patch, :options, :head],
-               max_age: 0
+        headers: :any,
+        methods: [:get, :post, :delete, :put, :patch, :options, :head],
+        max_age: 0
     end
   end
 end

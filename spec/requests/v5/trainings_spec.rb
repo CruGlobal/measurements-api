@@ -129,7 +129,7 @@ RSpec.describe "V5::Trainings", type: :request do
       it "deletes training" do
         expect {
           delete "/v5/training/#{training.id}",
-                 headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
           expect(response).to be_successful
         }.to change(Training, :count).by(-1)
@@ -142,7 +142,7 @@ RSpec.describe "V5::Trainings", type: :request do
 
       it "fails to delete training" do
         delete "/v5/training/#{training.id}",
-               headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
         expect(response).to_not be_successful
       end

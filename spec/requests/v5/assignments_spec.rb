@@ -35,7 +35,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
 
         expect(response).to be_successful
         expect(json).to contain_exactly(a_hash_including("id" => assignments[1].gr_id, "team_role" => "member"),
-                                        a_hash_including("id" => assignments[0].gr_id, "team_role" => "member"))
+          a_hash_including("id" => assignments[0].gr_id, "team_role" => "member"))
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
       context "get my own assignment" do
         it "responds successfully with my assignment" do
           get "/v5/assignments/#{assignment.gr_id}",
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status 200
@@ -122,7 +122,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
       context "get my own assignment" do
         it "responds successfully with my assignment" do
           get "/v5/assignments/#{assignment.gr_id}",
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status 200
@@ -139,7 +139,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         end
         it "responds successfully with the assignment" do
           get "/v5/assignments/#{member_assignment.gr_id}",
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status 200
@@ -156,7 +156,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         end
         it "responds successfully with the assignment" do
           get "/v5/assignments/#{member_assignment.gr_id}",
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to be_successful
           expect(response).to have_http_status 200
@@ -379,8 +379,8 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
       context "update your assignment" do
         it "responds with HTTP 401" do
           put "/v5/assignments/#{assignment.gr_id}",
-              params: {team_role: "leader"},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: {team_role: "leader"},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to_not be_successful
           expect(response).to have_http_status 401
@@ -396,8 +396,8 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
       context "update your assignment" do
         it "responds with HTTP 400" do
           put "/v5/assignments/#{assignment.gr_id}",
-              params: {team_role: "admin"},
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+            params: {team_role: "admin"},
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
           expect(response).to_not be_successful
           expect(response).to have_http_status 400
@@ -414,8 +414,8 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
           let!(:request_stub) { gr_update_assignment_request(member_assignment) }
           it "responds successfully with updated assignment" do
             put "/v5/assignments/#{member_assignment.gr_id}",
-                params: {team_role: "leader"},
-                headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+              params: {team_role: "leader"},
+              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
             expect(response).to be_successful
             expect(response).to have_http_status 200
@@ -428,8 +428,8 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         context "to an inherited role" do
           it "responds with HTTP 400" do
             put "/v5/assignments/#{member_assignment.gr_id}",
-                params: {team_role: "inherited_leader"},
-                headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
+              params: {team_role: "inherited_leader"},
+              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
 
             expect(response).to_not be_successful
             expect(response).to have_http_status 400

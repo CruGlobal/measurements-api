@@ -3,29 +3,29 @@
 module V5
   class MeasurementTypeSerializer < ActiveModel::Serializer
     attributes :perm_link_stub,
-               :perm_link,
-               :english,
-               :description,
-               :section,
-               :column,
-               :sort_order,
-               :total_id,
-               :local_id,
-               :person_id,
-               :leader_only,
-               :supported_staff_only,
-               :id,
-               :localized_name,
-               :localized_description,
-               :locale,
-               :parent_id
+      :perm_link,
+      :english,
+      :description,
+      :section,
+      :column,
+      :sort_order,
+      :total_id,
+      :local_id,
+      :person_id,
+      :leader_only,
+      :supported_staff_only,
+      :id,
+      :localized_name,
+      :localized_description,
+      :locale,
+      :parent_id
 
     attribute :custom?, key: :is_custom
 
     delegate :locale, :measurement, to: :object
     delegate :id, :perm_link, :person_id, :local_id, :total_id, :leader_only,
-             :supported_staff_only, :perm_link_stub,
-             to: :measurement
+      :supported_staff_only, :perm_link_stub,
+      to: :measurement
 
     def attributes(args)
       # Remove nil values

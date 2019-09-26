@@ -16,8 +16,8 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
 
       it "responds successfully with an assignment" do
         post "/v5/sys_assignments",
-             params: {username: person.cas_username, ministry_id: ministry.gr_id, team_role: "admin"},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {username: person.cas_username, ministry_id: ministry.gr_id, team_role: "admin"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status 201
@@ -35,8 +35,8 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
 
       it "responds successfully with an assignment" do
         post "/v5/sys_assignments",
-             params: {key_guid: person.cas_guid, ministry_id: ministry.gr_id, team_role: "member"},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {key_guid: person.cas_guid, ministry_id: ministry.gr_id, team_role: "member"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status 201
@@ -54,8 +54,8 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
 
       it "responds successfully with an assignment" do
         post "/v5/sys_assignments",
-             params: {person_id: leader.gr_id, ministry_id: ministry.gr_id, team_role: "leader"},
-             headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
+          params: {person_id: leader.gr_id, ministry_id: ministry.gr_id, team_role: "leader"},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{gr_access_toke}"}
 
         expect(response).to be_successful
         expect(response).to have_http_status 201

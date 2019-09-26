@@ -18,7 +18,7 @@ module GrSync
       # the controller action when what we really want is the action of the
       # notification that global registry sent to us.
       request.POST.slice(:action, :id, :client_integration_id, :triggered_by,
-                         :entity_type)
+        :entity_type)
     end
   end
 end

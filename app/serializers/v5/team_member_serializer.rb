@@ -3,12 +3,12 @@
 module V5
   class TeamMemberSerializer < ActiveModel::Serializer
     attributes :person_id,
-               :assignment_id,
-               :team_role,
-               :first_name,
-               :last_name,
-               :key_username,
-               :key_guid
+      :assignment_id,
+      :team_role,
+      :first_name,
+      :last_name,
+      :key_username,
+      :key_guid
 
     def attributes(args)
       # Remove nil values

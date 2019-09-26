@@ -61,8 +61,8 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
       let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "updates completion" do
         put "/v5/training_completion/#{completion.id}",
-            params: attributes,
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: attributes,
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
         expect(response).to be_successful
         completion.reload
@@ -73,8 +73,8 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
       context "moving to other training" do
         it "fails to update completion" do
           put "/v5/training_completion/#{completion.id}",
-              params: attributes.merge(training_id: other_local_training.id),
-              headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+            params: attributes.merge(training_id: other_local_training.id),
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
           completion.reload
           expect(completion.training).to eq training
@@ -87,8 +87,8 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
 
       it "fails to update completion" do
         put "/v5/training_completion/#{completion.id}",
-            params: {number_completed: 30},
-            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+          params: {number_completed: 30},
+          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
         expect(response).to_not be_successful
       end
@@ -103,7 +103,7 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
       it "deletes completion" do
         expect {
           delete "/v5/training_completion/#{completion.id}",
-                 headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
           expect(response.response_code).to be 204
         }.to change(TrainingCompletion, :count).by(-1)
@@ -116,7 +116,7 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
       it "fails to delete completion" do
         expect {
           delete "/v5/training_completion/#{completion.id}",
-                 headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
+            headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
 
           expect(response).to_not be_successful
         }.to_not change(TrainingCompletion, :count)

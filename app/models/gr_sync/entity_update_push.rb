@@ -4,7 +4,7 @@ module GrSync
   class EntityUpdatePush
     def self.queue_with_root_gr(record)
       WithGrWorker.queue_call_with_root(self, :update_in_gr,
-                                        record.class.name, record.id)
+        record.class.name, record.id)
     end
 
     def initialize(gr_client)

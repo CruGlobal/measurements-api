@@ -3,20 +3,20 @@
 module V5
   class MeasurementSerializer < ActiveModel::Serializer
     attributes :column,
-               :description,
-               :leader_only,
-               :locale,
-               :localized_description,
-               :localized_name,
-               :measurement_type_ids,
-               :perm_link,
-               :perm_link_stub,
-               :section,
-               :sort_order,
-               :supported_staff_only,
-               :total,
-               :local,
-               :person
+      :description,
+      :leader_only,
+      :locale,
+      :localized_description,
+      :localized_name,
+      :measurement_type_ids,
+      :perm_link,
+      :perm_link_stub,
+      :section,
+      :sort_order,
+      :supported_staff_only,
+      :total,
+      :local,
+      :person
 
     attribute :custom?, key: :is_custom
     attribute :english, key: :name

@@ -22,8 +22,8 @@ RSpec.describe "V5::Churches", type: :request do
       church.update(start_date: 2.months.ago.beginning_of_day)
 
       get "/v5/churches",
-          params: {show_all: true, ministry_id: ministry.gr_id, period: 2.months.ago.strftime("%Y-%m")},
-          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"}
+        params: {show_all: true, ministry_id: ministry.gr_id, period: 2.months.ago.strftime("%Y-%m")},
+        headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person}"}
 
       expect(response).to be_successful
       expect(json.first["development"]).to be 1

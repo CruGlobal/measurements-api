@@ -7,7 +7,7 @@ module Callback
       # On success, queue up updating measurement totals
       options[:json].each do |measurement|
         GrSync::WithGrWorker.queue_call(options[:gr_client_params],
-                                        GrSync::MeasurementPush, :update_totals, measurement)
+          GrSync::MeasurementPush, :update_totals, measurement)
       end
     end
   end
