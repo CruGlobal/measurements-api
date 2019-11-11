@@ -98,8 +98,4 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  syslogger = Logger::Syslog.new("measurements-api-#{ENV["ENVIRONMENT"]}", Syslog::LOG_LOCAL7)
-  config.logger = ActiveSupport::TaggedLogging.new(syslogger)
-  # config.log_tags = [lambda { |request| "ReqID:#{request.uuid}" }]
 end
