@@ -1,13 +1,33 @@
 {
   "ignored_warnings": [
     {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "94c72f5d45fe01f4d5594afb72549af3b7b570022af368142716552fae7a97fc",
+      "check_name": "MassAssignment",
+      "message": "Parameters should be whitelisted for mass assignment",
+      "file": "app/controllers/concerns/v5/measurements_concern.rb",
+      "line": 25,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "V5::MeasurementsConcern",
+        "method": "create"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "note": ""
+    },
+    {
       "warning_type": "SQL Injection",
       "warning_code": 0,
       "fingerprint": "b5d2a595055ea80a71cae59c143a89bbff941ca2b5fab8e273395910639faf2e",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/models/person.rb",
-      "line": 165,
+      "line": 166,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
       "code": "find_by(\"#{guid_field_prefix}_guid\" => guid)",
       "render_path": null,
@@ -37,6 +57,6 @@
       "note": ""
     }
   ],
-  "updated": "2019-09-06 00:13:01 +0200",
-  "brakeman_version": "4.6.1"
+  "updated": "2020-01-28 15:39:45 -0600",
+  "brakeman_version": "4.7.2"
 }

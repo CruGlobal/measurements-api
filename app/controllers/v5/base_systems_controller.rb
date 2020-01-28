@@ -8,7 +8,6 @@ module V5
     included do
       around_action :with_token
       skip_around_action :with_current_power
-      skip_before_action :check_power, raise: false
     end
 
     def current_user

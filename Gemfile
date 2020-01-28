@@ -30,6 +30,7 @@ gem "sinatra", require: nil
 gem "auto_strip_attributes", "~> 2.0"
 gem "arel"
 gem "consul"
+gem "modularity"
 gem "assignable_values"
 gem "awesome_nested_set"
 gem "global_registry"
