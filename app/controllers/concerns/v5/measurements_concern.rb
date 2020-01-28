@@ -34,8 +34,8 @@ module V5
 
     def load_measurements
       @measurements ||= MeasurementListReader
-                          .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
-                          .load
+        .new(params.permit(:ministry_id, :mcc, :period, :source, :historical))
+        .load
     end
 
     def load_measurement

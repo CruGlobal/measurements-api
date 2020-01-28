@@ -124,7 +124,7 @@ module V5
                       params[:parent_id]
                     else
                       return super
-                    end
+      end
       Power.new(current_user, ministry_id)
     end
 

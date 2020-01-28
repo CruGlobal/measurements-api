@@ -49,7 +49,7 @@ module V5
                       Assignment.find_by(gr_id: params[:id]).try(:ministry).try(:gr_id)
                     else
                       params[:ministry_id]
-                    end
+      end
       Power.new(current_user, ministry_id)
     end
 
@@ -107,7 +107,7 @@ module V5
                   "'ministry_id' missing or invalid"
                 else
                   exception.message
-                end
+      end
       api_error(message, status: :unauthorized)
     end
   end
