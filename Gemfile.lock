@@ -184,6 +184,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.0)
     mock_redis (0.16.0)
+    modularity (2.0.1)
     msgpack (1.2.10)
     multi_json (1.13.1)
     mustermann (1.0.3)
@@ -419,6 +420,7 @@ DEPENDENCIES
   http_logger
   marco-polo
   mock_redis
+  modularity
   newrelic_rpm
   oj
   oj_mimic_json

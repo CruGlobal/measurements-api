@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module V5
-  class SystemsMinistriesController < V5::MinistriesController
+  class SystemsMinistriesController < V5::BaseUserController
+    include V5::MinistriesConcern[authorize: false]
     include V5::BaseSystemsController
 
     private
