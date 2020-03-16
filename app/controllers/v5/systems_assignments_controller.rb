@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module V5
-  class SystemsAssignmentsController < V5::AssignmentsController
+  class SystemsAssignmentsController < V5::BaseUserController
+    include V5::AssignmentsConcern[authorize: false]
     include V5::BaseSystemsController
 
     # Systems endpoint allows updating existing assignments on the create endpoint

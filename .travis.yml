@@ -16,5 +16,5 @@ before_script:
 script:
 - bundle exec standardrb
 - bundle exec rspec spec
-- bundle exec bundle audit check
+- bundle exec bundle audit check --update
 - bundle exec brakeman -A -q --no-pager --ensure-latest

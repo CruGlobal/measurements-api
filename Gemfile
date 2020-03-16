@@ -6,8 +6,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "2.6.5"
 
-gem "rake", "~> 11.1.1"
+gem "rake"
 gem "rails", "~> 5.2.3"
+gem "rack", "2.0.8" # sidekiq web has issue with 2.1.1
 gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git"
 gem "puma", "~> 3.11"
 gem "newrelic_rpm"
@@ -29,6 +30,7 @@ gem "sinatra", require: nil
 gem "auto_strip_attributes", "~> 2.0"
 gem "arel"
 gem "consul"
+gem "modularity"
 gem "assignable_values"
 gem "awesome_nested_set"
 gem "global_registry"
