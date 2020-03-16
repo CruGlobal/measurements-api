@@ -20,7 +20,7 @@ if Sidekiq::Client.method_defined? :reliable_push!
 end
 
 Sidekiq.configure_server do |config|
-  config.reliable_fetch!
+  config.super_fetch!
   config.reliable_scheduler!
   config.redis = redis_settings
 
