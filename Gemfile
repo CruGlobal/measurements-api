@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 source "https://gems.contribsys.com/" do
-  gem "sidekiq-pro", "3.1.0"
+  gem "sidekiq-pro"
 end
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -21,7 +21,7 @@ gem "cru-auth-lib", "~> 0.1.0"
 gem "pg"
 gem "rubycas-client-rails"
 gem "xml-simple", require: "xmlsimple"
-gem "sidekiq", "4.1.1"
+gem "sidekiq", "~> 5.0"
 gem "sidekiq-unique-jobs", "4.0.18"
 gem "sidekiq-cron"
 gem "redis-rails"
