@@ -86,7 +86,7 @@ GEM
       aws-sdk (~> 2.0)
       carrierwave (~> 0.7)
     coderay (1.1.0)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     connection_pool (2.2.2)
     consul (1.0.3)
       edge_rider (>= 0.3.0)
@@ -327,16 +327,18 @@ GEM
     shoulda-context (1.2.1)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (4.1.1)
-      concurrent-ruby (~> 1.0)
-      connection_pool (~> 2.2, >= 2.2.0)
-      redis (~> 3.2, >= 3.2.1)
+    sidekiq (5.2.8)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack (< 2.1.0)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     sidekiq-cron (0.4.0)
       redis-namespace (>= 1.5.2)
       rufus-scheduler (>= 2.0.24)
       sidekiq (>= 4.0.0)
-    sidekiq-pro (3.1.0)
-      sidekiq (>= 4.0.0)
+    sidekiq-pro (5.0.0)
+      concurrent-ruby (>= 1.0.5)
+      sidekiq (>= 5.2.7)
     sidekiq-unique-jobs (4.0.18)
       sidekiq (>= 2.6)
       thor
@@ -442,9 +444,9 @@ DEPENDENCIES
   rubocop
   rubycas-client-rails
   shoulda
-  sidekiq (= 4.1.1)
+  sidekiq (~> 5.0)
   sidekiq-cron
-  sidekiq-pro (= 3.1.0)!
+  sidekiq-pro!
   sidekiq-unique-jobs (= 4.0.18)
   simplecov
   sinatra
