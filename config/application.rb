@@ -20,6 +20,9 @@ Bundler.require(*Rails.groups)
 require_relative "../lib/log/logger"
 module MeasurementsApi
   class Application < Rails::Application
+    redis_conf = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "redis.yml"))).result, [Symbol], [], true)["cache"]
+    config.cache_store = :redis_store, redis_conf
+
     # Enable ougai
     if Rails.env.development? || Rails.const_defined?("Console")
       config.logger = Log::Logger.new(STDOUT)

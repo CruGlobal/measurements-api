@@ -1,20 +1,20 @@
 default: &DEFAULT
-  db: 1
-  namespace: ararat
+  :db: 1
+  :namespace: measurements-api
 
 sidekiq:
   <<: *DEFAULT
-  host: <%= ENV.fetch('REDIS_PORT_6379_TCP_ADDR') %>
-  port: <%= ENV.fetch('REDIS_PORT_6379_TCP_PORT', 6379) %>
-  namespace: <%= [ 'measurements-api', 'sidekiq' ].join(':') %>
+  :host: <%= ENV.fetch('REDIS_PORT_6379_TCP_ADDR') %>
+  :port: <%= ENV.fetch('REDIS_PORT_6379_TCP_PORT', 6379) %>
+  :namespace: <%= [ 'measurements-api', 'sidekiq' ].join(':') %>
 
 session: &SESSION
   <<: *DEFAULT
-  host: <%= ENV.fetch('REDIS_PORT_6379_TCP_ADDR_SESSION') %>
-  port: <%= ENV.fetch('REDIS_PORT_6379_TCP_PORT_SESSION', 6379) %>
-  namespace: <%= [ 'measurements-api', 'session' ].join(':') %>
-  expires_in: <%= 2.days %>
+  :host: <%= ENV.fetch('REDIS_PORT_6379_TCP_ADDR_SESSION') %>
+  :port: <%= ENV.fetch('REDIS_PORT_6379_TCP_PORT_SESSION', 6379) %>
+  :namespace: <%= [ 'measurements-api', 'session' ].join(':') %>
+  :expires_in: <%= 2.days %>
 
 cache:
   <<: *SESSION
-  namespace: <%= [ 'measurements-api', 'cache' ].join(':') %>
+  :namespace: <%= [ 'measurements-api', 'cache' ].join(':') %>
