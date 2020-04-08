@@ -1,12 +1,12 @@
 source "https://rubygems.org"
 source "https://gems.contribsys.com/" do
-  gem "sidekiq-pro", "3.1.0"
+  gem "sidekiq-pro"
 end
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "2.6.5"
 
-gem "rake", "~> 11.1.1"
+gem "rake"
 gem "rails", "~> 5.2.3"
 gem "rack", "2.0.8" # sidekiq web has issue with 2.1.1
 gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git"
@@ -21,8 +21,8 @@ gem "cru-auth-lib", "~> 0.1.0"
 gem "pg"
 gem "rubycas-client-rails"
 gem "xml-simple", require: "xmlsimple"
-gem "sidekiq", "4.1.1"
-gem "sidekiq-unique-jobs", "4.0.18"
+gem "sidekiq", "~> 5.0"
+gem "sidekiq-unique-jobs"
 gem "sidekiq-cron"
 gem "redis-rails"
 gem "redis-namespace"
