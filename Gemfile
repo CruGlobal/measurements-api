@@ -4,7 +4,7 @@ source "https://gems.contribsys.com/" do
 end
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.6.5"
+ruby "2.6.6"
 
 gem "rake"
 gem "rails", "~> 5.2.3"
