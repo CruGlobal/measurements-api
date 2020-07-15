@@ -189,7 +189,6 @@ GEM
     mustermann (1.0.3)
     nenv (0.2.0)
     netrc (0.11.0)
-    newrelic_rpm (5.6.0.349)
     nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
@@ -422,7 +421,6 @@ DEPENDENCIES
   marco-polo
   mock_redis
   modularity
-  newrelic_rpm
   oj
   oj_mimic_json
   ougai (~> 1.7)
