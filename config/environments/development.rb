@@ -64,7 +64,6 @@ Rails.application.configure do
   HttpLogger.log_headers = true
   HttpLogger.logger = Logger.new(STDOUT)
   HttpLogger.collapse_body_limit = 10_000
-  HttpLogger.ignore = [/newrelic\.com/]
 
   # Allows us to turn on logging of body and resopnse when wanted
   HttpLogger.log_request_body = ENV["LOG_REQUEST_BODY"].present?

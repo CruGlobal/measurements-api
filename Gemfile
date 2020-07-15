@@ -8,10 +8,9 @@ ruby "2.6.6"
 
 gem "rake"
 gem "rails", "~> 5.2.3"
-gem "rack", "2.0.8" # sidekiq web has issue with 2.1.1
+gem "rack"
 gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git"
 gem "puma", "~> 3.11"
-gem "newrelic_rpm"
 gem "versionist"
 gem "rollbar"
 gem "syslog-logger"
