@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 module V5
-  class WHQMinistrySerializer < ActiveModel::Serializer
+  class WhqMinistrySerializer < ActiveModel::Serializer
     attributes :ministry_id, :name, :area_code, :min_code, :area_name
 
     def attributes(args = nil)

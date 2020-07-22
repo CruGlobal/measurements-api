@@ -76,7 +76,7 @@ module V5
 
     def render_ministries
       if bool_value(params[:whq_only])
-        render json: @ministries, each_serializer: WHQMinistrySerializer
+        render json: @ministries, each_serializer: WhqMinistrySerializer
       else
         render json: @ministries, each_serializer: MinistryPublicSerializer
       end

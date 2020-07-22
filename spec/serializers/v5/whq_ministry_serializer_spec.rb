@@ -2,11 +2,11 @@
 
 require "rails_helper"
 
-RSpec.describe V5::WHQMinistrySerializer do
+RSpec.describe V5::WhqMinistrySerializer do
   describe "a ministry" do
     let(:area) { FactoryGirl.create(:area, name: "Testing Area", code: "TEST") }
     let(:ministry) { FactoryGirl.create(:ministry, ministry_scope: "National", area: area) }
-    let(:serializer) { V5::WHQMinistrySerializer.new(ministry) }
+    let(:serializer) { V5::WhqMinistrySerializer.new(ministry) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
