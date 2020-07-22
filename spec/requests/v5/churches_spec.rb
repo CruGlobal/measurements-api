@@ -3,11 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "V5::Churches", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
 
   describe "GET /v5/churches" do
-    let!(:church) { FactoryGirl.create(:church_with_ministry) }
+    let!(:church) { FactoryBot.create(:church_with_ministry) }
     let(:json) { JSON.parse(response.body) }
 
     it "responds with churches" do
@@ -30,8 +30,8 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as inherited admin" do
-      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let(:child_ministry) { FactoryBot.create(:ministry, parent: ministry) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
 
       it "responds with churches" do
         church.update(ministry: child_ministry)
@@ -49,11 +49,11 @@ RSpec.describe "V5::Churches", type: :request do
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
-      FactoryGirl.attributes_for(:church, ministry: ministry, security: 0).merge(ministry_id: ministry.gr_id)
+      FactoryBot.attributes_for(:church, ministry: ministry, security: 0).merge(ministry_id: ministry.gr_id)
     end
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "creates a church" do
         expect {
           post "/v5/churches", params: attributes,
@@ -66,8 +66,8 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as inherited admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
-      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let(:child_ministry) { FactoryBot.create(:ministry, parent: ministry) }
       it "creates a church" do
         expect {
           post "/v5/churches", params: attributes.merge(ministry_id: child_ministry.gr_id),
@@ -79,7 +79,7 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it "can create public church" do
         expect {
           post "/v5/churches", params: attributes.merge(security: 2),
@@ -99,7 +99,7 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :blocked) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :blocked) }
       it "fails to create church" do
         expect {
           post "/v5/churches", params: attributes.merge(security: 2),
@@ -123,7 +123,7 @@ RSpec.describe "V5::Churches", type: :request do
   end
 
   describe "PUT /v5/churches/:id" do
-    let(:church) { FactoryGirl.create(:church, ministry: ministry) }
+    let(:church) { FactoryBot.create(:church, ministry: ministry) }
     let(:json) { JSON.parse(response.body) }
 
     let(:attributes) do
@@ -132,7 +132,7 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "updates church" do
         put "/v5/churches/#{church.id}", params: attributes,
                                          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
@@ -145,7 +145,7 @@ RSpec.describe "V5::Churches", type: :request do
       end
 
       it "removes parent" do
-        child_church = FactoryGirl.create(:church, parent: church, ministry: ministry)
+        child_church = FactoryBot.create(:church, parent: church, ministry: ministry)
 
         put "/v5/churches/#{child_church.id}", params: {parent_id: -1},
                                                headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
@@ -162,8 +162,8 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "as inherited admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
-      let(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let(:child_ministry) { FactoryBot.create(:ministry, parent: ministry) }
 
       it "updates church" do
         church.update(ministry: child_ministry)
@@ -180,9 +180,9 @@ RSpec.describe "V5::Churches", type: :request do
     end
 
     context "trying to move church to another ministry you do not have access to" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "fails to update" do
-        other_ministry = FactoryGirl.create(:ministry)
+        other_ministry = FactoryBot.create(:ministry)
 
         put "/v5/churches/#{church.id}", params: {ministry_id: other_ministry.id},
                                          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}

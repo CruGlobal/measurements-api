@@ -4,27 +4,27 @@ require "rails_helper"
 
 RSpec.describe "V5::Stories", type: :request do
   let(:json) { JSON.parse(response.body).try(:with_indifferent_access) }
-  let(:person) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:training) { FactoryGirl.create(:training, ministry: ministry) }
-  let(:church) { FactoryGirl.create(:church, ministry: ministry) }
+  let(:person) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:training) { FactoryBot.create(:training, ministry: ministry) }
+  let(:church) { FactoryBot.create(:church, ministry: ministry) }
 
   describe "GET /v5/stories" do
-    let(:author) { FactoryGirl.create(:person) }
-    let(:sub_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+    let(:author) { FactoryBot.create(:person) }
+    let(:sub_ministry) { FactoryBot.create(:ministry, parent: ministry) }
     let!(:stories) do
-      [FactoryGirl.create(:story, created_by: author, ministry: ministry, created_at: 4.days.ago, mcc: "slm"),
-       FactoryGirl.create(:story, created_by: author, ministry: ministry, church: church, created_at: 1.day.ago,
+      [FactoryBot.create(:story, created_by: author, ministry: ministry, created_at: 4.days.ago, mcc: "slm"),
+       FactoryBot.create(:story, created_by: author, ministry: ministry, church: church, created_at: 1.day.ago,
                                   mcc: "gcm"),
-       FactoryGirl.create(:story, created_by: author, ministry: ministry, training: training, created_at: 3.days.ago,
+       FactoryBot.create(:story, created_by: author, ministry: ministry, training: training, created_at: 3.days.ago,
                                   mcc: "ds"),
-       FactoryGirl.create(:story, created_by: author, ministry: ministry, training: training, church: church,
+       FactoryBot.create(:story, created_by: author, ministry: ministry, training: training, church: church,
                                   created_at: 7.days.ago, mcc: nil),
-       FactoryGirl.create(:story, created_by: person, ministry: ministry, created_at: 5.days.ago, mcc: "slm"),
-       FactoryGirl.create(:story, created_by: author, ministry: sub_ministry, created_at: 6.days.ago, mcc: "slm"),
-       FactoryGirl.create(:story, created_by: author, ministry: sub_ministry, privacy: :team_only,
+       FactoryBot.create(:story, created_by: person, ministry: ministry, created_at: 5.days.ago, mcc: "slm"),
+       FactoryBot.create(:story, created_by: author, ministry: sub_ministry, created_at: 6.days.ago, mcc: "slm"),
+       FactoryBot.create(:story, created_by: author, ministry: sub_ministry, privacy: :team_only,
                                   created_at: 2.days.ago, mcc: "gcm"),
-       FactoryGirl.create(:story, created_by: person, ministry: sub_ministry, state: :draft, created_at: 8.days.ago,
+       FactoryBot.create(:story, created_by: person, ministry: sub_ministry, state: :draft, created_at: 8.days.ago,
                                   mcc: "llm"),]
     end
 
@@ -142,7 +142,7 @@ RSpec.describe "V5::Stories", type: :request do
     context "published state" do
       context "public privacy" do
         let(:story) do
-          FactoryGirl.create(:story, created_by: person, ministry: ministry, privacy: :everyone, state: :published)
+          FactoryBot.create(:story, created_by: person, ministry: ministry, privacy: :everyone, state: :published)
         end
 
         it "responds successfully with the story" do
@@ -158,7 +158,7 @@ RSpec.describe "V5::Stories", type: :request do
 
       context "team_only privacy" do
         let(:story) do
-          FactoryGirl.create(:story, created_by: person, ministry: ministry, privacy: :team_only, state: :published)
+          FactoryBot.create(:story, created_by: person, ministry: ministry, privacy: :team_only, state: :published)
         end
 
         context "no assignment" do
@@ -171,8 +171,8 @@ RSpec.describe "V5::Stories", type: :request do
         end
 
         context "as a member" do
-          let(:member) { FactoryGirl.create(:person) }
-          let!(:assignment) { FactoryGirl.create(:assignment, person: member, ministry: ministry, role: :member) }
+          let(:member) { FactoryBot.create(:person) }
+          let!(:assignment) { FactoryBot.create(:assignment, person: member, ministry: ministry, role: :member) }
           it "responds successfully with the story" do
             get "/v5/stories/#{story.id}", headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person member}"}
 
@@ -187,11 +187,11 @@ RSpec.describe "V5::Stories", type: :request do
     end
 
     context "draft state" do
-      let(:author) { FactoryGirl.create(:person) }
+      let(:author) { FactoryBot.create(:person) }
 
       context "public privacy" do
         let(:story) do
-          FactoryGirl.create(:story, created_by: author, ministry: ministry, privacy: :everyone, state: :draft)
+          FactoryBot.create(:story, created_by: author, ministry: ministry, privacy: :everyone, state: :draft)
         end
 
         it "responds with HTTP 404" do
@@ -204,11 +204,11 @@ RSpec.describe "V5::Stories", type: :request do
 
       context "team_only privacy" do
         let(:story) do
-          FactoryGirl.create(:story, created_by: author, ministry: ministry, privacy: :team_only, state: :draft)
+          FactoryBot.create(:story, created_by: author, ministry: ministry, privacy: :team_only, state: :draft)
         end
 
         context "as a member" do
-          let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :member) }
+          let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :member) }
 
           it "responds with HTTP 404" do
             get "/v5/stories/#{story.id}", headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
@@ -219,7 +219,7 @@ RSpec.describe "V5::Stories", type: :request do
         end
 
         context "as a leader" do
-          let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :leader) }
+          let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :leader) }
 
           it "responds successfully with the story" do
             get "/v5/stories/#{story.id}", headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person person}"}
@@ -266,7 +266,7 @@ RSpec.describe "V5::Stories", type: :request do
     end
 
     context "with an assignment" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :member) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :member) }
       context "draft state" do
         it "responds successfully with new story" do
           expect {
@@ -295,8 +295,8 @@ RSpec.describe "V5::Stories", type: :request do
     end
 
     context "inherited assignment" do
-      let(:sub_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
-      let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :admin) }
+      let(:sub_ministry) { FactoryBot.create(:ministry, parent: ministry) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :admin) }
       it "responds successfully with new story" do
         expect {
           post "/v5/stories", params: story_attributes.merge(ministry_id: sub_ministry.gr_id),
@@ -311,9 +311,9 @@ RSpec.describe "V5::Stories", type: :request do
   end
 
   describe "PUT /v5/stories/:id" do
-    let(:author) { FactoryGirl.create(:person) }
+    let(:author) { FactoryBot.create(:person) }
     let(:story) do
-      FactoryGirl.create(:story, created_by: author, ministry: ministry, privacy: :team_only, state: :draft)
+      FactoryBot.create(:story, created_by: author, ministry: ministry, privacy: :team_only, state: :draft)
     end
     let(:attributes) do
       {title: "A Title", content: "This is my story!", privacy: "public", state: "published",
@@ -321,7 +321,7 @@ RSpec.describe "V5::Stories", type: :request do
     end
 
     context "as leader" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :leader) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :leader) }
 
       it "responds successfully with updated story" do
         put "/v5/stories/#{story.id}", params: attributes,
@@ -340,7 +340,7 @@ RSpec.describe "V5::Stories", type: :request do
     end
 
     context "as member" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: person, ministry: ministry, role: :member) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: person, ministry: ministry, role: :member) }
 
       it "responds with HTTP 400" do
         put "/v5/stories/#{story.id}", params: attributes,

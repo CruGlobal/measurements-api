@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Training, type: :model do
-  let(:ministry) { FactoryGirl.build_stubbed(:ministry) }
-  let(:training) { FactoryGirl.build(:training, ministry: ministry) }
+  let(:ministry) { FactoryBot.build_stubbed(:ministry) }
+  let(:training) { FactoryBot.build(:training, ministry: ministry) }
 
   describe "validates type value" do
     it "accepts value in list" do

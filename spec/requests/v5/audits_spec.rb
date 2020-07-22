@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "V5::Audits", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
 
   describe "GET /v5/audit" do
     let(:json) { JSON.parse(response.body) }
@@ -12,12 +12,12 @@ RSpec.describe "V5::Audits", type: :request do
     before do
       3.times do |i|
         # create audits in reverse order so we can test sorting
-        FactoryGirl.create(:audit, person: user, ministry: ministry, created_at: (2 - i).months.ago)
+        FactoryBot.create(:audit, person: user, ministry: ministry, created_at: (2 - i).months.ago)
       end
     end
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "responds with audits" do
         get "/v5/audit", params: {ministry_id: ministry.gr_id, number_of_entries: 2},
                          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}
@@ -41,7 +41,7 @@ RSpec.describe "V5::Audits", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it "fails to fetch audits" do
         get "/v5/audit", params: {ministry_id: ministry.gr_id},
                          headers: {'HTTP_AUTHORIZATION': "Bearer #{authenticate_person(user)}"}

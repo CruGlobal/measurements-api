@@ -4,14 +4,14 @@ require "rails_helper"
 
 describe V5::ChurchSerializer do
   describe "single church" do
-    let(:ministry) { FactoryGirl.build(:ministry) }
+    let(:ministry) { FactoryBot.build(:ministry) }
     let(:resource) do
-      @p = FactoryGirl.create(:church, name: "parent church", ministry: ministry)
-      c = FactoryGirl.create(:church, name: "churchy kind of name", jf_contrib: true,
+      @p = FactoryBot.create(:church, name: "parent church", ministry: ministry)
+      c = FactoryBot.create(:church, name: "churchy kind of name", jf_contrib: true,
                                       ministry: ministry, start_date: "2012-06-08", parent: @p,
                                       contact_name: "doesnt matter", contact_email: "what",
                                       contact_mobile: "unvalidated string")
-      FactoryGirl.create(:church, name: "child church", parent: c, ministry: ministry)
+      FactoryBot.create(:church, name: "child church", parent: c, ministry: ministry)
       c
     end
     let(:serializer) { V5::ChurchSerializer.new(resource) }

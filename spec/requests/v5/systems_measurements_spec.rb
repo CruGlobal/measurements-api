@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "V5::Measurements", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
   let(:json) { JSON.parse(response.body) }
 
   def measurement_json
@@ -31,8 +31,8 @@ RSpec.describe "V5::Measurements", type: :request do
   end
 
   describe "POST /v5/measurements" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
-    let(:measurement) { FactoryGirl.create(:measurement) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: 7) }
+    let(:measurement) { FactoryBot.create(:measurement) }
 
     it "responds with measurement breakdowns" do
       clear_uniqueness_locks

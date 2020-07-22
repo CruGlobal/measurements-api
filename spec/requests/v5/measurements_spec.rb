@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "V5::Measurements", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
   let(:json) { JSON.parse(response.body) }
 
   def measurement_json
@@ -31,8 +31,8 @@ RSpec.describe "V5::Measurements", type: :request do
   end
 
   describe "GET /v5/measurements" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
-    let!(:measurement) { FactoryGirl.create(:measurement, english: "English Name", perm_link: "lmi_total_test") }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
+    let!(:measurement) { FactoryBot.create(:measurement, english: "English Name", perm_link: "lmi_total_test") }
 
     it "responds with measurements" do
       stub_gr_measurement_calls(measurement)
@@ -46,10 +46,10 @@ RSpec.describe "V5::Measurements", type: :request do
   end
 
   describe "GET /v5/measurements/:id" do
-    let(:measurement) { FactoryGirl.create(:measurement, english: "English Name") }
+    let(:measurement) { FactoryBot.create(:measurement, english: "English Name") }
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
 
       it "responds with measurement breakdowns" do
         stub_gr_measurement_calls(measurement)
@@ -74,7 +74,7 @@ RSpec.describe "V5::Measurements", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it "responds with 401" do
         get "/v5/measurements/#{measurement.total_id}",
@@ -87,11 +87,11 @@ RSpec.describe "V5::Measurements", type: :request do
   end
 
   describe "POST /v5/measurements" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
-    let(:measurement) { FactoryGirl.create(:measurement) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: 7) }
+    let(:measurement) { FactoryBot.create(:measurement) }
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
 
       it "responds with created" do
         clear_uniqueness_locks

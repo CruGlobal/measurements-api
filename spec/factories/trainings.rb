@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :training do
     ministry nil
     sequence(:name) { |n| "test training #{n}" }

@@ -5,13 +5,13 @@ require "rails_helper"
 RSpec.describe "V5::Ministries", type: :request do
   describe "GET /v5/ministries" do
     let!(:ministries) do
-      area = FactoryGirl.create(:area, name: "Test Area", code: "TEST")
+      area = FactoryBot.create(:area, name: "Test Area", code: "TEST")
       ministries = []
-      ministries << FactoryGirl.create(:ministry, ministry_scope: "National", area: area)
-      ministries << FactoryGirl.create(:ministry, ministry_scope: nil)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id, ministry_scope: "National Region",
+      ministries << FactoryBot.create(:ministry, ministry_scope: "National", area: area)
+      ministries << FactoryBot.create(:ministry, ministry_scope: nil)
+      ministries << FactoryBot.create(:ministry, parent_id: ministries.sample.id, ministry_scope: "National Region",
                                                   area: area)
-      ministries << FactoryGirl.create(:ministry, parent_id: ministries.sample.id, ministry_scope: nil)
+      ministries << FactoryBot.create(:ministry, parent_id: ministries.sample.id, ministry_scope: nil)
       ministries
     end
 
@@ -46,8 +46,8 @@ RSpec.describe "V5::Ministries", type: :request do
   end
 
   describe "GET /v5/ministries/:id" do
-    let(:person) { FactoryGirl.create(:person) }
-    let(:ministry) { FactoryGirl.create(:ministry) }
+    let(:person) { FactoryBot.create(:person) }
+    let(:ministry) { FactoryBot.create(:ministry) }
 
     context "without an assignment" do
       it "responds with HTTP 401" do
@@ -60,7 +60,7 @@ RSpec.describe "V5::Ministries", type: :request do
 
     context "with an admin or leader assignment" do
       let!(:assignment) do
-        FactoryGirl.create(:assignment, person_id: person.id, ministry_id: ministry.id,
+        FactoryBot.create(:assignment, person_id: person.id, ministry_id: ministry.id,
                                         role: %i[admin leader].sample)
       end
 
@@ -75,9 +75,9 @@ RSpec.describe "V5::Ministries", type: :request do
     end
 
     context "with an inherited admin or leader assignment" do
-      let(:sub_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+      let(:sub_ministry) { FactoryBot.create(:ministry, parent: ministry) }
       let!(:assignment) do
-        FactoryGirl.create(:assignment, person: person, ministry: ministry,
+        FactoryBot.create(:assignment, person: person, ministry: ministry,
                                         role: %i[admin leader].sample)
       end
 
@@ -93,7 +93,7 @@ RSpec.describe "V5::Ministries", type: :request do
 
     context "with a non admin/leader assignment" do
       let!(:assignment) do
-        FactoryGirl.create(:assignment,
+        FactoryBot.create(:assignment,
           person_id: person.id,
           ministry_id: ministry.id,
           role: %i[blocked former_member self_assigned member].sample)
@@ -111,9 +111,9 @@ RSpec.describe "V5::Ministries", type: :request do
 
   describe "POST /v5/ministries" do
     context "create a ministry" do
-      let(:person) { FactoryGirl.create(:person) }
+      let(:person) { FactoryBot.create(:person) }
       context "with required attributes" do
-        let(:ministry) { FactoryGirl.build(:ministry) }
+        let(:ministry) { FactoryBot.build(:ministry) }
         let(:assignment) { build(:assignment, ministry: ministry, person: person) }
         let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
         let!(:gr_assignment_stub) { gr_create_assignment_request(assignment) }
@@ -150,15 +150,15 @@ RSpec.describe "V5::Ministries", type: :request do
     end
 
     context "create sub-ministry" do
-      let(:person) { FactoryGirl.create(:person) }
-      let(:parent) { FactoryGirl.create(:ministry) }
-      let(:ministry) { FactoryGirl.build(:ministry, parent: parent) }
+      let(:person) { FactoryBot.create(:person) }
+      let(:parent) { FactoryBot.create(:ministry) }
+      let(:ministry) { FactoryBot.build(:ministry, parent: parent) }
       let(:attributes) { ministry.attributes.merge parent_id: parent.gr_id }
 
       context "as leader of parent ministry" do
         let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
         let!(:assignment) do
-          FactoryGirl.create(:assignment, ministry: parent, person: person,
+          FactoryBot.create(:assignment, ministry: parent, person: person,
                                           role: %i[admin leader].sample)
         end
         let!(:new_admin_assignment) do
@@ -203,9 +203,9 @@ RSpec.describe "V5::Ministries", type: :request do
   end
 
   describe "PUT /v5/ministries/:id" do
-    let(:person) { FactoryGirl.create(:person) }
+    let(:person) { FactoryBot.create(:person) }
     context "unknown ministry" do
-      let(:ministry) { FactoryGirl.build(:ministry) }
+      let(:ministry) { FactoryBot.build(:ministry) }
       let!(:gr_request_stub) { gr_get_invalid_ministry_request(ministry) }
 
       it "responds with HTTP 401" do
@@ -222,7 +222,7 @@ RSpec.describe "V5::Ministries", type: :request do
     end
 
     context "as user with no role" do
-      let(:ministry) { FactoryGirl.create(:ministry) }
+      let(:ministry) { FactoryBot.create(:ministry) }
       it "responds with HTTP 401" do
         ministry.attributes = {name: "Blah"}
         put "/v5/ministries/#{ministry.gr_id}",
@@ -237,15 +237,15 @@ RSpec.describe "V5::Ministries", type: :request do
     end
 
     context "as a leader" do
-      let(:ministry) { FactoryGirl.create(:ministry) }
+      let(:ministry) { FactoryBot.create(:ministry) }
       let!(:assignment) do
-        FactoryGirl.create(:assignment, ministry: ministry, person: person,
+        FactoryBot.create(:assignment, ministry: ministry, person: person,
                                         role: %i[admin leader].sample)
       end
 
       context "change basic attributes" do
         let(:changes) do
-          FactoryGirl.build(:ministry).attributes
+          FactoryBot.build(:ministry).attributes
             .slice(%w[min_code mccs lmi_hide lmi_show])
         end
 
@@ -265,7 +265,7 @@ RSpec.describe "V5::Ministries", type: :request do
       end
 
       context "change parent_id to ministry with no role" do
-        let(:other) { FactoryGirl.create(:ministry) }
+        let(:other) { FactoryBot.create(:ministry) }
 
         it "responds with HTTP 400" do
           put "/v5/ministries/#{ministry.gr_id}",
@@ -278,9 +278,9 @@ RSpec.describe "V5::Ministries", type: :request do
       end
 
       context "change parent_id to ministry with leader role" do
-        let(:other) { FactoryGirl.create(:ministry) }
+        let(:other) { FactoryBot.create(:ministry) }
         let!(:other_assignment) do
-          FactoryGirl.create(:assignment, ministry: other, person: person,
+          FactoryBot.create(:assignment, ministry: other, person: person,
                                           role: %i[admin leader].sample)
         end
 
@@ -297,15 +297,15 @@ RSpec.describe "V5::Ministries", type: :request do
     end
 
     context "as an inherited leader" do
-      let(:parent) { FactoryGirl.create(:ministry) }
-      let(:ministry) { FactoryGirl.create(:ministry, parent: parent) }
+      let(:parent) { FactoryBot.create(:ministry) }
+      let(:ministry) { FactoryBot.create(:ministry, parent: parent) }
       let!(:assignment) do
-        FactoryGirl.create(:assignment, ministry: parent, person: person,
+        FactoryBot.create(:assignment, ministry: parent, person: person,
                                         role: %i[admin leader].sample)
       end
 
       context "change basic attributes" do
-        let(:changes) { FactoryGirl.build(:ministry).attributes.slice(%w[min_code mccs lmi_hide lmi_show]) }
+        let(:changes) { FactoryBot.build(:ministry).attributes.slice(%w[min_code mccs lmi_hide lmi_show]) }
 
         it "responds successfully with updated ministry" do
           put "/v5/ministries/#{ministry.gr_id}",
@@ -319,9 +319,9 @@ RSpec.describe "V5::Ministries", type: :request do
       end
 
       context "change parent_id to ministry with leader role" do
-        let(:other) { FactoryGirl.create(:ministry) }
+        let(:other) { FactoryBot.create(:ministry) }
         let!(:other_assignment) do
-          FactoryGirl.create(:assignment, ministry: other, person: person,
+          FactoryBot.create(:assignment, ministry: other, person: person,
                                           role: %i[admin leader].sample)
         end
 

@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe MeasurementListUpdater, type: :model do
-  let(:user) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:measurement_type) { FactoryGirl.create(:measurement) }
+  let(:user) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:measurement_type) { FactoryBot.create(:measurement) }
   let(:assignment_id) { SecureRandom.uuid }
   let(:measurements_json) do
     [
@@ -40,7 +40,7 @@ RSpec.describe MeasurementListUpdater, type: :model do
   describe "#valid?" do
     context "as leader" do
       it "is valid" do
-        FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader, gr_id: assignment_id)
+        FactoryBot.create(:assignment, person: user, ministry: ministry, role: :leader, gr_id: assignment_id)
 
         Power.with_power(Power.new(user, ministry)) do
           expect(list).to be_valid

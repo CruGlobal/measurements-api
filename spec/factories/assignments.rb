@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :assignment do
     gr_id { SecureRandom.uuid }
     person_id nil

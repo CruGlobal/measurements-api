@@ -4,24 +4,24 @@ require "rails_helper"
 
 RSpec.describe V5::MinistrySerializer do
   describe "a ministry" do
-    let(:parent) { FactoryGirl.create(:ministry) }
+    let(:parent) { FactoryBot.create(:ministry) }
     let(:ministry) do
-      FactoryGirl.create(:ministry, parent: parent, default_mcc: Ministry::MCCS.sample,
+      FactoryBot.create(:ministry, parent: parent, default_mcc: Ministry::MCCS.sample,
                                     ministry_scope: Ministry::SCOPES.sample)
     end
     let!(:sub_ministries) do
-      [FactoryGirl.create(:ministry, parent: ministry),
-       FactoryGirl.create(:ministry, parent: ministry),
-       FactoryGirl.create(:ministry, parent: ministry),]
+      [FactoryBot.create(:ministry, parent: ministry),
+       FactoryBot.create(:ministry, parent: ministry),
+       FactoryBot.create(:ministry, parent: ministry),]
     end
     let!(:assignments) do
-      [FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),
-       FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),
-       FactoryGirl.create(:assignment, ministry: ministry, person: FactoryGirl.create(:person)),]
+      [FactoryBot.create(:assignment, ministry: ministry, person: FactoryBot.create(:person)),
+       FactoryBot.create(:assignment, ministry: ministry, person: FactoryBot.create(:person)),
+       FactoryBot.create(:assignment, ministry: ministry, person: FactoryBot.create(:person)),]
     end
     let!(:content_locales) do
       assignments.each do |assignment|
-        FactoryGirl.create(:user_content_locale, ministry: ministry, person: assignment.person)
+        FactoryBot.create(:user_content_locale, ministry: ministry, person: assignment.person)
       end
     end
     let(:serializer) { V5::MinistrySerializer.new(ministry) }

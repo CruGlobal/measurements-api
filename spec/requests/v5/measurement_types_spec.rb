@@ -3,13 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "V5::MeasurementTypes", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
-  let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: 7) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
+  let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: 7) }
 
   describe "GET /v5/measurement_types" do
     let(:json) { JSON.parse(response.body) }
-    let!(:measurement) { FactoryGirl.create(:measurement, english: "English Name") }
+    let!(:measurement) { FactoryBot.create(:measurement, english: "English Name") }
 
     it "responds with measurement types" do
       get "/v5/measurement_types", params: {ministry_id: ministry.gr_id, locale: "en"},
@@ -22,7 +22,7 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
   end
 
   describe "GET /v5/measurement_type/{id}" do
-    let!(:measurement) { FactoryGirl.create(:measurement, perm_link: "lmi_total_my_string") }
+    let!(:measurement) { FactoryBot.create(:measurement, perm_link: "lmi_total_my_string") }
     let(:json) { JSON.parse(response.body) }
 
     it "finds measurement based on total_id" do
@@ -82,8 +82,8 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
   describe "PUT /v5/measurement_type/:id" do
     let(:json) { JSON.parse(response.body) }
-    let(:measurement) { FactoryGirl.create(:measurement) }
-    let(:parent_meas) { FactoryGirl.create(:measurement) }
+    let(:measurement) { FactoryBot.create(:measurement) }
+    let(:parent_meas) { FactoryBot.create(:measurement) }
 
     let(:attributes) { {english: "different name", parent_id: parent_meas.total_id, sort_order: 10} }
 
@@ -119,7 +119,7 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
     end
 
     it "updates measurement translation" do
-      translation = FactoryGirl.create(:measurement_translation, measurement: measurement,
+      translation = FactoryBot.create(:measurement_translation, measurement: measurement,
                                                                  language: "fr", ministry: ministry)
 
       expect {

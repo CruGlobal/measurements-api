@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :story do
     sequence(:title) { |n| "Test Story (#{n})" }
     content "Bacon ipsum dolor amet tail turkey strip steak jerky, picanha rump t-bone corned beef kevin shankle " \

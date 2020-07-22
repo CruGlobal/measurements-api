@@ -11,7 +11,7 @@ RSpec.describe "V5::Tokens", type: :request do
 
       context "as unknown user" do
         let(:user) do
-          FactoryGirl.build(:person)
+          FactoryBot.build(:person)
         end
 
         before do
@@ -29,7 +29,7 @@ RSpec.describe "V5::Tokens", type: :request do
 
       context "as existing user" do
         let(:user) do
-          FactoryGirl.create(:person)
+          FactoryBot.create(:person)
         end
 
         it "responds with session_ticket" do

@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe MeasurementDetails, type: :model do
-  let(:user) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
 
   def measurement_json(period_date, value, related_id, dimension = nil)
     {
@@ -39,13 +39,13 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it "loads measurement by total_id" do
-      meas = FactoryGirl.create(:measurement)
+      meas = FactoryBot.create(:measurement)
       details = MeasurementDetails.new(id: meas.total_id)
       expect(details.measurement.id).to eq meas.id
     end
 
     it "loads measurement by perm_link" do
-      meas = FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown")
+      meas = FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown")
       details = MeasurementDetails.new(id: "shown")
       expect(details.measurement.id).to eq meas.id
     end
@@ -60,7 +60,7 @@ RSpec.describe MeasurementDetails, type: :model do
       allow(details).to receive(:update_total_in_gr)
     end
 
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     it "loads the total GR values" do
@@ -84,9 +84,9 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe "#load_user_from_gr" do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
-    let(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader) }
+    let(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :leader) }
 
     def measurements_json(related_entity_id = nil)
       {
@@ -126,12 +126,12 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe "#load_sub_mins_from_gr" do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     it "loads sub_ministries gr measurements" do
-      child_min1 = FactoryGirl.create(:ministry, parent: ministry, name: "something unique")
-      FactoryGirl.create(:ministry, parent: ministry, name: "another unique")
+      child_min1 = FactoryBot.create(:ministry, parent: ministry, name: "something unique")
+      FactoryBot.create(:ministry, parent: ministry, name: "another unique")
       stub_measurement_type_gr(meas.total_id, child_min1.gr_id)
 
       details.load_sub_mins_from_gr
@@ -144,7 +144,7 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe "#load_team_members_from_gr" do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     def measurements_json(related_entity_id = nil)
@@ -160,10 +160,10 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it "loads team members gr measurements" do
-      teammate1 = FactoryGirl.create(:person)
-      teammate2 = FactoryGirl.create(:person)
-      team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
-      team_assign2 = FactoryGirl.create(:assignment, person: teammate2, ministry: ministry, role: :leader)
+      teammate1 = FactoryBot.create(:person)
+      teammate2 = FactoryBot.create(:person)
+      team_assign1 = FactoryBot.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
+      team_assign2 = FactoryBot.create(:assignment, person: teammate2, ministry: ministry, role: :leader)
       stub_measurement_type_gr(meas.person_id, [team_assign1.gr_id, team_assign2.gr_id])
 
       details.load_team_from_gr
@@ -176,9 +176,9 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it "does not include self in team" do
-      FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :leader)
-      teammate1 = FactoryGirl.create(:person)
-      team_assign1 = FactoryGirl.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
+      FactoryBot.create(:assignment, person: user, ministry: ministry, role: :leader)
+      teammate1 = FactoryBot.create(:person)
+      team_assign1 = FactoryBot.create(:assignment, person: teammate1, ministry: ministry, role: :leader)
       stub_measurement_type_gr(meas.person_id, [team_assign1.gr_id])
 
       Power.with_power(Power.new(user, ministry)) do
@@ -191,7 +191,7 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe "#load_split_measurements" do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     def measurements_json(related_entity_id = nil)
@@ -206,8 +206,8 @@ RSpec.describe MeasurementDetails, type: :model do
     end
 
     it "loads sub measurements gr measurements" do
-      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
-      child2 = FactoryGirl.create(:measurement, parent: meas)
+      child1 = FactoryBot.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
+      child2 = FactoryBot.create(:measurement, parent: meas)
       stub_measurement_type_gr(child1.total_id, ministry.gr_id)
       stub_measurement_type_gr(child2.total_id, ministry.gr_id)
 
@@ -220,7 +220,7 @@ RSpec.describe MeasurementDetails, type: :model do
   end
 
   describe "#update_total_in_gr" do
-    let(:meas) { FactoryGirl.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
+    let(:meas) { FactoryBot.create(:measurement, perm_link: "lmi_total_custom_shown", mcc_filter: nil) }
     let(:details) { MeasurementDetails.new(id: meas.total_id, ministry_id: ministry.gr_id, mcc: "DS") }
 
     it "posts to GR if it has something new" do
@@ -239,7 +239,7 @@ RSpec.describe MeasurementDetails, type: :model do
 
       expect(gr_update_stub).to_not have_been_requested
 
-      child1 = FactoryGirl.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
+      child1 = FactoryBot.create(:measurement, parent: meas, perm_link: "lmi_total_custom_asdf")
       stub_measurement_type_gr(child1.total_id, ministry.gr_id)
 
       details.load_split_measurements

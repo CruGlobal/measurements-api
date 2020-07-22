@@ -4,7 +4,7 @@ require "rails_helper"
 
 describe Ministry, type: :model do
   before :all do
-    @ministries = FactoryGirl.create(:ministry_hierarchy)
+    @ministries = FactoryBot.create(:ministry_hierarchy)
   end
   after :all do
     Ministry.delete_all
@@ -12,7 +12,7 @@ describe Ministry, type: :model do
   let!(:ministries) { @ministries }
 
   describe "scope: inherited_ministries(person)" do
-    let(:person) { FactoryGirl.create(:person) }
+    let(:person) { FactoryBot.create(:person) }
     subject { Ministry.inherited_ministries(person).to_a }
 
     context "person with no assignments" do
@@ -23,7 +23,7 @@ describe Ministry, type: :model do
     end
 
     context "person with member assignment" do
-      let!(:assignments) { FactoryGirl.create(:assignment, person: person, ministry: ministries[:a2], role: :member) }
+      let!(:assignments) { FactoryBot.create(:assignment, person: person, ministry: ministries[:a2], role: :member) }
       it "returns an empty array" do
         expect(subject).to be_an Array
         expect(subject.length).to eq 0
@@ -31,7 +31,7 @@ describe Ministry, type: :model do
     end
 
     context "person with single leader assignment" do
-      let!(:assignments) { FactoryGirl.create(:assignment, person: person, ministry: ministries[:a], role: :leader) }
+      let!(:assignments) { FactoryBot.create(:assignment, person: person, ministry: ministries[:a], role: :leader) }
       it "returns an empty array" do
         expect(subject).to be_an Array
         expect(subject.length).to eq 7
@@ -39,7 +39,7 @@ describe Ministry, type: :model do
     end
 
     context "person with single admin assignment" do
-      let!(:assignments) { FactoryGirl.create(:assignment, person: person, ministry: ministries[:c1], role: :admin) }
+      let!(:assignments) { FactoryBot.create(:assignment, person: person, ministry: ministries[:c1], role: :admin) }
       it "returns an empty array" do
         expect(subject).to be_an Array
         expect(subject.length).to eq 6
@@ -48,11 +48,11 @@ describe Ministry, type: :model do
 
     context "person with multiple assignments" do
       let!(:assignments) do
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:a1], role: :member)
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:a2], role: :admin)
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:b], role: :admin)
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:c1], role: :leader)
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:c12], role: :admin)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:a1], role: :member)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:a2], role: :admin)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:b], role: :admin)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:c1], role: :leader)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :admin)
       end
       it "returns an empty array" do
         expect(subject).to be_an Array
@@ -64,24 +64,24 @@ describe Ministry, type: :model do
   describe "#team_members" do
     let(:team_members) do
       team_members = {}
-      team_members[:A] = FactoryGirl.create(:person)
-      team_members[:B] = FactoryGirl.create(:person)
-      team_members[:C] = FactoryGirl.create(:person)
-      team_members[:D] = FactoryGirl.create(:person)
-      team_members[:E] = FactoryGirl.create(:person)
+      team_members[:A] = FactoryBot.create(:person)
+      team_members[:B] = FactoryBot.create(:person)
+      team_members[:C] = FactoryBot.create(:person)
+      team_members[:D] = FactoryBot.create(:person)
+      team_members[:E] = FactoryBot.create(:person)
       team_members
     end
     let!(:assignments) do
-      FactoryGirl.create(:assignment, person: team_members[:A], ministry: ministries[:c1], role: :leader)
-      FactoryGirl.create(:assignment, person: team_members[:A], ministry: ministries[:c12], role: :admin)
-      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c], role: :admin)
-      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c1], role: :leader)
-      FactoryGirl.create(:assignment, person: team_members[:B], ministry: ministries[:c12], role: :member)
-      FactoryGirl.create(:assignment, person: team_members[:C], ministry: ministries[:c1], role: :member)
-      FactoryGirl.create(:assignment, person: team_members[:C], ministry: ministries[:c123], role: :leader)
-      FactoryGirl.create(:assignment, person: team_members[:D], ministry: ministries[:c], role: :blocked)
-      FactoryGirl.create(:assignment, person: team_members[:D], ministry: ministries[:c12], role: :member)
-      FactoryGirl.create(:assignment, person: team_members[:E], ministry: ministries[:c11], role: :admin)
+      FactoryBot.create(:assignment, person: team_members[:A], ministry: ministries[:c1], role: :leader)
+      FactoryBot.create(:assignment, person: team_members[:A], ministry: ministries[:c12], role: :admin)
+      FactoryBot.create(:assignment, person: team_members[:B], ministry: ministries[:c], role: :admin)
+      FactoryBot.create(:assignment, person: team_members[:B], ministry: ministries[:c1], role: :leader)
+      FactoryBot.create(:assignment, person: team_members[:B], ministry: ministries[:c12], role: :member)
+      FactoryBot.create(:assignment, person: team_members[:C], ministry: ministries[:c1], role: :member)
+      FactoryBot.create(:assignment, person: team_members[:C], ministry: ministries[:c123], role: :leader)
+      FactoryBot.create(:assignment, person: team_members[:D], ministry: ministries[:c], role: :blocked)
+      FactoryBot.create(:assignment, person: team_members[:D], ministry: ministries[:c12], role: :member)
+      FactoryBot.create(:assignment, person: team_members[:E], ministry: ministries[:c11], role: :admin)
     end
 
     describe "for ministry `C`" do

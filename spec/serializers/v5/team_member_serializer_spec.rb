@@ -4,14 +4,14 @@ require "rails_helper"
 
 RSpec.describe V5::TeamMemberSerializer do
   describe "a ministry" do
-    let(:ministry) { FactoryGirl.create(:ministry) }
-    let(:assignment) { FactoryGirl.create(:assignment, ministry: ministry, person: person) }
+    let(:ministry) { FactoryBot.create(:ministry) }
+    let(:assignment) { FactoryBot.create(:assignment, ministry: ministry, person: person) }
     let(:serializer) { V5::TeamMemberSerializer.new(assignment) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     describe "a team member" do
-      let(:person) { FactoryGirl.create(:person) }
+      let(:person) { FactoryBot.create(:person) }
 
       it "has attributes" do
         expect(json[:person_id]).to be_uuid
@@ -25,7 +25,7 @@ RSpec.describe V5::TeamMemberSerializer do
     end
 
     describe "a team member missing key_username and key_guid" do
-      let(:person) { FactoryGirl.create(:person, cas_username: nil, cas_guid: nil) }
+      let(:person) { FactoryBot.create(:person, cas_username: nil, cas_guid: nil) }
 
       it "does not include missing attributes" do
         expect(json.keys).to contain_exactly(:person_id, :assignment_id, :team_role, :first_name, :last_name)

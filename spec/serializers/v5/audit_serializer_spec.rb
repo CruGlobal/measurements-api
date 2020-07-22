@@ -4,10 +4,10 @@ require "rails_helper"
 
 describe V5::AuditSerializer do
   describe "single audit" do
-    let(:ministry) { FactoryGirl.build(:ministry) }
-    let(:person) { FactoryGirl.build(:person) }
+    let(:ministry) { FactoryBot.build(:ministry) }
+    let(:person) { FactoryBot.build(:person) }
     let(:resource) do
-      FactoryGirl.build_stubbed(:audit, ministry: ministry, person: person,
+      FactoryBot.build_stubbed(:audit, ministry: ministry, person: person,
                                         created_at: Time.zone.parse("00:00 06/08/2015"))
     end
     let(:serializer) { V5::AuditSerializer.new(resource) }
