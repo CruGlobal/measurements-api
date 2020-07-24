@@ -69,7 +69,6 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     amazing_print (1.2.1)
-    arel (9.0.0)
     assignable_values (0.15.1)
       activerecord (>= 2.3)
     ast (2.4.0)
@@ -437,7 +436,6 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers!
   amazing_print
-  arel
   assignable_values
   auto_strip_attributes (~> 2.0)
   awesome_nested_set

@@ -59,7 +59,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "pg"
 
 gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git"
-gem "arel"
 gem "assignable_values"
 gem "auto_strip_attributes", "~> 2.0"
 gem "awesome_nested_set"

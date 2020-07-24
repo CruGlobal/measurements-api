@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 FactoryBot.define do
   factory :church do
     sequence(:name) { |n| "test church #{n}" }
-    start_date 1.year.ago
-    end_date 1.year.from_now
+    start_date { 1.year.ago }
+    end_date { 1.year.from_now }
     latitude do
       # we want our values to be
       l = rand(-90.0..90.0)
@@ -15,8 +13,8 @@ FactoryBot.define do
       l == 0.0 ? 0.1 : l
     end
     size { rand(1..100) }
-    security 2
-    development 1
+    security { 2 }
+    development { 1 }
 
     factory :church_with_ministry do
       association :ministry
