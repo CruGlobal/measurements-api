@@ -7,7 +7,7 @@ module V5
     delegate :ministry, to: :object
     delegate(*MINISTRY_ATTRIBUTES, to: :ministry)
 
-    def attributes(args = nil)
+    def attributes(requested_attrs = nil, reload = false)
       # Remove empty :sub_ministries attribute
       super.reject { |k, v| k == :sub_ministries && v.empty? }
     end

@@ -10,9 +10,9 @@ module V5
       :key_username,
       :key_guid
 
-    def attributes(args)
+    def attributes(requested_attrs = nil, reload = false)
       # Remove nil values
-      super(args).reject { |_k, v| v.nil? }
+      super(requested_attrs, reload).reject { |_k, v| v.nil? }
     end
 
     def assignment_id

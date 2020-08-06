@@ -23,9 +23,9 @@ module V5
       :created_at,
       :updated_at
 
-    def attributes(args)
+    def attributes(requested_attrs = nil, reload = false)
       # Remove nil values
-      super(args).reject { |_k, v| v.nil? }
+      super(requested_attrs, reload).reject { |_k, v| v.nil? }
     end
 
     def story_id

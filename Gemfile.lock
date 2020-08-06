@@ -1,6 +1,7 @@
 GIT
   remote: https://github.com/rails-api/active_model_serializers.git
   revision: db87f8d85e7a46ef195a555cb7e2509f1affc622
+  ref: db87f8d85e
   specs:
     active_model_serializers (0.10.0.rc4)
       actionpack (>= 4.0)
@@ -124,9 +125,9 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
-    cru-auth-lib (0.1.0)
+    cru-auth-lib (0.1.1)
       active_model_serializers (>= 0.10.0.rc1)
-      redis (~> 3.3)
+      redis (>= 3.3)
     ddtrace (0.34.2)
       msgpack
     diff-lcs (1.3)
@@ -146,8 +147,8 @@ GEM
     factory_bot_rails (6.1.0)
       factory_bot (~> 6.1.0)
       railties (>= 5.0.0)
-    fakeredis (0.5.0)
-      redis (~> 3.0)
+    fakeredis (0.8.0)
+      redis (~> 4.1)
     ffi (1.13.1)
     formatador (0.2.5)
     global_registry (1.5.1)
@@ -276,7 +277,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    redis (3.3.5)
+    redis (4.1.4)
     redis-actionpack (5.2.0)
       actionpack (>= 5, < 7)
       redis-rack (>= 2.1.0, < 3)
@@ -286,8 +287,8 @@ GEM
     redis-rack (2.1.2)
       rack (>= 2.0.8, < 3)
       redis-store (>= 1.2, < 2)
-    redis-store (1.6.0)
-      redis (>= 2.2, < 5)
+    redis-store (1.9.0)
+      redis (>= 4, < 5)
     regexp_parser (1.7.1)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
