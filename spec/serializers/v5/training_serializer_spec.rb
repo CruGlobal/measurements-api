@@ -4,10 +4,10 @@ require "rails_helper"
 
 describe V5::TrainingSerializer do
   describe "single training" do
-    let(:person) { FactoryGirl.build(:person) }
-    let(:ministry) { FactoryGirl.build(:ministry) }
+    let(:person) { FactoryBot.build(:person) }
+    let(:ministry) { FactoryBot.build(:ministry) }
     let(:resource) do
-      t = FactoryGirl.build_stubbed(:training, ministry: ministry, updated_at: Time.zone.now, created_by: person)
+      t = FactoryBot.build_stubbed(:training, ministry: ministry, updated_at: Time.zone.now, created_by: person)
       t.completions.build(phase: 1, number_completed: 20, date: t.date)
       t.completions.build(phase: 2, number_completed: 30, date: t.date + 1.month)
       t

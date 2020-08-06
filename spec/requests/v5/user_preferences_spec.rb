@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "V5::UserPreferences", type: :request do
-  let(:person) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:person) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
   let!(:preferences) do
     person.user_content_locales.create(ministry: ministry, locale: "en-US")
     person.user_map_views.create(ministry: ministry, lat: 12.3456789, long: -12.3456789, zoom: 3)
@@ -40,7 +40,7 @@ RSpec.describe "V5::UserPreferences", type: :request do
   end
 
   describe "POST /v5/user_preferences" do
-    let!(:other) { FactoryGirl.create(:ministry) }
+    let!(:other) { FactoryBot.create(:ministry) }
     it "responds successfully with updated preferences" do
       post "/v5/user_preferences",
         params: {custom_property: "value",

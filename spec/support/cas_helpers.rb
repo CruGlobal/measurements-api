@@ -2,7 +2,7 @@
 
 module CASHelpers
   def validate_ticket_request(person, ticket = nil)
-    person ||= FactoryGirl.build(:person)
+    person ||= FactoryBot.build(:person)
     ticket ||= "asdf"
     WebMock
       .stub_request(:get, "#{ENV["CAS_BASE_URL"]}/proxyValidate")

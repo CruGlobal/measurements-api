@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe "V5::Images", type: :request do
   let(:json) { JSON.parse(response.body).try(:with_indifferent_access) }
-  let(:person) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:person) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
 
   describe "POST /v5/images" do
     after(:all) do
@@ -13,7 +13,7 @@ RSpec.describe "V5::Images", type: :request do
     end
 
     context "author uploads image" do
-      let(:story) { FactoryGirl.create(:story, created_by: person, ministry: ministry) }
+      let(:story) { FactoryBot.create(:story, created_by: person, ministry: ministry) }
       let(:image) do
         Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "images", "image.jpg"), "image/jpeg")
       end
@@ -36,7 +36,7 @@ RSpec.describe "V5::Images", type: :request do
       let(:other) do
         Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "images", "image2.jpg"), "image/jpeg")
       end
-      let(:story) { FactoryGirl.create(:story, created_by: person, ministry: ministry, image: image) }
+      let(:story) { FactoryBot.create(:story, created_by: person, ministry: ministry, image: image) }
 
       it "replaces existing image" do
         post "/v5/images?story_id=#{story.id}",

@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe TrainingCompletion, type: :model do
-  let(:ministry) { FactoryGirl.build_stubbed(:ministry) }
-  let(:training) { FactoryGirl.build(:training, ministry: ministry) }
-  let(:completion) { FactoryGirl.build(:training_completion, training: training, number_completed: 1) }
+  let(:ministry) { FactoryBot.build_stubbed(:ministry) }
+  let(:training) { FactoryBot.build(:training, ministry: ministry) }
+  let(:completion) { FactoryBot.build(:training_completion, training: training, number_completed: 1) }
 
   describe "validates positive number_completed" do
     it "accepts 1" do

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe MeasurementType::UserCreatedMeasurementType, type: :model do
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:ministry) { FactoryBot.create(:ministry) }
 
   def stub_gr_post_measurement_type
     WebMock.stub_request(:post, "#{ENV["GLOBAL_REGISTRY_URL"]}/measurement_types")
@@ -13,7 +13,7 @@ RSpec.describe MeasurementType::UserCreatedMeasurementType, type: :model do
   describe "#save" do
     context "with valid attributes" do
       before do
-        @parent_measurement = FactoryGirl.create(:measurement)
+        @parent_measurement = FactoryBot.create(:measurement)
         @attributes = {
           perm_link_stub: "nbr_nonstaff_reporting",
           english: "Number of Non-Staff Reporting",

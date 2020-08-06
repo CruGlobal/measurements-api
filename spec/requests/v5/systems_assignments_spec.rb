@@ -3,14 +3,14 @@
 require "rails_helper"
 
 RSpec.describe "V5::SystemsAssignments", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:ministry) { FactoryBot.create(:ministry) }
   let(:json) { JSON.parse(response.body) }
   let(:gr_access_toke) { authenticate_api }
 
   describe "POST /v5/assignments" do
-    let(:person) { FactoryGirl.build(:person) }
+    let(:person) { FactoryBot.build(:person) }
     context "new assignment by username" do
-      let(:assignment) { FactoryGirl.build(:assignment, ministry: ministry, person: person, role: :admin) }
+      let(:assignment) { FactoryBot.build(:assignment, ministry: ministry, person: person, role: :admin) }
       let!(:person_request) { gr_person_request_by_username(person) }
       let!(:assignment_request) { gr_create_assignment_request(assignment) }
 
@@ -29,7 +29,7 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
     end
 
     context "new assignment by key_guid" do
-      let(:assignment) { FactoryGirl.build(:assignment, ministry: ministry, person: person, role: :member) }
+      let(:assignment) { FactoryBot.build(:assignment, ministry: ministry, person: person, role: :member) }
       let!(:person_request) { gr_person_request_by_guid(person) }
       let!(:assignment_request) { gr_create_assignment_request(assignment) }
 
@@ -48,8 +48,8 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
     end
 
     context "new assignment by person_id" do
-      let(:leader) { FactoryGirl.create(:person) }
-      let(:assignment) { FactoryGirl.build(:assignment, ministry: ministry, person: leader, role: :leader) }
+      let(:leader) { FactoryBot.create(:person) }
+      let(:assignment) { FactoryBot.build(:assignment, ministry: ministry, person: leader, role: :leader) }
       let!(:assignment_request) { gr_create_assignment_request(assignment) }
 
       it "responds successfully with an assignment" do
@@ -67,9 +67,9 @@ RSpec.describe "V5::SystemsAssignments", type: :request do
   end
 
   describe "PUT /v5/assignments/:id" do
-    let(:person) { FactoryGirl.create(:person) }
+    let(:person) { FactoryBot.create(:person) }
     let(:assignment) do
-      FactoryGirl.create(:assignment, ministry: ministry, person: person, role: :member, gr_id: SecureRandom.uuid)
+      FactoryBot.create(:assignment, ministry: ministry, person: person, role: :member, gr_id: SecureRandom.uuid)
     end
     context "update an assignment" do
       let!(:assignment_request) { gr_update_assignment_request(assignment) }

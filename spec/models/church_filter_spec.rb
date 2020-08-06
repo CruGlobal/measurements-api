@@ -3,19 +3,19 @@
 require "rails_helper"
 
 RSpec.describe ChurchFilter, type: :model do
-  let(:user) { FactoryGirl.create(:person) }
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
   let!(:parent_church) do
-    FactoryGirl.create(:church, ministry: ministry,
-                                development: 2, latitude: -10, longitude: 10)
+    FactoryBot.create(:church, ministry: ministry,
+                               development: 2, latitude: -10, longitude: 10)
   end
   let!(:child_church) do
-    FactoryGirl.create(:church, development: 3, latitude: 10, longitude: 10,
-                                parent: parent_church, ministry: ministry)
+    FactoryBot.create(:church, development: 3, latitude: 10, longitude: 10,
+                               parent: parent_church, ministry: ministry)
   end
 
   context "filter by development" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
     it "shows all" do
       filters = {hide_church: "false", show_all: "1", ministry_id: ministry.gr_id}
       filtered = ChurchFilter.new(filters).filter(Church.all)
@@ -34,10 +34,10 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context "filter by show all" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
-    let(:unrelated_pub_church) { FactoryGirl.create(:church_with_ministry) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
+    let(:unrelated_pub_church) { FactoryBot.create(:church_with_ministry) }
     let(:unrelated_private_church) do
-      FactoryGirl.create(:church_with_ministry, security: Church.securities["private_church"])
+      FactoryBot.create(:church_with_ministry, security: Church.securities["private_church"])
     end
 
     it "includes public churches" do
@@ -57,21 +57,21 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context "filter by show tree" do
-    let!(:child_ministry) { FactoryGirl.create(:ministry, parent: ministry) }
+    let!(:child_ministry) { FactoryBot.create(:ministry, parent: ministry) }
     let!(:church2) do
-      FactoryGirl.create(:church, ministry: child_ministry,
-                                  security: Church.securities["private_church"])
+      FactoryBot.create(:church, ministry: child_ministry,
+                                 security: Church.securities["private_church"])
     end
     let!(:local_private_church) do
-      FactoryGirl.create(:church, ministry: child_ministry,
-                                  security: Church.securities["local_private_church"])
+      FactoryBot.create(:church, ministry: child_ministry,
+                                 security: Church.securities["local_private_church"])
     end
     let(:filters) { {ministry_id: ministry.gr_id, show_tree: "1"} }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
     let(:admin_power) { Power.new(user, ministry) }
 
     context "as admin user" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "includes child churches" do
         Power.with_power(admin_power) do
           expect(filtered).to include church2
@@ -101,7 +101,7 @@ RSpec.describe ChurchFilter, type: :model do
     end
 
     context "as self_assigned user" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it "doesn't include local local_private churches" do
         local_private_church.update(ministry: ministry)
@@ -114,7 +114,7 @@ RSpec.describe ChurchFilter, type: :model do
     end
 
     context "as blocked user" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :blocked) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :blocked) }
       it "doesn't include private child churches" do
         Power.with_power(admin_power) do
           expect(filtered).to_not include church2
@@ -124,9 +124,9 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context "filter by lat/long" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
     let!(:church2) do
-      FactoryGirl.create(:church, ministry: ministry, latitude: 10, longitude: 40)
+      FactoryBot.create(:church, ministry: ministry, latitude: 10, longitude: 40)
     end
 
     let(:filters) do
@@ -154,7 +154,7 @@ RSpec.describe ChurchFilter, type: :model do
   end
 
   context "filter by period" do
-    let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+    let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
     before do
       # hasn't started yet
       parent_church.update(start_date: 1.year.from_now)
@@ -162,8 +162,8 @@ RSpec.describe ChurchFilter, type: :model do
       child_church.update(end_date: 1.month.ago)
     end
     let!(:church2) do
-      FactoryGirl.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now,
-                                  ministry: ministry)
+      FactoryBot.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now,
+                                 ministry: ministry)
     end
     let(:filters) { {show_all: "1", period: Time.zone.today.strftime("%Y-%m")} }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }

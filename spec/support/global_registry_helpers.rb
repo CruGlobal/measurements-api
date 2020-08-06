@@ -2,7 +2,7 @@
 
 module GlobalRegistryHelpers
   def gr_person_request_by_username(person = nil)
-    person ||= FactoryGirl.create(:person)
+    person ||= FactoryBot.create(:person)
     WebMock
       .stub_request(:get, "#{ENV["GLOBAL_REGISTRY_URL"]}/entities")
       .with(headers: {"Authorization" => "Bearer #{ENV["GLOBAL_REGISTRY_TOKEN"]}"})
@@ -37,7 +37,7 @@ module GlobalRegistryHelpers
   end
 
   def gr_person_request_by_guid(person = nil)
-    person ||= FactoryGirl.create(:person)
+    person ||= FactoryBot.create(:person)
     response = {person: {id: person.gr_id, last_name: person.last_name, first_name: person.first_name,
                          key_username: person.cas_username, client_integration_id: person.cas_guid,
                          authentication: {id: SecureRandom.uuid, key_guid: person.cas_guid},}}
@@ -50,7 +50,7 @@ module GlobalRegistryHelpers
   end
 
   def gr_get_invalid_ministry_request(ministry)
-    ministry ||= FactoryGirl.build(:ministry)
+    ministry ||= FactoryBot.build(:ministry)
     response = {error: "We couldn't find the record you were looking for."}
     WebMock
       .stub_request(:get, "#{ENV["GLOBAL_REGISTRY_URL"]}/entities/#{ministry.gr_id}?fields=*,area:relationship")
@@ -59,7 +59,7 @@ module GlobalRegistryHelpers
   end
 
   def gr_create_ministry_request(ministry = nil)
-    ministry ||= FactoryGirl.create(:ministry)
+    ministry ||= FactoryBot.create(:ministry)
     response = {ministry: {id: ministry.gr_id, client_integration_id: ministry.min_code}}
     WebMock
       .stub_request(:post, "#{ENV["GLOBAL_REGISTRY_URL"]}/entities")

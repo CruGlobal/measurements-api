@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe V5::MinistryPublicSerializer do
   describe "a ministry" do
-    let(:ministry) { FactoryGirl.create(:ministry) }
+    let(:ministry) { FactoryBot.create(:ministry) }
     let(:serializer) { V5::MinistryPublicSerializer.new(ministry) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }

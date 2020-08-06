@@ -20,8 +20,17 @@ Bundler.require(*Rails.groups)
 require_relative "../lib/log/logger"
 module MeasurementsApi
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 6.0
+
+    # Settings in config/environments/* take precedence over those specified here.
+    # Application configuration can go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
+
     redis_conf = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "redis.yml"))).result, [Symbol], [], true)["cache"]
-    config.cache_store = :redis_store, redis_conf
+    redis_conf[:url] = "redis://" + redis_conf[:host] + "/" + redis_conf[:db].to_s
+    config.cache_store = :redis_cache_store, redis_conf
 
     # Enable ougai
     if Rails.env.development? || Rails.const_defined?("Console")
@@ -29,8 +38,6 @@ module MeasurementsApi
     elsif !Rails.env.test? # use default logger in test env
       config.logger = Log::Logger.new(Rails.root.join("log", "datadog.log"))
     end
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
 
     config.generators do |g|
       g.test_framework :rspec, fixture: true
@@ -39,7 +46,7 @@ module MeasurementsApi
       g.template_engine false
       g.stylesheets false
       g.javascripts false
-      g.fixture_replacement :factory_girl, dir: "spec/factories"
+      g.fixture_replacement :factory_bot, dir: "spec/factories"
     end
 
     config.middleware.use RackResetGrClient

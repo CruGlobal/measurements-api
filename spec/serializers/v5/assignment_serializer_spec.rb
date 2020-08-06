@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe V5::AssignmentSerializer do
   before :all do
-    @ministries = FactoryGirl.create(:ministry_hierarchy)
+    @ministries = FactoryBot.create(:ministry_hierarchy)
   end
   after :all do
     Ministry.delete_all
@@ -13,15 +13,15 @@ RSpec.describe V5::AssignmentSerializer do
   let!(:ministries) { @ministries }
 
   describe "an assignment" do
-    let(:person) { FactoryGirl.create(:person) }
+    let(:person) { FactoryBot.create(:person) }
     let(:serializer) { V5::AssignmentSerializer.new(assignment) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
     let(:json) { serialization.as_json }
 
     context "leader assignment" do
       let(:assignment) do
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:c1], role: :leader,
-                                        gr_id: SecureRandom.uuid)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:c1], role: :leader,
+                                       gr_id: SecureRandom.uuid)
       end
 
       it "has attributes" do
@@ -59,10 +59,10 @@ RSpec.describe V5::AssignmentSerializer do
 
       context "with sub-assignments" do
         let!(:assignments) do
-          [FactoryGirl.create(:assignment, person: person, ministry: ministries[:c11], role: :admin,
-                                           gr_id: SecureRandom.uuid),
-           FactoryGirl.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
-                                           gr_id: SecureRandom.uuid),]
+          [FactoryBot.create(:assignment, person: person, ministry: ministries[:c11], role: :admin,
+                                          gr_id: SecureRandom.uuid),
+           FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
+                                          gr_id: SecureRandom.uuid),]
         end
 
         it "has sub_ministries with inherited assignments" do
@@ -76,8 +76,8 @@ RSpec.describe V5::AssignmentSerializer do
 
     context "member assignment" do
       let(:assignment) do
-        FactoryGirl.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
-                                        gr_id: SecureRandom.uuid)
+        FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
+                                       gr_id: SecureRandom.uuid)
       end
 
       it "does not have sub_ministries" do
