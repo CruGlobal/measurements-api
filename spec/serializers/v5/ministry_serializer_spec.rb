@@ -7,7 +7,7 @@ RSpec.describe V5::MinistrySerializer do
     let(:parent) { FactoryBot.create(:ministry) }
     let(:ministry) do
       FactoryBot.create(:ministry, parent: parent, default_mcc: Ministry::MCCS.sample,
-                                    ministry_scope: Ministry::SCOPES.sample)
+                                   ministry_scope: Ministry::SCOPES.sample)
     end
     let!(:sub_ministries) do
       [FactoryBot.create(:ministry, parent: ministry),

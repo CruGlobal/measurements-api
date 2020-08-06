@@ -51,10 +51,10 @@ RSpec.describe MeasurementType, type: :model do
       ministry.update(parent: parent_ministry)
       measurement1 = FactoryBot.create(:measurement)
       FactoryBot.create(:measurement_translation, measurement: measurement1, language: "fr",
-                                                   ministry: ministry, name: "Unique name")
+                                                  ministry: ministry, name: "Unique name")
       measurement2 = FactoryBot.create(:measurement)
       FactoryBot.create(:measurement_translation, measurement: measurement2, language: "fr",
-                                                   ministry: parent_ministry, name: "Another unique name")
+                                                  ministry: parent_ministry, name: "Another unique name")
       measurement3 = FactoryBot.create(:measurement)
 
       types = MeasurementType.all_localized_with(locale: "fr", ministry_id: ministry.id)

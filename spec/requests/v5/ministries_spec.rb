@@ -10,7 +10,7 @@ RSpec.describe "V5::Ministries", type: :request do
       ministries << FactoryBot.create(:ministry, ministry_scope: "National", area: area)
       ministries << FactoryBot.create(:ministry, ministry_scope: nil)
       ministries << FactoryBot.create(:ministry, parent_id: ministries.sample.id, ministry_scope: "National Region",
-                                                  area: area)
+                                                 area: area)
       ministries << FactoryBot.create(:ministry, parent_id: ministries.sample.id, ministry_scope: nil)
       ministries
     end
@@ -61,7 +61,7 @@ RSpec.describe "V5::Ministries", type: :request do
     context "with an admin or leader assignment" do
       let!(:assignment) do
         FactoryBot.create(:assignment, person_id: person.id, ministry_id: ministry.id,
-                                        role: %i[admin leader].sample)
+                                       role: %i[admin leader].sample)
       end
 
       it "responds with the ministry details" do
@@ -78,7 +78,7 @@ RSpec.describe "V5::Ministries", type: :request do
       let(:sub_ministry) { FactoryBot.create(:ministry, parent: ministry) }
       let!(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministry,
-                                        role: %i[admin leader].sample)
+                                       role: %i[admin leader].sample)
       end
 
       it "responds with the ministry details" do
@@ -159,7 +159,7 @@ RSpec.describe "V5::Ministries", type: :request do
         let!(:gr_request_stub) { gr_create_ministry_request(ministry) }
         let!(:assignment) do
           FactoryBot.create(:assignment, ministry: parent, person: person,
-                                          role: %i[admin leader].sample)
+                                         role: %i[admin leader].sample)
         end
         let!(:new_admin_assignment) do
           build(:assignment, ministry: ministry, person: person, role: "admin")
@@ -240,7 +240,7 @@ RSpec.describe "V5::Ministries", type: :request do
       let(:ministry) { FactoryBot.create(:ministry) }
       let!(:assignment) do
         FactoryBot.create(:assignment, ministry: ministry, person: person,
-                                        role: %i[admin leader].sample)
+                                       role: %i[admin leader].sample)
       end
 
       context "change basic attributes" do
@@ -281,7 +281,7 @@ RSpec.describe "V5::Ministries", type: :request do
         let(:other) { FactoryBot.create(:ministry) }
         let!(:other_assignment) do
           FactoryBot.create(:assignment, ministry: other, person: person,
-                                          role: %i[admin leader].sample)
+                                         role: %i[admin leader].sample)
         end
 
         it "responds successfully with updated ministry" do
@@ -301,7 +301,7 @@ RSpec.describe "V5::Ministries", type: :request do
       let(:ministry) { FactoryBot.create(:ministry, parent: parent) }
       let!(:assignment) do
         FactoryBot.create(:assignment, ministry: parent, person: person,
-                                        role: %i[admin leader].sample)
+                                       role: %i[admin leader].sample)
       end
 
       context "change basic attributes" do
@@ -322,7 +322,7 @@ RSpec.describe "V5::Ministries", type: :request do
         let(:other) { FactoryBot.create(:ministry) }
         let!(:other_assignment) do
           FactoryBot.create(:assignment, ministry: other, person: person,
-                                          role: %i[admin leader].sample)
+                                         role: %i[admin leader].sample)
         end
 
         it "responds successfully with updated ministry" do

@@ -7,7 +7,7 @@ RSpec.describe ChurchClusterer, type: :model do
   let!(:nearby_church2) { FactoryBot.build_stubbed(:church, latitude: 0, longitude: 2) }
   let!(:distant_church) do
     FactoryBot.build_stubbed(:church, latitude: 10, longitude: 1,
-                                       parent: nearby_church2)
+                                      parent: nearby_church2)
   end
   let!(:distant_orphan_church) do
     FactoryBot.build_stubbed(:church, latitude: 10, longitude: 5)

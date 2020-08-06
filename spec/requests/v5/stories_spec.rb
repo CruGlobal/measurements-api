@@ -15,17 +15,17 @@ RSpec.describe "V5::Stories", type: :request do
     let!(:stories) do
       [FactoryBot.create(:story, created_by: author, ministry: ministry, created_at: 4.days.ago, mcc: "slm"),
        FactoryBot.create(:story, created_by: author, ministry: ministry, church: church, created_at: 1.day.ago,
-                                  mcc: "gcm"),
+                                 mcc: "gcm"),
        FactoryBot.create(:story, created_by: author, ministry: ministry, training: training, created_at: 3.days.ago,
-                                  mcc: "ds"),
+                                 mcc: "ds"),
        FactoryBot.create(:story, created_by: author, ministry: ministry, training: training, church: church,
-                                  created_at: 7.days.ago, mcc: nil),
+                                 created_at: 7.days.ago, mcc: nil),
        FactoryBot.create(:story, created_by: person, ministry: ministry, created_at: 5.days.ago, mcc: "slm"),
        FactoryBot.create(:story, created_by: author, ministry: sub_ministry, created_at: 6.days.ago, mcc: "slm"),
        FactoryBot.create(:story, created_by: author, ministry: sub_ministry, privacy: :team_only,
-                                  created_at: 2.days.ago, mcc: "gcm"),
+                                 created_at: 2.days.ago, mcc: "gcm"),
        FactoryBot.create(:story, created_by: person, ministry: sub_ministry, state: :draft, created_at: 8.days.ago,
-                                  mcc: "llm"),]
+                                 mcc: "llm"),]
     end
 
     context "no assignment" do

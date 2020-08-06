@@ -89,7 +89,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
     context "as a member" do
       let!(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
       context "get my own assignment" do
         it "responds successfully with my assignment" do
@@ -117,7 +117,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
     context "as a leader" do
       let!(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :leader,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
       context "get my own assignment" do
         it "responds successfully with my assignment" do
@@ -135,7 +135,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         let(:member) { FactoryBot.create(:person) }
         let!(:member_assignment) do
           FactoryBot.create(:assignment, person: member, ministry: ministries[:c12],
-                                          role: :member, gr_id: SecureRandom.uuid)
+                                         role: :member, gr_id: SecureRandom.uuid)
         end
         it "responds successfully with the assignment" do
           get "/v5/assignments/#{member_assignment.gr_id}",
@@ -152,7 +152,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         let(:member) { FactoryBot.create(:person) }
         let!(:member_assignment) do
           FactoryBot.create(:assignment, person: member, ministry: ministries[:c121],
-                                          role: :member, gr_id: SecureRandom.uuid)
+                                         role: :member, gr_id: SecureRandom.uuid)
         end
         it "responds successfully with the assignment" do
           get "/v5/assignments/#{member_assignment.gr_id}",
@@ -359,7 +359,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         let(:other) { FactoryBot.build(:person) }
         let(:assignment) do
           FactoryBot.create(:assignment, person: other, ministry: ministries[:a2], role: :member,
-                                          gr_id: SecureRandom.uuid)
+                                         gr_id: SecureRandom.uuid)
         end
         it "responds with HTTP 401" do
           put "/v5/assignments/#{assignment.gr_id}", params: {team_role: "member"},
@@ -374,7 +374,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
     context "as a member" do
       let(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:a2], role: :member,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
       context "update your assignment" do
         it "responds with HTTP 401" do
@@ -391,7 +391,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
     context "as a leader" do
       let!(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:a2], role: :leader,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
       context "update your assignment" do
         it "responds with HTTP 400" do
@@ -408,7 +408,7 @@ RSpec.describe "V5::Assignments", type: :request do # rubocop:disable Metrics/Bl
         let(:other) { FactoryBot.create(:person) }
         let!(:member_assignment) do
           FactoryBot.create(:assignment, person: other, ministry: ministries[:a21],
-                                          role: :member, gr_id: SecureRandom.uuid)
+                                         role: :member, gr_id: SecureRandom.uuid)
         end
         context "to a valid input role" do
           let!(:request_stub) { gr_update_assignment_request(member_assignment) }

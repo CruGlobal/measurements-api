@@ -13,9 +13,9 @@ RSpec.describe Measurement, type: :model do
     context "with translation at local level" do
       it "uses local instead of top_level" do
         FactoryBot.create(:measurement_translation, measurement: measurement,
-                                                     ministry: top_level_ministry, language: "fr")
+                                                    ministry: top_level_ministry, language: "fr")
         local_trans = FactoryBot.create(:measurement_translation, measurement: measurement,
-                                                                   ministry: ministry, language: "fr")
+                                                                  ministry: ministry, language: "fr")
 
         expect(measurement.translation_for("fr", ministry)).to eq local_trans
       end
@@ -24,9 +24,9 @@ RSpec.describe Measurement, type: :model do
     context "without translation at local level" do
       it "uses closed" do
         FactoryBot.create(:measurement_translation, measurement: measurement,
-                                                     ministry: top_level_ministry, language: "fr")
+                                                    ministry: top_level_ministry, language: "fr")
         parent_trans = FactoryBot.create(:measurement_translation, measurement: measurement,
-                                                                    ministry: parent_ministry, language: "fr")
+                                                                   ministry: parent_ministry, language: "fr")
 
         expect(measurement.translation_for("fr", ministry)).to eq parent_trans
       end

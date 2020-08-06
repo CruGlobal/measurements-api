@@ -8,9 +8,9 @@ describe V5::ChurchSerializer do
     let(:resource) do
       @p = FactoryBot.create(:church, name: "parent church", ministry: ministry)
       c = FactoryBot.create(:church, name: "churchy kind of name", jf_contrib: true,
-                                      ministry: ministry, start_date: "2012-06-08", parent: @p,
-                                      contact_name: "doesnt matter", contact_email: "what",
-                                      contact_mobile: "unvalidated string")
+                                     ministry: ministry, start_date: "2012-06-08", parent: @p,
+                                     contact_name: "doesnt matter", contact_email: "what",
+                                     contact_mobile: "unvalidated string")
       FactoryBot.create(:church, name: "child church", parent: c, ministry: ministry)
       c
     end

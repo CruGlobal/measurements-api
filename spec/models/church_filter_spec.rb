@@ -7,11 +7,11 @@ RSpec.describe ChurchFilter, type: :model do
   let(:ministry) { FactoryBot.create(:ministry) }
   let!(:parent_church) do
     FactoryBot.create(:church, ministry: ministry,
-                                development: 2, latitude: -10, longitude: 10)
+                               development: 2, latitude: -10, longitude: 10)
   end
   let!(:child_church) do
     FactoryBot.create(:church, development: 3, latitude: 10, longitude: 10,
-                                parent: parent_church, ministry: ministry)
+                               parent: parent_church, ministry: ministry)
   end
 
   context "filter by development" do
@@ -60,11 +60,11 @@ RSpec.describe ChurchFilter, type: :model do
     let!(:child_ministry) { FactoryBot.create(:ministry, parent: ministry) }
     let!(:church2) do
       FactoryBot.create(:church, ministry: child_ministry,
-                                  security: Church.securities["private_church"])
+                                 security: Church.securities["private_church"])
     end
     let!(:local_private_church) do
       FactoryBot.create(:church, ministry: child_ministry,
-                                  security: Church.securities["local_private_church"])
+                                 security: Church.securities["local_private_church"])
     end
     let(:filters) { {ministry_id: ministry.gr_id, show_tree: "1"} }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }
@@ -163,7 +163,7 @@ RSpec.describe ChurchFilter, type: :model do
     end
     let!(:church2) do
       FactoryBot.create(:church, start_date: 1.year.ago, end_date: 1.year.from_now,
-                                  ministry: ministry)
+                                 ministry: ministry)
     end
     let(:filters) { {show_all: "1", period: Time.zone.today.strftime("%Y-%m")} }
     let(:filtered) { ChurchFilter.new(filters).filter(Church.all) }

@@ -21,7 +21,7 @@ RSpec.describe V5::AssignmentSerializer do
     context "leader assignment" do
       let(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:c1], role: :leader,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
 
       it "has attributes" do
@@ -60,9 +60,9 @@ RSpec.describe V5::AssignmentSerializer do
       context "with sub-assignments" do
         let!(:assignments) do
           [FactoryBot.create(:assignment, person: person, ministry: ministries[:c11], role: :admin,
-                                           gr_id: SecureRandom.uuid),
+                                          gr_id: SecureRandom.uuid),
            FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
-                                           gr_id: SecureRandom.uuid),]
+                                          gr_id: SecureRandom.uuid),]
         end
 
         it "has sub_ministries with inherited assignments" do
@@ -77,7 +77,7 @@ RSpec.describe V5::AssignmentSerializer do
     context "member assignment" do
       let(:assignment) do
         FactoryBot.create(:assignment, person: person, ministry: ministries[:c12], role: :member,
-                                        gr_id: SecureRandom.uuid)
+                                       gr_id: SecureRandom.uuid)
       end
 
       it "does not have sub_ministries" do

@@ -120,7 +120,7 @@ RSpec.describe "V5::MeasurementTypes", type: :request do
 
     it "updates measurement translation" do
       translation = FactoryBot.create(:measurement_translation, measurement: measurement,
-                                                                 language: "fr", ministry: ministry)
+                                                                language: "fr", ministry: ministry)
 
       expect {
         put "/v5/measurement_types/#{measurement.total_id}",
