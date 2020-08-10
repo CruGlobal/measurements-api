@@ -3,14 +3,14 @@
 require "rails_helper"
 
 RSpec.describe ChurchClusterer, type: :model do
-  let!(:nearby_church1) { FactoryGirl.build_stubbed(:church, latitude: 0, longitude: 1) }
-  let!(:nearby_church2) { FactoryGirl.build_stubbed(:church, latitude: 0, longitude: 2) }
+  let!(:nearby_church1) { FactoryBot.build_stubbed(:church, latitude: 0, longitude: 1) }
+  let!(:nearby_church2) { FactoryBot.build_stubbed(:church, latitude: 0, longitude: 2) }
   let!(:distant_church) do
-    FactoryGirl.build_stubbed(:church, latitude: 10, longitude: 1,
-                                       parent: nearby_church2)
+    FactoryBot.build_stubbed(:church, latitude: 10, longitude: 1,
+                                      parent: nearby_church2)
   end
   let!(:distant_orphan_church) do
-    FactoryGirl.build_stubbed(:church, latitude: 10, longitude: 5)
+    FactoryBot.build_stubbed(:church, latitude: 10, longitude: 5)
   end
   let(:church_array) do
     [distant_church, nearby_church1, nearby_church2, distant_orphan_church]

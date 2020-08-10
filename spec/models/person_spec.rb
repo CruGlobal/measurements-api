@@ -4,13 +4,13 @@ require "rails_helper"
 
 describe Person, type: :model do
   describe "#inherited_assignment_for_ministry" do
-    let(:person) { FactoryGirl.create(:person) }
-    let(:grandparent) { FactoryGirl.create(:ministry) }
-    let(:parent) { FactoryGirl.create(:ministry, parent: grandparent) }
-    let(:ministry) { FactoryGirl.create(:ministry, parent: parent) }
+    let(:person) { FactoryBot.create(:person) }
+    let(:grandparent) { FactoryBot.create(:ministry) }
+    let(:parent) { FactoryBot.create(:ministry, parent: grandparent) }
+    let(:ministry) { FactoryBot.create(:ministry, parent: parent) }
     context "sub-ministry with inherited assignment" do
-      let!(:admin) { FactoryGirl.create(:assignment, person: person, ministry: grandparent, role: :admin) }
-      let!(:member) { FactoryGirl.create(:assignment, person: person, ministry: parent, role: :member) }
+      let!(:admin) { FactoryBot.create(:assignment, person: person, ministry: grandparent, role: :admin) }
+      let!(:member) { FactoryBot.create(:assignment, person: person, ministry: parent, role: :member) }
 
       subject { person.inherited_assignment_for_ministry(ministry) }
       it "has an inherited assignment" do

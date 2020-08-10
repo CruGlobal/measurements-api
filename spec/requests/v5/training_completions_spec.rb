@@ -3,18 +3,18 @@
 require "rails_helper"
 
 RSpec.describe "V5::TrainingCompletions", type: :request do
-  let(:ministry) { FactoryGirl.create(:ministry) }
-  let(:user) { FactoryGirl.create(:person) }
+  let(:ministry) { FactoryBot.create(:ministry) }
+  let(:user) { FactoryBot.create(:person) }
   let(:json) { JSON.parse(response.body) }
-  let!(:training) { FactoryGirl.create(:training, ministry: ministry) }
+  let!(:training) { FactoryBot.create(:training, ministry: ministry) }
 
   describe "POST /v5/training_completion" do
     let(:attributes) do
-      FactoryGirl.attributes_for(:training_completion, training_id: training.id, number_completed: 42)
+      FactoryBot.attributes_for(:training_completion, training_id: training.id, number_completed: 42)
     end
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "creates a completion" do
         expect {
           post "/v5/training_completion", params: attributes,
@@ -39,7 +39,7 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
       it "fails to create completion" do
         expect {
           post "/v5/training_completion", params: attributes,
@@ -52,13 +52,13 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
   end
 
   describe "PUT /v5/training_completion/:id" do
-    let(:completion) { FactoryGirl.create(:training_completion, training: training) }
-    let(:other_local_training) { FactoryGirl.create(:training, ministry: ministry) }
+    let(:completion) { FactoryBot.create(:training_completion, training: training) }
+    let(:other_local_training) { FactoryBot.create(:training, ministry: ministry) }
 
     let(:attributes) { {number_completed: 50, date: "2014-12-1"} }
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "updates completion" do
         put "/v5/training_completion/#{completion.id}",
           params: attributes,
@@ -83,7 +83,7 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it "fails to update completion" do
         put "/v5/training_completion/#{completion.id}",
@@ -96,10 +96,10 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
   end
 
   describe "DELETE /v5/training_completion/:id" do
-    let!(:completion) { FactoryGirl.create(:training_completion, training: training) }
+    let!(:completion) { FactoryBot.create(:training_completion, training: training) }
 
     context "as admin" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :admin) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :admin) }
       it "deletes completion" do
         expect {
           delete "/v5/training_completion/#{completion.id}",
@@ -111,7 +111,7 @@ RSpec.describe "V5::TrainingCompletions", type: :request do
     end
 
     context "as self-assigned" do
-      let!(:assignment) { FactoryGirl.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
+      let!(:assignment) { FactoryBot.create(:assignment, person: user, ministry: ministry, role: :self_assigned) }
 
       it "fails to delete completion" do
         expect {

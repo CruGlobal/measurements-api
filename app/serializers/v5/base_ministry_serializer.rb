@@ -16,7 +16,7 @@ module V5
     attributes :ministry_id, :parent_id, :content_locales
     attributes(*self::MINISTRY_ATTRIBUTES)
 
-    def attributes(args = nil)
+    def attributes(requested_attrs = nil, reload = false)
       # Remove nil values
       super.reject { |_k, v| v.nil? }
     end

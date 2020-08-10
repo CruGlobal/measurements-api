@@ -4,10 +4,10 @@ module V5
   class UserPreferencesSerializer < ActiveModel::Serializer
     attributes :default_map_views, :default_measurement_states, :content_locales
 
-    def attributes(args)
+    def attributes(requested_attrs = nil, reload = false)
       # convert preferences to a hash
       raw_prefs = object.user_preferences.to_a.each_with_object({}) { |p, h| h[p.name] = p.value }
-      super(args).merge(raw_prefs)
+      super(requested_attrs, reload).merge(raw_prefs)
     end
 
     def content_locales

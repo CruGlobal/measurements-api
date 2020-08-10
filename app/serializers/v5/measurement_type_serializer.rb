@@ -27,9 +27,9 @@ module V5
       :supported_staff_only, :perm_link_stub,
       to: :measurement
 
-    def attributes(args)
+    def attributes(requested_attrs = nil, reload = false)
       # Remove nil values
-      super(args).reject { |_k, v| v.nil? }
+      super(requested_attrs, reload).reject { |_k, v| v.nil? }
     end
 
     def custom?

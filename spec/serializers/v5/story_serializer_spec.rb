@@ -4,10 +4,10 @@ require "rails_helper"
 
 describe V5::StorySerializer do
   describe "a story" do
-    let(:ministry) { FactoryGirl.create(:ministry) }
-    let(:person) { FactoryGirl.create(:person) }
+    let(:ministry) { FactoryBot.create(:ministry) }
+    let(:person) { FactoryBot.create(:person) }
     let(:story) do
-      FactoryGirl.create(:story, created_by: person, ministry: ministry, privacy: :everyone, state: :published)
+      FactoryBot.create(:story, created_by: person, ministry: ministry, privacy: :everyone, state: :published)
     end
     let(:serializer) { V5::StorySerializer.new(story) }
     let(:serialization) { ActiveModelSerializers::Adapter.create(serializer) }
@@ -32,7 +32,7 @@ describe V5::StorySerializer do
     end
 
     context "with related training" do
-      let(:training) { FactoryGirl.create(:training, ministry: ministry) }
+      let(:training) { FactoryBot.create(:training, ministry: ministry) }
       it "has related training_id" do
         story.training = training
         expect(json[:training_id]).to be_an(Integer).and(eq training.id)
@@ -41,7 +41,7 @@ describe V5::StorySerializer do
     end
 
     context "with related training" do
-      let(:church) { FactoryGirl.create(:church, ministry: ministry) }
+      let(:church) { FactoryBot.create(:church, ministry: ministry) }
       it "has related training_id" do
         story.church = church
         expect(json[:church_id]).to be_an(Integer).and(eq church.id)

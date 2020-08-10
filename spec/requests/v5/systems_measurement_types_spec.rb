@@ -5,11 +5,11 @@ require "rails_helper"
 RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:ministry) { FactoryGirl.create(:ministry) }
+  let(:ministry) { FactoryBot.create(:ministry) }
 
   describe "GET /v5/sys_measurement_types" do
     let(:json) { JSON.parse(response.body) }
-    let!(:measurement) { FactoryGirl.create(:measurement, english: "English Name") }
+    let!(:measurement) { FactoryBot.create(:measurement, english: "English Name") }
 
     it "responds with measurement types" do
       get "/v5/sys_measurement_types", params: {access_token: authenticate_api, ministry_id: ministry.gr_id,
@@ -71,7 +71,7 @@ RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
   end
 
   describe "GET /v5/sys_measurement_type/{id}" do
-    let!(:measurement) { FactoryGirl.create(:measurement, perm_link: "lmi_total_my_string") }
+    let!(:measurement) { FactoryBot.create(:measurement, perm_link: "lmi_total_my_string") }
     let(:json) { JSON.parse(response.body) }
 
     it "finds measurement based on total_id" do
@@ -148,8 +148,8 @@ RSpec.describe "V5::SystemsMeasurementTypes", type: :request do
 
   describe "PUT /v5/sys_measurement_type/:id" do
     let(:json) { JSON.parse(response.body) }
-    let(:measurement) { FactoryGirl.create(:measurement) }
-    let(:parent_meas) { FactoryGirl.create(:measurement) }
+    let(:measurement) { FactoryBot.create(:measurement) }
+    let(:parent_meas) { FactoryBot.create(:measurement) }
 
     let(:attributes) { {english: "different name", parent_id: parent_meas.total_id, sort_order: 10} }
 

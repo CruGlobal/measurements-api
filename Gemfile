@@ -6,69 +6,109 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "2.6.6"
 
-gem "rake"
-gem "rails", "~> 5.2.3"
-gem "rack"
-gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git"
-gem "puma", "~> 3.11"
-gem "versionist"
-gem "rollbar"
-gem "syslog-logger"
-gem "oj"
-gem "oj_mimic_json"
-gem "cru-auth-lib", "~> 0.1.0"
-gem "pg"
-gem "rubycas-client-rails"
-gem "xml-simple", require: "xmlsimple"
-gem "sidekiq", "~> 5.0"
-gem "sidekiq-unique-jobs"
-gem "sidekiq-cron"
-gem "redis-rails"
-gem "redis-namespace"
-gem "sinatra", require: nil
-gem "auto_strip_attributes", "~> 2.0"
-gem "arel"
-gem "consul"
-gem "modularity"
-gem "assignable_values"
-gem "awesome_nested_set"
-gem "global_registry"
-gem "carrierwave-aws"
-gem "will_paginate"
-gem "ddtrace"
-gem "dogstatsd-ruby"
-gem "bootsnap", ">= 1.1.0", require: false
-gem "ougai", "~> 1.7"
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem "rails", "~> 6.0.3"
+# Use sqlite3 as the database for Active Record
+# gem 'sqlite3', '~> 1.4'
+# Use Puma as the app server
+gem "puma", "~> 4.1"
+# Use SCSS for stylesheets
+# gem 'sass-rails', '>= 6'
+# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
+# gem 'webpacker', '~> 4.0'
+# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
+# gem 'turbolinks', '~> 5'
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+# gem 'jbuilder', '~> 2.7'
+# Use Redis adapter to run Action Cable in production
+# gem 'redis', '~> 4.0'
+# Use Active Model has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
+
+# Use Active Storage variant
+# gem 'image_processing', '~> 1.2'
+
+# Reduces boot times through caching; required in config/boot.rb
+gem "bootsnap", ">= 1.4.2", require: false
 
 group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+end
+
+group :development do
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
+  gem "web-console", ">= 3.3.0"
+  gem "listen", "~> 3.2"
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem "spring"
+  gem "spring-watcher-listen", "~> 2.0.0"
+end
+
+group :test do
+  # Adds support for Capybara system testing and selenium driver
+  gem "capybara", ">= 2.15"
+  gem "selenium-webdriver"
+  # Easy installation and use of web drivers to run system tests with browsers
+  gem "webdrivers"
+end
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem "pg"
+
+gem "active_model_serializers", git: "https://github.com/rails-api/active_model_serializers.git", ref: "db87f8d85e"
+gem "assignable_values"
+gem "auto_strip_attributes", "~> 2.0"
+gem "awesome_nested_set"
+gem "carrierwave-aws"
+gem "consul"
+gem "cru-auth-lib", "~> 0.1.0"
+gem "ddtrace"
+gem "dogstatsd-ruby"
+gem "global_registry"
+gem "marco-polo"
+gem "modularity"
+gem "oj"
+gem "oj_mimic_json"
+gem "ougai", "~> 1.7"
+gem "redis-actionpack"
+gem "redis-namespace"
+gem "rollbar"
+gem "rubycas-client-rails"
+gem "sidekiq", "~> 5.0"
+gem "sidekiq-cron"
+gem "sidekiq-unique-jobs"
+gem "sinatra", require: nil
+gem "versionist"
+gem "will_paginate"
+gem "xml-simple", require: "xmlsimple"
+
+group :development, :test do
+  gem "amazing_print"
   gem "brakeman"
   gem "bundler-audit"
   gem "dotenv-rails"
   gem "guard-rubocop"
   gem "guard-rspec"
-  gem "rspec-rails"
-  gem "spring"
-  gem "spring-commands-rspec"
-  gem "pry-rails"
-  gem "pry-byebug"
   gem "http_logger"
-  gem "awesome_print"
+  gem "pry-byebug"
+  gem "pry-rails"
   gem "rack-cors", require: "rack/cors"
+  gem "rspec-rails"
+  gem "spring-commands-rspec"
   gem "standard"
 end
 
 group :test do
-  gem "webmock"
-  gem "rspec-sidekiq"
-  gem "simplecov", require: false
-  gem "factory_girl_rails"
-  gem "shoulda", require: false
-  gem "rspec-json_expectations", require: "rspec/json_expectations"
-  gem "rubocop"
-  gem "mock_redis"
-  gem "fakeredis", require: "fakeredis/rspec"
   gem "coveralls", require: false
+  gem "factory_bot_rails"
+  gem "fakeredis", require: "fakeredis/rspec"
+  gem "mock_redis"
+  gem "rspec-json_expectations", require: "rspec/json_expectations"
+  gem "rspec-sidekiq"
+  gem "shoulda", require: false
+  gem "simplecov", require: false
+  gem "webmock"
 end
-
-# add this at the end so it plays nice with pry
-gem "marco-polo"

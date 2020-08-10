@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "V5::SystemsMinistries", type: :request do
   before :all do
-    @ministries = FactoryGirl.create(:ministry_hierarchy)
+    @ministries = FactoryBot.create(:ministry_hierarchy)
   end
   after :all do
     Ministry.delete_all
@@ -67,7 +67,7 @@ RSpec.describe "V5::SystemsMinistries", type: :request do
     end
 
     context "with required params" do
-      let(:ministry) { FactoryGirl.build(:ministry) }
+      let(:ministry) { FactoryBot.build(:ministry) }
       let!(:request_stub) { gr_create_ministry_request(ministry) }
 
       it "responds successfully with new ministry" do
@@ -85,7 +85,7 @@ RSpec.describe "V5::SystemsMinistries", type: :request do
   end
 
   describe "PUT /v5/sys_ministries/:id" do
-    let(:ministry) { FactoryGirl.create(:ministry) }
+    let(:ministry) { FactoryBot.create(:ministry) }
     context "valid ministry id" do
       it "responds with the updated ministry details" do
         allow(GrSync::EntityUpdatePush).to receive(:queue_with_root_gr)
