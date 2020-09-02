@@ -95,6 +95,7 @@ group :development, :test do
   gem "pry-byebug"
   gem "pry-rails"
   gem "rack-cors", require: "rack/cors"
+  gem "rails-erd"
   gem "rspec-rails"
   gem "spring-commands-rspec"
   gem "standard"
