@@ -142,6 +142,8 @@ GEM
     edge_rider (1.0.0)
       activerecord
     erubi (1.9.0)
+    et-orbi (1.2.4)
+      tzinfo
     factory_bot (6.1.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.1.0)
@@ -151,6 +153,9 @@ GEM
       redis (~> 4.1)
     ffi (1.13.1)
     formatador (0.2.5)
+    fugit (1.3.9)
+      et-orbi (~> 1.1, >= 1.1.8)
+      raabro (~> 1.3)
     global_registry (1.5.1)
       activesupport
       addressable (~> 2.4)
@@ -239,6 +244,7 @@ GEM
     public_suffix (4.0.1)
     puma (4.3.5)
       nio4r (~> 2.0)
+    raabro (1.3.1)
     rack (2.2.3)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
@@ -282,8 +288,6 @@ GEM
       actionpack (>= 5, < 7)
       redis-rack (>= 2.1.0, < 3)
       redis-store (>= 1.1.0, < 2)
-    redis-namespace (1.7.0)
-      redis (>= 3.0.4)
     redis-rack (2.1.2)
       rack (>= 2.0.8, < 3)
       redis-store (>= 1.2, < 2)
@@ -337,7 +341,6 @@ GEM
       rails (>= 3.0.0)
       rubycas-client (>= 2.2.0)
     rubyzip (2.3.0)
-    rufus-scheduler (3.1.10)
     safe_yaml (1.0.5)
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
@@ -354,10 +357,9 @@ GEM
       rack (~> 2.0)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 4.2)
-    sidekiq-cron (0.4.0)
-      redis-namespace (>= 1.5.2)
-      rufus-scheduler (>= 2.0.24)
-      sidekiq (>= 4.0.0)
+    sidekiq-cron (1.2.0)
+      fugit (~> 1.1)
+      sidekiq (>= 4.2.1)
     sidekiq-pro (5.0.0)
       concurrent-ruby (>= 1.0.5)
       sidekiq (>= 5.2.7)
@@ -472,7 +474,6 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.0.3)
   redis-actionpack
-  redis-namespace
   rollbar
   rspec-json_expectations
   rspec-rails
