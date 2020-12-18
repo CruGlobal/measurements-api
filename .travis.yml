@@ -3,18 +3,27 @@ cache: bundler
 language: ruby
 addons:
   postgresql: "10"
+apt:
+  packages:
+    - graphviz
 services:
-- redis-server
+  - redis-server
 env:
   global:
     - DB_ENV_POSTGRESQL_USER_TEST=postgres
     - DB_ENV_POSTGRESQL_PASS_TEST=""
+branches:
+  only:
+    - master
+    - staging
 before_install:
-- bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
+  - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:
-- bundle exec rake db:create db:migrate RAILS_ENV=test
+  - bundle exec rake db:create db:migrate RAILS_ENV=test
 script:
-- bundle exec standardrb
-- bundle exec rspec spec
-- bundle exec bundle audit check --update
-- bundle exec brakeman -A -q --no-pager --ensure-latest
+  - bundle exec standardrb
+  - bundle exec rspec spec
+  - bundle exec bundle audit check --update
+  - bundle exec brakeman -A -q --no-pager --ensure-latest
+after_success:
+  - bin/deploy/build_and_upload_erd.sh
