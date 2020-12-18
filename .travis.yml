@@ -3,9 +3,9 @@ cache: bundler
 language: ruby
 addons:
   postgresql: "10"
-apt:
-  packages:
-    - graphviz
+  apt:
+    packages:
+      - graphviz
 services:
   - redis-server
 env:
