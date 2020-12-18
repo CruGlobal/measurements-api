@@ -1,0 +1,6 @@
+Assignment::UserCreatedAssignment
+Church::UserCreatedChurch
+Ministry::UserCreatedMinistry
+Person::UpdatePreferences
+Story::UserCreatedStory
+Training::UserCreatedTraining
