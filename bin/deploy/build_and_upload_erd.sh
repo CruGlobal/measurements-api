@@ -4,8 +4,8 @@ set -ev # Exit on first error, be verbose
 # Debuggery
 echo "TRAVIS_BRANCH is '${TRAVIS_BRANCH}' and TRAVIS_PULL_REQUEST is '${TRAVIS_PULL_REQUEST}'"
 
-# Exit if not a push build to staging
-if [ "${TRAVIS_BRANCH}" != "staging" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+# Exit if not a push build to master
+if [ "${TRAVIS_BRANCH}" != "master" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
   echo "Skipping ERD generation for this build."
   exit
 fi
