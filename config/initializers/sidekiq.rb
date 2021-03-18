@@ -13,6 +13,10 @@ redis_settings = {url: Redis.current.id,
 
 Sidekiq.configure_client do |config|
   config.redis = redis_settings
+
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
 end
 
 if Sidekiq::Client.method_defined? :reliable_push!
@@ -24,9 +28,16 @@ Sidekiq.configure_server do |config|
   config.reliable_scheduler!
   config.redis = redis_settings
 
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
+
   config.server_middleware do |chain|
     chain.add SidekiqResetGrClient
+    chain.add SidekiqUniqueJobs::Middleware::Server
   end
+
+  SidekiqUniqueJobs::Server.configure(config)
 end
 
 Sidekiq::Web.set :session_secret, ENV.fetch("SECRET_KEY_BASE", "0987654321fedcba")
@@ -36,7 +47,6 @@ end
 
 Sidekiq.default_worker_options = {
   backtrace: true,
-  unique_expiration: 22.days,
   log_duplicate_payload: true,
-  unique: :until_and_while_executing,
+  lock: :until_and_while_executing,
 }
