@@ -76,7 +76,6 @@ gem "ougai", "~> 1.7"
 gem "redis-actionpack"
 gem "rollbar"
 gem "rubycas-client-rails"
-gem "sidekiq", "~> 5.0"
 gem "sidekiq-cron"
 gem "sidekiq-unique-jobs"
 gem "sinatra", require: nil
