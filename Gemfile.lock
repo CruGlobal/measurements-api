@@ -20,8 +20,14 @@ GIT
       railties (>= 4.0)
 
 GEM
-  remote: https://rubygems.org/
   remote: https://gems.contribsys.com/
+  specs:
+    sidekiq-pro (5.2.1)
+      connection_pool (>= 2.2.3)
+      sidekiq (>= 6.1.0)
+
+GEM
+  remote: https://rubygems.org/
   specs:
     actioncable (6.0.3.7)
       actionpack (= 6.0.3.7)
@@ -245,7 +251,7 @@ GEM
       rake
     mini_magick (4.11.0)
     mini_mime (1.1.0)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     mock_redis (0.16.0)
     modularity (2.0.1)
@@ -254,8 +260,8 @@ GEM
     nenv (0.2.0)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.11.4)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     notiffany (0.0.8)
       nenv (~> 0.1)
@@ -402,9 +408,6 @@ GEM
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
-    sidekiq-pro (5.2.1)
-      connection_pool (>= 2.2.3)
-      sidekiq (>= 6.1.0)
     sidekiq-unique-jobs (7.0.2)
       brpoplpush-redis_script (> 0.0.0, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
