@@ -17,6 +17,7 @@ branches:
     - master
     - staging
 before_install:
+  - gem install bundler -v 2.2.28
   - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:
   - bundle exec rake db:create db:migrate RAILS_ENV=test
