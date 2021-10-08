@@ -1,17 +1,24 @@
-dist: xenial
+dist: focal
 cache: bundler
 language: ruby
 addons:
-  postgresql: "10"
+  postgresql: 13
   apt:
     packages:
       - graphviz
 services:
   - redis-server
+  - postgresql
 env:
   global:
-    - DB_ENV_POSTGRESQL_USER_TEST=postgres
-    - DB_ENV_POSTGRESQL_PASS_TEST=""
+    # These variables are intentionally blank in order establish the connection to the Postgresql 11 server:
+    - DB_ENV_POSTGRESQL_USER_TEST=
+    - DB_ENV_POSTGRESQL_USER=
+    - DB_ENV_POSTGRESQL_PASS_TEST=
+    - DB_ENV_POSTGRESQL_PASS=
+    - DB_PORT_5432_TCP_ADDR_TEST=
+    - DB_PORT_5432_TCP_ADDR=
+    - DB_PORT_5432_TCP_PORT_TEST=5433
 branches:
   only:
     - master
@@ -20,7 +27,7 @@ before_install:
   - gem install bundler -v 2.2.28
   - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:
-  - bundle exec rake db:create db:migrate RAILS_ENV=test
+  - bundle exec rails db:setup RAILS_ENV=test
 script:
   - bundle exec standardrb
   - bundle exec rspec spec
