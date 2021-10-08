@@ -2,14 +2,13 @@ dist: focal
 cache: bundler
 language: ruby
 addons:
-  postgresql: 12
+  postgresql: 13
   apt:
     packages:
       - graphviz
-      - postgresql-12
-      - postgresql-client-12
 services:
   - redis-server
+  - postgresql
 env:
   global:
     # These variables are intentionally blank in order establish the connection to the Postgresql 11 server:
@@ -28,7 +27,7 @@ before_install:
   - gem install bundler -v 2.2.28
   - bundle config gems.contribsys.com ${SIDEKIQ_CREDS}
 before_script:
-  - bundle exec rake db:setup RAILS_ENV=test
+  - bundle exec rails db:setup RAILS_ENV=test
 script:
   - bundle exec standardrb
   - bundle exec rspec spec
@@ -36,7 +35,3 @@ script:
   - bundle exec brakeman -A -q --no-pager --ensure-latest
 after_success:
   - bin/deploy/build_and_upload_erd.sh
-branches:
-  only:
-    - master
-    - staging
