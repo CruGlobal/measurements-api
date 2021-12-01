@@ -1,0 +1,71 @@
+name: Ruby
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [staging]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_PORT_5432_TCP_ADDR_TEST: localhost
+      DB_ENV_POSTGRESQL_USER_TEST: postgres
+      DB_ENV_POSTGRESQL_PASS_TEST: postgres
+      DB_ENV_POSTGRESQL_DB_TEST: postgres
+      RAILS_ENV: test
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          - 5432:5432
+#     redis:
+#       image: redis
+#       options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+#       ports:
+#         - 6379:6379
+
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+        env:
+          BUNDLE_GEMS__CONTRIBSYS__COM: ${{ secrets.BUNDLE_GEMS__CONTRIBSYS__COM }}
+
+      - name: Set up DB
+        run: bundle exec rails db:setup
+
+      - name: RSpec tests
+        run: bundle exec rspec --color
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+        env:
+          BUNDLE_GEMS__CONTRIBSYS__COM: ${{ secrets.BUNDLE_GEMS__CONTRIBSYS__COM }}
+
+      - name: Bundle audit
+        run: bundle exec bundle audit check --update --ignore CVE-2015-9284
+
+      - name: Brakeman
+        run: bundle exec brakeman -A -q --ensure-latest --no-pager
+
+      - name: StandardRB
+        run: bundle exec standardrb --format simple

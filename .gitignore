@@ -50,5 +50,5 @@ public/uploads
 # MacOS
 .DS_Store
 
-# secret file that is encrypted for travis
+# secret file that was encrypted for travis
 bin/deploy/erd-service-account.json
