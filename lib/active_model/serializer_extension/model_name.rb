@@ -10,7 +10,7 @@ module ActiveModel
               object.first.class.model_name.to_s.underscore
             end
           rescue ArgumentError
-            'anonymous_object'
+            "anonymous_object"
           end
       end
     end
