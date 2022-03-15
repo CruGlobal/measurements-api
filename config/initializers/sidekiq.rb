@@ -6,9 +6,9 @@ require "sidekiq/web"
 
 redis_conf = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "redis.yml"))).result, [Symbol], [], true)["sidekiq"]
 
-Redis.current = Redis.new(redis_conf)
+redis = Redis.new(redis_conf)
 
-redis_settings = {url: Redis.current.id,
+redis_settings = {url: redis.id,
                   id: nil,}
 
 Sidekiq.configure_client do |config|
@@ -40,7 +40,6 @@ Sidekiq.configure_server do |config|
   SidekiqUniqueJobs::Server.configure(config)
 end
 
-Sidekiq::Web.set :session_secret, ENV.fetch("SECRET_KEY_BASE", "0987654321fedcba")
 Sidekiq::Web.use Rack::Auth::Basic do |username, password|
   username == ENV.fetch("SIDEKIQ_USERNAME") && password == ENV.fetch("SIDEKIQ_PASSWORD")
 end
