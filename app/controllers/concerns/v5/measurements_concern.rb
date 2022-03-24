@@ -22,7 +22,7 @@ module V5
     end
 
     def create
-      list = MeasurementListUpdater.new(params.permit!["_json"])
+      list = MeasurementListUpdater.new(params.permit!.to_h["_json"])
       if list.commit
         head :created
       else
@@ -40,7 +40,7 @@ module V5
 
     def load_measurement
       return @measurement if @measurement
-      @measurement = MeasurementDetails.new(params.permit(:id, :ministry_id, :mcc, :period))
+      @measurement = MeasurementDetails.new(params.permit(:id, :ministry_id, :mcc, :period).to_h)
       @measurement.load
     end
 
