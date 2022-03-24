@@ -2,7 +2,7 @@
 
 module V5
   class ChurchArraySerializer
-    def self.serializer_for(resource)
+    def self.serializer_for(resource, options = {})
       if resource.is_a? Church
         ChurchSerializer
       else # its an Array
